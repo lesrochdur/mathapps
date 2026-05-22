@@ -43,7 +43,7 @@ export default function Home() {
         {/* Overlay */}
         <div
           className="absolute inset-0"
-          style={{ backgroundColor: 'rgba(11,28,38,0.97)' }}
+          style={{ backgroundColor: 'rgba(11,28,38,0.85)' }}
         />
 
         {/* Content */}
