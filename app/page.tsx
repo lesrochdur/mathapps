@@ -133,7 +133,7 @@ export default function Home() {
           </div>
         </div>
 
-        <p className="text-center text-xs text-gray-500 italic mb-12" style={{ fontFamily: 'var(--font-rubik)' }}>
+        <p className="text-center text-xs text-gray-500 italic mb-12" style={{ fontFamily: 'var(--font-rubik)', marginTop: '-2rem' }}>
           *Certificat d'Études de Base en Fédération Wallonie-Bruxelles (Belgique)
         </p>
 
