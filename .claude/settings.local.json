@@ -5,7 +5,8 @@
       "Bash(npx next *)",
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
-      "Bash(vercel --prod --yes --name mathapps)"
+      "Bash(vercel --prod --yes --name mathapps)",
+      "Bash(git push *)"
     ]
   }
 }

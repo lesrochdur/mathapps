@@ -34,7 +34,7 @@ export default function Home() {
           className="absolute inset-0"
           style={{
             backgroundImage:
-              'url(https://lesrochdur.com/wp-content/uploads/2025/04/ChatGPT-Image-1-avr.-2025-11_13_52-1-e1743498926764.png)',
+              'url(/images/header-bg.png)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundColor: '#0b1c26',
@@ -43,7 +43,7 @@ export default function Home() {
         {/* Overlay */}
         <div
           className="absolute inset-0"
-          style={{ backgroundColor: 'rgba(11,28,38,0.92)' }}
+          style={{ backgroundColor: 'rgba(11,28,38,0.97)' }}
         />
 
         {/* Content */}
@@ -60,7 +60,7 @@ export default function Home() {
               <img
                 src="https://lesrochdur.com/wp-content/uploads/2025/04/logo-les-rochdur-2.png"
                 alt="Les RochDur"
-                className="h-12 w-auto"
+                style={{ height: '90px', width: 'auto' }}
               />
             </a>
 
@@ -87,8 +87,7 @@ export default function Home() {
               style={{
                 fontFamily: 'var(--font-orbitron)',
                 color: '#00e0ff',
-                textShadow:
-                  '0 0 8px #00e0ff, 0 0 20px #00e0ff, 0 0 45px rgba(0,224,255,0.6)',
+                textShadow: '0 0 12px rgba(0,224,255,0.7), 0 0 25px rgba(0,224,255,0.4), 0 0 40px rgba(0,224,255,0.2)',
               }}
             >
               MATH'APPS
@@ -117,34 +116,19 @@ export default function Home() {
       <main className="max-w-7xl mx-auto px-4 py-12">
         {/* Global PDF card */}
         <div className="flex justify-center mb-12">
-          <div
-            className="rounded-2xl p-8 text-center w-full max-w-md shadow-lg"
-            style={{ backgroundColor: '#0b1c26', border: '2px solid #00e0ff' }}
-          >
-            <div className="text-5xl mb-4">📄</div>
-            <h2
-              className="text-xl font-bold mb-1"
-              style={{ fontFamily: 'var(--font-orbitron)', color: '#00e0ff' }}
-            >
+          <div className="rounded-2xl p-10 text-center w-full max-w-lg shadow-2xl" style={{ backgroundColor: '#0b1c26', border: '2px solid #00e0ff' }}>
+            <div className="flex justify-center mb-6">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/MathAPPS-Theorie.png" alt="PDF général Math'APPS" style={{ width: '200px', height: '200px', objectFit: 'cover', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,224,255,0.3)' }} />
+            </div>
+            <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'var(--font-orbitron)', color: '#00e0ff' }}>
               Télécharger le PDF général
             </h2>
-            <p
-              className="text-gray-400 mb-6 text-sm"
-              style={{ fontFamily: 'var(--font-rubik)' }}
-            >
+            <p className="text-gray-400 mb-6 text-sm" style={{ fontFamily: 'var(--font-rubik)' }}>
               Toute la théorie Math'APPS
             </p>
-            <a
-              href="/pdf/MathAPPS-Theorie.pdf"
-              download
-              className="inline-block py-3 px-8 rounded-xl text-lg font-bold transition-all hover:opacity-90 hover:-translate-y-0.5"
-              style={{
-                backgroundColor: '#00e0ff',
-                color: '#0b1c26',
-                fontFamily: 'var(--font-rajdhani)',
-              }}
-            >
-              📥 Télécharger
+            <a href="/pdf/MathAPPS-Theorie.pdf" download className="inline-block py-3 px-10 rounded-xl text-lg font-bold transition-all hover:opacity-90 hover:-translate-y-0.5" style={{ backgroundColor: '#00e0ff', color: '#0b1c26', fontFamily: 'var(--font-rajdhani)' }}>
+              Télécharger
             </a>
           </div>
         </div>
