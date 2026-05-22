@@ -43,7 +43,7 @@ export default function Home() {
         {/* Overlay */}
         <div
           className="absolute inset-0"
-          style={{ backgroundColor: 'rgba(11,28,38,0.85)' }}
+          style={{ backgroundColor: 'rgba(11,28,38,0.88)' }}
         />
 
         {/* Content */}
@@ -86,8 +86,8 @@ export default function Home() {
               className="text-5xl md:text-6xl font-bold mb-5"
               style={{
                 fontFamily: 'var(--font-orbitron)',
-                color: '#00e0ff',
-                textShadow: '0 0 12px rgba(0,224,255,0.7), 0 0 25px rgba(0,224,255,0.4), 0 0 40px rgba(0,224,255,0.2)',
+                color: '#8f67ca',
+                textShadow: '0 0 12px rgba(143,103,202,0.7), 0 0 25px rgba(143,103,202,0.4), 0 0 40px rgba(143,103,202,0.2)',
               }}
             >
               MATH'APPS
