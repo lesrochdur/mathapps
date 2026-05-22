@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Targetmath</title>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600&family=Source+Sans+Pro&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --violet: #8f67ca;
+      --turquoise: #01b7c4;
+      --vert: #01b7c4;
+      --blanc: #ffffff;
+      --gris-clair: #ffffff;
+      --noir: #222;
+      --orange: #ff9800;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 20px;
+      background-color: var(--violet);
+      border-radius: 4px;
+      text-align: center;
+      line-height: 20px;
+      color: white;
+      transition: width 0.3s ease-in-out;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Source Sans Pro', sans-serif;
+      background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+      color: var(--noir);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 1rem 0;
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 0 1rem;
+    }
+
+    h1 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--violet);
+      font-size: 2.5rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--noir);
+      font-size: 1.8rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .app-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      background-color: #fdfdfd;
+      font-size: 1.3rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      border: none;
+      padding: 14px 22px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      color: var(--blanc);
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .theory-btn { background-color: var(--turquoise); }
+    .exercise-btn { background-color: var(--violet); }
+    .action-btn { background-color: var(--vert); margin-top: 10px; }
+    .hidden { display: none; }
+
+    .content-box {
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 2px solid var(--violet);
+      border-radius: 12px;
+      background-color: var(--blanc);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      font-size: 1.3rem;
+      line-height: 1.8;
+    }
+
+    .exercice-content {
+      text-align: left;
+    }
+
+    footer {
+      margin-top: 2rem;
+      padding: 1rem;
+      font-size: 1rem;
+      background-color: var(--gris-clair);
+      border-top: 1px solid #eee;
+    }
+
+    footer a {
+      color: var(--violet);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .navigation {
+      margin: 10px 0;
+    }
+
+    /* Styles spécifiques pour les activités */
+
+    /* Mode 1: Classe les infos */
+    .highlightable span {
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    .highlighted {
+      background-color: #ffe066;
+    }
+
+    .correct {
+      background-color: #8bc34a;
+    }
+
+    .incorrect {
+      background-color: #f44336;
+      color: white;
+    }
+
+    /* Mode Classe les infos - Drag and Drop */
+    .columns {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .column {
+      flex: 1;
+      margin: 0 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      min-height: 100px;
+    }
+
+    .draggable {
+      display: inline-block;
+      background: #ddd;
+      margin: 5px;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: move;
+      touch-action: none; /* Important pour le support mobile */
+      user-select: none;  /* Évite la sélection de texte parasite au toucher */
+    }
+
+    .draggable.locked {
+      cursor: not-allowed;
+      opacity: 0.8;
+    }
+
+    .draggable.correct-placement {
+      background-color: #8bc34a;
+      color: white;
+    }
+
+    .draggable.incorrect-placement {
+      background-color: #f44336;
+      color: white;
+    }
+
+    /* Mode 2: Reformuler */
+    .options button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      text-align: left;
+      background-color: #f1f1f1;
+      color: var(--noir);
+      border: 1px solid #ddd;
+    }
+
+    .options button:hover {
+      background-color: #e0e0e0;
+    }
+
+    /* Mode 3: Pièges */
+    .pieges li {
+      list-style: none;
+      padding: 10px;
+      margin: 10px 0;
+      background-color: #f1f1f1;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .pieges li:hover {
+      background-color: #e0e0e0;
+    }
+
+    /* Feedback */
+    #exercice-feedback {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .feedback-success {
+      background-color: #e8f5e9;
+      border-left: 5px solid #8bc34a;
+    }
+
+    .feedback-error {
+      background-color: #ffebee;
+      border-left: 5px solid #f44336;
+    }
+
+    /* Feedback orange pour le résultat final et temporaire */
+    .feedback-orange {
+      background-color: #fff3e0;
+      border-left: 5px solid var(--orange);
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 5px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      button {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+      }
+      .content-box {
+        padding: 15px;
+        font-size: 1rem;
+      }
+      .app-section {
+        padding: 10px;
+      }
+      .columns {
+        flex-direction: column;
+      }
+      .column {
+        margin: 10px 0;
+        min-height: 80px;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Targetmath</h1>
+  </header>
+
+  <main>
+    <section class="app-section" id="accueil">
+      <h2>Activités</h2>
+      <p>Choisis une activité pour t'entraîner à identifier les informations utiles dans un énoncé.</p>
+      <div class="buttons-container" id="activites-buttons">
+        <!-- Les boutons seront générés dynamiquement -->
+      </div>
+    </section>
+
+    <section class="app-section" id="historique-accueil">
+      <div class="content-box">
+        <h2>Historique</h2>
+        <button class="action-btn" id="afficher-historique">Afficher l'historique</button>
+      </div>
+    </section>
+
+    <section class="app-section hidden" id="exercice-section">
+      <div class="navigation">
+        <button class="action-btn" id="retour-accueil">Retour à l'accueil</button>
+      </div>
+      <h2 id="activite-titre"></h2>
+      <p id="activite-description"></p>
+
+      <div class="content-box" id="exercice-box">
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="exercice-progress-bar">0/3</div>
+        </div>
+        <div id="exercice-contenu" class="exercice-content"></div>
+        <div id="exercice-feedback" class="hidden"></div>
+      </div>
+    </section>
+
+    <section class="app-section hidden" id="historique-section">
+      <h2>Historique</h2>
+      <div class="content-box" id="historique-box">
+        <p>Aucun historique disponible.</p>
+      </div>
+      <div class="navigation">
+        <button class="action-btn" id="retour-accueil-historique">Retour à l'accueil</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Targetmath par <a href="https://lesrochdur.com/" target="_blank">Les RochDur</a>
+  </footer>
+
+  <script>
+    // Énoncés pour l'application Targetmath
+    // Inspirés des livrets CEB
+
+    const ACTIVITES = [
+      {
+        id: "classeInfos",
+        titre: "Classe les infos",
+        description: "Identifie et classe les informations utiles pour résoudre le problème.",
+        exercices: [
+          {
+            id: "classeInfos_1",
+            enonce: "Pour son anniversaire, Léa a acheté 3 tartes à 12,50 € chacune et 24 parts de pizza à 2,75 € la part. Elle a aussi acheté des serviettes et des ballons pour la décoration.",
+            question: "Combien Léa a-t-elle dépensé pour la nourriture ?",
+            etiquettes: [
+              { texte: "3 tartes à 12,50 € chacune", utile: true },
+              { texte: "24 parts de pizza à 2,75 € la part", utile: true },
+              { texte: "Des serviettes pour la décoration", utile: false },
+              { texte: "Des ballons pour la décoration", utile: false },
+              { texte: "C'est l'anniversaire de Léa", utile: false }
+            ],
+            explication: "Pour calculer le coût de la nourriture, il faut multiplier le prix des tartes par leur nombre (3 × 12,50 €) et le prix des parts de pizza par leur nombre (24 × 2,75 €), puis additionner ces deux résultats. Les serviettes et les ballons ne sont pas des aliments, donc ces informations sont inutiles."
+          },
+          {
+            id: "classeInfos_2",
+            enonce: "Un camion de 12 tonnes transporte 350 caisses de fruits. Chaque caisse pèse 15 kg et contient 45 fruits. Le camion parcourt 120 km pour livrer les fruits.",
+            question: "Quelle est la masse totale des caisses de fruits ?",
+            etiquettes: [
+              { texte: "350 caisses de fruits", utile: true },
+              { texte: "Chaque caisse pèse 15 kg", utile: true },
+              { texte: "Le camion pèse 12 tonnes", utile: false },
+              { texte: "Chaque caisse contient 45 fruits", utile: false },
+              { texte: "Le camion parcourt 120 km", utile: false }
+            ],
+            explication: "Pour calculer la masse totale des caisses de fruits, il faut multiplier le nombre de caisses par la masse d'une caisse (350 × 15 kg). Le nombre de fruits par caisse, la masse du camion et la distance parcourue sont des informations inutiles pour résoudre ce problème."
+          },
+          {
+            id: "classeInfos_3",
+            enonce: "Une piscine rectangulaire mesure 8 mètres de long et 4 mètres de large. Elle a une profondeur de 1,5 mètre. L'eau coûte 2,30 € le mètre cube. La piscine est bleue.",
+            question: "Quel est le volume d'eau nécessaire pour remplir la piscine ?",
+            etiquettes: [
+              { texte: "8 mètres de long", utile: true },
+              { texte: "4 mètres de large", utile: true },
+              { texte: "1,5 mètre de profondeur", utile: true },
+              { texte: "L'eau coûte 2,30 € le mètre cube", utile: false },
+              { texte: "La piscine est bleue", utile: false }
+            ],
+            explication: "Pour calculer le volume d'eau nécessaire, il faut multiplier la longueur par la largeur par la profondeur (8 m × 4 m × 1,5 m). Le coût de l'eau et la couleur de la piscine sont des informations inutiles pour calculer le volume."
+          },
+          {
+            id: "classeInfos_4",
+            enonce: "Un jardinier plante 6 rangées de 8 arbres chacune. Chaque arbre coûte 15 €. Le jardinier travaille pendant 3 jours et porte un chapeau vert.",
+            question: "Combien d'arbres le jardinier a-t-il plantés au total ?",
+            etiquettes: [
+              { texte: "6 rangées d'arbres", utile: true },
+              { texte: "8 arbres par rangée", utile: true },
+              { texte: "Chaque arbre coûte 15 €", utile: false },
+              { texte: "Le jardinier travaille pendant 3 jours", utile: false },
+              { texte: "Le jardinier porte un chapeau vert", utile: false }
+            ],
+            explication: "Pour calculer le nombre total d'arbres, il faut multiplier le nombre de rangées par le nombre d'arbres par rangée (6 × 8 = 48). Le coût des arbres, la durée du travail et la couleur du chapeau sont des informations inutiles pour résoudre ce problème."
+          },
+          {
+            id: "classeInfos_5",
+            enonce: "Une bibliothèque contient 5 étagères. Sur chaque étagère, il y a 25 livres. La bibliothèque est en bois et se trouve dans une pièce de 20 m².",
+            question: "Combien y a-t-il de livres dans la bibliothèque ?",
+            etiquettes: [
+              { texte: "5 étagères", utile: true },
+              { texte: "25 livres par étagère", utile: true },
+              { texte: "La bibliothèque est en bois", utile: false },
+              { texte: "La pièce fait 20 m²", utile: false },
+              { texte: "La bibliothèque se trouve dans une pièce", utile: false }
+            ],
+            explication: "Pour calculer le nombre total de livres, il faut multiplier le nombre d'étagères par le nombre de livres par étagère (5 × 25 = 125). Le matériau de la bibliothèque et la taille de la pièce sont des informations inutiles pour résoudre ce problème."
+          },
+          {
+            id: "classeInfos_6",
+            enonce: "Un train part à 9h15 et arrive à 11h45. Il parcourt 180 km. Le train est bleu et transporte 120 passagers.",
+            question: "Quelle est la durée du trajet ?",
+            etiquettes: [
+              { texte: "Départ à 9h15", utile: true },
+              { texte: "Arrivée à 11h45", utile: true },
+              { texte: "Le train parcourt 180 km", utile: false },
+              { texte: "Le train est bleu", utile: false },
+              { texte: "Le train transporte 120 passagers", utile: false }
+            ],
+            explication: "Pour calculer la durée du trajet, il faut soustraire l'heure de départ de l'heure d'arrivée (11h45 - 9h15 = 2h30). La distance parcourue, la couleur du train et le nombre de passagers sont des informations inutiles pour résoudre ce problème."
+          },
+          {
+            id: "classeInfos_7",
+            enonce: "Un magasin vend des cahiers à 2,50 € l'unité et des stylos à 1,20 € l'unité. Marie achète 4 cahiers et 3 stylos. Le magasin est ouvert de 9h à 18h.",
+            question: "Combien Marie va-t-elle payer au total ?",
+            etiquettes: [
+              { texte: "Prix d'un cahier : 2,50 €", utile: true },
+              { texte: "Prix d'un stylo : 1,20 €", utile: true },
+              { texte: "Marie achète 4 cahiers", utile: true },
+              { texte: "Marie achète 3 stylos", utile: true },
+              { texte: "Le magasin est ouvert de 9h à 18h", utile: false }
+            ],
+            explication: "Pour calculer le montant total, il faut multiplier le prix d'un cahier par le nombre de cahiers (2,50 € × 4) et le prix d'un stylo par le nombre de stylos (1,20 € × 3), puis additionner ces deux résultats. Les horaires d'ouverture du magasin sont une information inutile pour résoudre ce problème."
+          },
+          {
+            id: "classeInfos_8",
+            enonce: "Un rectangle a une longueur de 12 cm et une largeur de 8 cm. Il est dessiné sur une feuille blanche avec un crayon rouge.",
+            question: "Quel est le périmètre du rectangle ?",
+            etiquettes: [
+              { texte: "Longueur : 12 cm", utile: true },
+              { texte: "Largeur : 8 cm", utile: true },
+              { texte: "Dessiné sur une feuille blanche", utile: false },
+              { texte: "Dessiné avec un crayon rouge", utile: false },
+              { texte: "C'est un rectangle", utile: true }
+            ],
+            explication: "Pour calculer le périmètre d'un rectangle, il faut additionner les longueurs de tous les côtés, soit 2 × (longueur + largeur) = 2 × (12 cm + 8 cm) = 2 × 20 cm = 40 cm. La couleur de la feuille et du crayon sont des informations inutiles pour résoudre ce problème."
+          }
+        ]
+      },
+      {
+        id: "pieges",
+        titre: "Attention aux pièges",
+        description: "Identifie le piège dans l'énoncé du problème.",
+        exercices: [
+          {
+            id: "pieges_1",
+            enonce: "Un sac pèse 2,4 kg, une trousse 0,3 kg, et un ballon 300 g. Quelle est la masse totale ?",
+            options: [
+              { texte: "Le ballon est en grammes, pas en kilogrammes.", correct: true },
+              { texte: "Le sac est trop léger pour contenir tous ces objets.", correct: false },
+              { texte: "La question est mal formulée.", correct: false }
+            ],
+            explication: "Le piège est que le ballon est exprimé en grammes (300 g) alors que les autres masses sont en kilogrammes. Il faut convertir 300 g en kilogrammes (300 g = 0,3 kg) avant d'additionner toutes les masses."
+          },
+          {
+            id: "pieges_2",
+            enonce: "Un carré a un côté de 7 cm. Quel est son aire en m² ?",
+            options: [
+              { texte: "L'unité de mesure change entre le côté (cm) et l'aire demandée (m²).", correct: true },
+              { texte: "La formule de l'aire du carré est incorrecte.", correct: false },
+              { texte: "Le côté du carré est trop petit pour être mesuré.", correct: false }
+            ],
+            explication: "Le piège est le changement d'unité. Le côté est donné en centimètres, mais l'aire est demandée en mètres carrés. Il faut d'abord convertir 7 cm en mètres (7 cm = 0,07 m), puis calculer l'aire (0,07 m × 0,07 m = 0,0049 m²)."
+          },
+          {
+            id: "pieges_3",
+            enonce: "Pierre a 12 ans. Son père a 36 ans. Dans combien d'années l'âge du père sera-t-il le double de celui de Pierre ?",
+            options: [
+              { texte: "Les deux âges augmentent en même temps, ce qui change le rapport entre eux.", correct: true },
+              { texte: "L'âge de Pierre est incorrect.", correct: false },
+              { texte: "L'âge du père est trop jeune pour être réaliste.", correct: false }
+            ],
+            explication: "Le piège est que les deux âges augmentent simultanément. Si on appelle x le nombre d'années, on doit résoudre : (36 + x) = 2 × (12 + x), ce qui donne 36 + x = 24 + 2x, donc x = 12. Dans 12 ans, Pierre aura 24 ans et son père 48 ans."
+          },
+          {
+            id: "pieges_4",
+            enonce: "Un train part de la gare A à 10h30 et arrive à la gare B à 13h45. Un autre train part de la gare B à 11h15 et arrive à la gare A à 14h30. À quelle heure les deux trains se croisent-ils ?",
+            options: [
+              { texte: "On ne peut pas déterminer l'heure de croisement sans connaître la distance entre les gares.", correct: true },
+              { texte: "Les trains ne peuvent pas se croiser car ils partent à des heures différentes.", correct: false },
+              { texte: "Les trains se croisent forcément à mi-chemin entre les deux gares.", correct: false }
+            ],
+            explication: "Le piège est qu'on ne peut pas déterminer l'heure exacte de croisement sans connaître la distance entre les gares et la vitesse des trains. Les horaires seuls ne suffisent pas pour résoudre ce problème."
+          },
+          {
+            id: "pieges_5",
+            enonce: "Une bouteille et son bouchon coûtent 1,10 €. La bouteille coûte 1 € de plus que le bouchon. Combien coûte le bouchon ?",
+            options: [
+              { texte: "Le prix de la bouteille n'est pas 1 € mais 1 € de plus que le bouchon.", correct: true },
+              { texte: "Le prix total devrait être la somme du prix de la bouteille et du bouchon.", correct: false },
+              { texte: "Le bouchon ne peut pas coûter moins de 1 €.", correct: false }
+            ],
+            explication: "Le piège est de penser que la bouteille coûte 1 €. En réalité, si on appelle x le prix du bouchon, alors la bouteille coûte x + 1 €. L'équation est donc : x + (x + 1) = 1,10, ce qui donne 2x + 1 = 1,10, donc 2x = 0,10, et x = 0,05 €. Le bouchon coûte 0,05 € et la bouteille 1,05 €."
+          },
+          {
+            id: "pieges_6",
+            enonce: "Un escargot monte un mur de 10 mètres. Chaque jour, il monte 3 mètres, mais chaque nuit, il redescend 2 mètres. Combien de jours lui faudra-t-il pour atteindre le sommet ?",
+            options: [
+              { texte: "L'escargot atteint le sommet pendant la journée, avant de redescendre la nuit.", correct: true },
+              { texte: "L'escargot progresse de 1 mètre par jour, donc il lui faut 10 jours.", correct: false },
+              { texte: "L'escargot n'atteindra jamais le sommet car il redescend trop chaque nuit.", correct: false }
+            ],
+            explication: "Le piège est de ne pas tenir compte du moment où l'escargot atteint le sommet. Après 7 jours, l'escargot aura monté 7 × 3 = 21 mètres, mais aura redescendu 6 × 2 = 12 mètres (car il n'y a que 6 nuits en 7 jours), donc il sera à 21 - 12 = 9 mètres. Le 8ème jour, il monte encore de 3 mètres et atteint donc 12 mètres, dépassant le sommet à 10 mètres. Il atteint donc le sommet au 8ème jour."
+          },
+          {
+            id: "pieges_7",
+            enonce: "Dans une course, tu dépasses le coureur qui est en deuxième position. Quelle position occupes-tu maintenant ?",
+            options: [
+              { texte: "Tu prends la deuxième position, pas la première.", correct: true },
+              { texte: "Tu es maintenant en première position.", correct: false },
+              { texte: "Tu restes à ta position initiale car tu n'as pas dépassé le premier.", correct: false }
+            ],
+            explication: "Le piège est de penser qu'en dépassant le deuxième, on devient premier. En réalité, si on dépasse le coureur en deuxième position, on prend sa place et on devient donc deuxième. Pour devenir premier, il faudrait dépasser le coureur en première position."
+          },
+          {
+            id: "pieges_8",
+            enonce: "Un médecin te donne 3 pilules en te disant d'en prendre une toutes les demi-heures. Combien de temps durera ton traitement ?",
+            options: [
+              { texte: "Le traitement dure 1 heure, pas 1 heure et demie.", correct: true },
+              { texte: "Le traitement dure 1 heure et demie car il y a 3 pilules à prendre toutes les demi-heures.", correct: false },
+              { texte: "Le traitement dure 3 heures car chaque pilule fait effet pendant 1 heure.", correct: false }
+            ],
+            explication: "Le piège est de multiplier le nombre de pilules par l'intervalle. Si tu prends la première pilule à un moment donné, puis la deuxième une demi-heure plus tard, et la troisième encore une demi-heure plus tard, le traitement dure 1 heure au total (de la première à la troisième pilule), pas 1 heure et demie."
+          }
+        ]
+      },
+      {
+        id: "procedure",
+        titre: "Choisis la procédure",
+        description: "Choisis la bonne procédure pour résoudre le problème.",
+        exercices: [
+          {
+            id: "procedure_1",
+            enonce: "Un train parcourt 240 km en 3 heures. Quelle distance parcourra-t-il en 5 heures ?",
+            options: [
+              { texte: "Je dois d'abord calculer la vitesse du train, puis utiliser cette vitesse pour trouver la distance parcourue en 5 heures.", correct: true },
+              { texte: "Je dois simplement additionner 240 km et 5 heures pour trouver la distance totale.", correct: false },
+              { texte: "Je dois convertir les heures en kilomètres pour trouver la distance parcourue.", correct: false }
+            ],
+            explication: "Pour résoudre ce problème, il faut d'abord calculer la vitesse du train (240 km ÷ 3 h = 80 km/h), puis multiplier cette vitesse par le nouveau temps (80 km/h × 5 h = 400 km)."
+          },
+          {
+            id: "procedure_2",
+            enonce: "Une boîte contient 24 chocolats. Marie en mange le quart. Combien en reste-t-il ?",
+            options: [
+              { texte: "Je dois calculer combien représente un quart de 24 chocolats, puis soustraire ce nombre du total.", correct: true },
+              { texte: "Je dois diviser 24 par 4 pour trouver combien Marie a mangé de chocolats.", correct: false },
+              { texte: "Je dois multiplier 24 par 1/4 pour trouver le nombre de chocolats restants.", correct: false }
+            ],
+            explication: "Pour résoudre ce problème, il faut calculer le quart de 24 chocolats (24 ÷ 4 = 6), puis soustraire ce nombre du total (24 - 6 = 18)."
+          },
+          {
+            id: "procedure_3",
+            enonce: "Un rectangle a un périmètre de 36 cm. Sa longueur est de 10 cm. Quelle est sa largeur ?",
+            options: [
+              { texte: "Je dois utiliser la formule du périmètre et remplacer les valeurs connues pour trouver la largeur.", correct: true },
+              { texte: "Je dois soustraire la longueur du périmètre pour trouver la largeur.", correct: false },
+              { texte: "Je dois diviser le périmètre par la longueur pour trouver la largeur.", correct: false }
+            ],
+            explication: "Pour résoudre ce problème, il faut utiliser la formule du périmètre d'un rectangle : P = 2 × (L + l). On remplace P par 36 et L par 10 : 36 = 2 × (10 + l). Donc 36 = 20 + 2l, ce qui donne 2l = 16, et l = 8 cm."
+          },
+          {
+            id: "procedure_4",
+            enonce: "Un sac contient 5 billes rouges, 3 billes bleues et 2 billes vertes. Quelle est la probabilité de tirer une bille bleue ?",
+            options: [
+              { texte: "Je dois diviser le nombre de billes bleues par le nombre total de billes.", correct: true },
+              { texte: "Je dois soustraire le nombre de billes bleues du nombre total de billes.", correct: false },
+              { texte: "Je dois comparer le nombre de billes bleues avec le nombre de billes rouges.", correct: false }
+            ],
+            explication: "Pour calculer la probabilité de tirer une bille bleue, il faut diviser le nombre de billes bleues par le nombre total de billes : 3 ÷ (5 + 3 + 2) = 3 ÷ 10 = 0,3 ou 30%."
+          },
+          {
+            id: "procedure_5",
+            enonce: "Un robinet remplit un bassin en 12 minutes. Quelle fraction du bassin sera remplie en 3 minutes ?",
+            options: [
+              { texte: "Je dois diviser le temps écoulé par le temps total nécessaire pour remplir le bassin.", correct: true },
+              { texte: "Je dois multiplier le temps écoulé par le temps total nécessaire pour remplir le bassin.", correct: false },
+              { texte: "Je dois soustraire le temps écoulé du temps total nécessaire pour remplir le bassin.", correct: false }
+            ],
+            explication: "Pour calculer la fraction du bassin remplie, il faut diviser le temps écoulé par le temps total nécessaire : 3 ÷ 12 = 1/4. Donc 1/4 du bassin sera rempli en 3 minutes."
+          },
+          {
+            id: "procedure_6",
+            enonce: "Un article coûte 80 €. Pendant les soldes, son prix est réduit de 25%. Quel est le nouveau prix ?",
+            options: [
+              { texte: "Je dois calculer le montant de la réduction, puis le soustraire du prix initial.", correct: true },
+              { texte: "Je dois diviser le prix initial par 4 pour obtenir le nouveau prix.", correct: false },
+              { texte: "Je dois soustraire directement 25 € du prix initial.", correct: false }
+            ],
+            explication: "Pour calculer le nouveau prix, il faut d'abord calculer le montant de la réduction (80 € × 25% = 80 € × 0,25 = 20 €), puis soustraire ce montant du prix initial (80 € - 20 € = 60 €)."
+          },
+          {
+            id: "procedure_7",
+            enonce: "Une voiture parcourt 60 km en consommant 5 litres d'essence. Combien de litres faudra-t-il pour parcourir 180 km ?",
+            options: [
+              { texte: "Je dois établir une proportion entre la distance et la consommation d'essence.", correct: true },
+              { texte: "Je dois additionner la distance et la consommation initiales pour trouver la consommation totale.", correct: false },
+              { texte: "Je dois soustraire la distance initiale de la nouvelle distance pour trouver la consommation.", correct: false }
+            ],
+            explication: "Pour résoudre ce problème, il faut établir une proportion : si 60 km nécessitent 5 litres, alors 180 km nécessiteront (180 × 5) ÷ 60 = 15 litres."
+          },
+          {
+            id: "procedure_8",
+            enonce: "Dans une classe de 30 élèves, 40% sont des garçons. Combien y a-t-il de filles ?",
+            options: [
+              { texte: "Je dois d'abord calculer le nombre de garçons, puis soustraire ce nombre du total d'élèves.", correct: true },
+              { texte: "Je dois multiplier le nombre total d'élèves par 40% pour trouver le nombre de filles.", correct: false },
+              { texte: "Je dois diviser le nombre total d'élèves par 40% pour trouver le nombre de filles.", correct: false }
+            ],
+            explication: "Pour calculer le nombre de filles, il faut d'abord calculer le nombre de garçons (30 × 40% = 30 × 0,4 = 12), puis soustraire ce nombre du total d'élèves (30 - 12 = 18). Il y a donc 18 filles."
+          }
+        ]
+      }
+    ];
+
+    // Script principal pour Targetmath
+
+    // Variables globales
+    let currentActivite = null;
+    let currentExerciceIndex = 0;
+    let score = 0;
+    let history = JSON.parse(localStorage.getItem("targetmath_history") || "[]");
+    let detailedFeedback = [];
+    let feedbackTimeout = null;
+    let placedEtiquettes = 0;
+    let totalEtiquettes = 0;
+    let firstAttemptResult = null;
+    let currentExerciceId = null;
+    let exercicesUtilises = [];
+    let elementsVerrouilles = false;
+
+    // Fonction pour mélanger un tableau (algorithme de Fisher-Yates)
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Fonction pour sélectionner aléatoirement 3 exercices différents
+    function selectionnerExercicesAleatoires(activite) {
+      const exercices = [...activite.exercices];
+      const exercicesMelanges = shuffleArray(exercices);
+      return exercicesMelanges.slice(0, 3);
+    }
+
+    // Initialisation
+    document.addEventListener("DOMContentLoaded", () => {
+      // Éléments DOM
+      const activitesButtons = document.getElementById("activites-buttons");
+      const accueilSection = document.getElementById("accueil");
+      const historiqueAccueil = document.getElementById("historique-accueil");
+      const exerciceSection = document.getElementById("exercice-section");
+      const activiteTitre = document.getElementById("activite-titre");
+      const activiteDescription = document.getElementById("activite-description");
+      const exerciceBox = document.getElementById("exercice-box");
+      const exerciceContenu = document.getElementById("exercice-contenu");
+      const exerciceFeedback = document.getElementById("exercice-feedback");
+      const exerciceProgressBar = document.getElementById("exercice-progress-bar");
+      const historiqueSection = document.getElementById("historique-section");
+      const historiqueBox = document.getElementById("historique-box");
+      const retourAccueil = document.getElementById("retour-accueil");
+      const retourAccueilHistorique = document.getElementById("retour-accueil-historique");
+      const afficherHistorique = document.getElementById("afficher-historique");
+
+      // Générer les boutons d'activités
+      const activitesOrdre = [
+        ACTIVITES.find(a => a.id === "classeInfos"),
+        ACTIVITES.find(a => a.id === "pieges"),
+        ACTIVITES.find(a => a.id === "procedure")
+      ];
+
+      activitesOrdre.forEach(activite => {
+        const btn = document.createElement("button");
+        btn.className = "exercise-btn";
+        btn.textContent = activite.titre;
+        btn.onclick = () => demarrerActivite(activite);
+        activitesButtons.appendChild(btn);
+      });
+
+      // Événements pour les boutons de navigation
+      retourAccueil.addEventListener("click", () => retournerAccueil(accueilSection, exerciceSection));
+      retourAccueilHistorique.addEventListener("click", () => retournerAccueil(accueilSection, historiqueSection));
+      afficherHistorique.addEventListener("click", () => {
+        accueilSection.classList.add("hidden");
+        historiqueAccueil.classList.add("hidden");
+        historiqueSection.classList.remove("hidden");
+        afficherHistoriqueDetails();
+      });
+
+      // Fonction pour démarrer une activité
+      function demarrerActivite(activite) {
+        currentActivite = activite;
+        currentExerciceIndex = 0;
+        score = 0;
+        detailedFeedback = [];
+        exercicesUtilises = selectionnerExercicesAleatoires(activite);
+
+        // Mettre à jour l'interface
+        activiteTitre.textContent = activite.titre;
+        activiteDescription.textContent = activite.description;
+
+        // Réinitialiser et afficher la barre de progression
+        exerciceProgressBar.style.width = "0%";
+        exerciceProgressBar.textContent = "0/3";
+
+        // Afficher la section d'exercice
+        accueilSection.classList.add("hidden");
+        historiqueAccueil.classList.add("hidden");
+        exerciceSection.classList.remove("hidden");
+
+        // Afficher le premier exercice
+        afficherExercice();
+      }
+
+      // Fonction pour afficher un exercice
+      function afficherExercice() {
+        // Effacer tout feedback précédent
+        if (feedbackTimeout) {
+          clearTimeout(feedbackTimeout);
+          feedbackTimeout = null;
+        }
+        exerciceFeedback.classList.add("hidden");
+
+        const exercice = exercicesUtilises[currentExerciceIndex];
+        currentExerciceId = exercice.id;
+        firstAttemptResult = null;
+        elementsVerrouilles = false;
+
+        // Mettre à jour la barre de progression
+        const progress = (currentExerciceIndex / exercicesUtilises.length) * 100;
+        exerciceProgressBar.style.width = `${progress}%`;
+        exerciceProgressBar.textContent = `${currentExerciceIndex}/${exercicesUtilises.length}`;
+
+        // Générer le contenu de l'exercice selon le type d'activité
+        let contenuHTML = "";
+
+        switch (currentActivite.id) {
+          case "classeInfos":
+            // Réinitialiser le compteur d'étiquettes placées
+            placedEtiquettes = 0;
+            totalEtiquettes = exercice.etiquettes.length;
+            contenuHTML = genererExerciceClasseInfos(exercice);
+            break;
+          case "procedure":
+            contenuHTML = genererExerciceProcedure(exercice);
+            break;
+          case "pieges":
+            contenuHTML = genererExercicePieges(exercice);
+            break;
+        }
+
+        exerciceContenu.innerHTML = contenuHTML;
+
+        // Ajouter les événements spécifiques selon le type d'activité
+        switch (currentActivite.id) {
+          case "classeInfos":
+            initialiserClasseInfos();
+            break;
+        }
+      }
+
+      // Générateurs de contenu pour chaque type d'activité
+      function genererExerciceClasseInfos(exercice) {
+        let etiquettesHTML = "";
+
+        // Mélanger les étiquettes
+        const etiquettesMelangees = shuffleArray([...exercice.etiquettes]);
+
+        etiquettesMelangees.forEach((etiquette, index) => {
+          etiquettesHTML += `<div class="draggable" draggable="true" data-utile="${etiquette.utile}" data-id="${index}">${etiquette.texte}</div>`;
+        });
+
+        return `
+          <p><strong>Énoncé :</strong> ${exercice.enonce}</p>
+          <p><strong>${exercice.question}</strong></p>
+          <p>Classe les informations ci-dessous dans la bonne colonne :</p>
+          <div id="etiquettes-container">${etiquettesHTML}</div>
+          <div class="columns">
+            <div class="column" id="utile-column" ondragover="allowDrop(event)" ondrop="drop(event, 'utile')">
+              <strong>Utile</strong>
+            </div>
+            <div class="column" id="inutile-column" ondragover="allowDrop(event)" ondrop="drop(event, 'inutile')">
+              <strong>Inutile</strong>
+            </div>
+          </div>
+          <button class="action-btn" id="verifier-btn" onclick="verifierClasseInfos()" disabled>Vérifier</button>
+          <button class="action-btn hidden" id="continuer-btn" onclick="passerExerciceSuivant(true)">Continuer</button>
+          <button class="action-btn hidden" id="reessayer-btn" onclick="reessayerExercice()">Réessayer</button>
+        `;
+      }
+
+      function genererExerciceProcedure(exercice) {
+        // Mélanger les options
+        const optionsMelangees = shuffleArray([...exercice.options]);
+
+        let optionsHTML = "";
+        optionsMelangees.forEach((option, index) => {
+          optionsHTML += `<button onclick="verifierProcedure(${index})" data-correct="${option.correct}">${option.texte}</button>`;
+        });
+
+        return `
+          <p><strong>Énoncé :</strong> ${exercice.enonce}</p>
+          <p><strong>Choisis la bonne procédure pour résoudre ce problème :</strong></p>
+          <div class="options">${optionsHTML}</div>
+          <button class="action-btn hidden" id="continuer-btn" onclick="passerExerciceSuivant(true)">Continuer</button>
+        `;
+      }
+
+      function genererExercicePieges(exercice) {
+        // Mélanger les options
+        const optionsMelangees = shuffleArray([...exercice.options]);
+
+        let optionsHTML = "";
+        optionsMelangees.forEach((option, index) => {
+          optionsHTML += `<li onclick="verifierPieges(${index})" data-correct="${option.correct}">${option.texte}</li>`;
+        });
+
+        return `
+          <p><strong>Énoncé :</strong> ${exercice.enonce}</p>
+          <p><strong>Quel est le piège dans cet énoncé ?</strong></p>
+          <ul class="pieges">${optionsHTML}</ul>
+          <button class="action-btn hidden" id="continuer-btn" onclick="passerExerciceSuivant(true)">Continuer</button>
+        `;
+      }
+
+      // Initialisation des événements pour les activités
+      function initialiserClasseInfos() {
+        const draggables = document.querySelectorAll('.draggable');
+        const verifierBtn = document.getElementById('verifier-btn');
+
+        draggables.forEach(el => {
+          el.addEventListener('dragstart', e => {
+            if (elementsVerrouilles) {
+              e.preventDefault();
+              return;
+            }
+            e.dataTransfer.setData('text/plain', e.target.outerHTML);
+            e.dataTransfer.setData('sourceId', e.target.dataset.id);
+            e.dataTransfer.effectAllowed = 'move';
+          });
+
+          // Support tactile pour mobile
+          el.addEventListener('touchstart', handleTouchStart, { passive: false });
+          el.addEventListener('touchmove', handleTouchMove, { passive: false });
+          el.addEventListener('touchend', handleTouchEnd, { passive: false });
+        });
+      }
+
+      // Navigation
+      function retournerAccueil(showSection, hideSection) {
+        hideSection.classList.add("hidden");
+        showSection.classList.remove("hidden");
+        historiqueAccueil.classList.remove("hidden");
+      }
+
+      function afficherHistoriqueDetails() {
+        let historiqueHTML = "";
+
+        if (history.length === 0) {
+          historiqueHTML = "<p>Aucun historique disponible.</p>";
+        } else {
+          historiqueHTML = history.map(h => `
+            <div>${h.date} — ${h.activite} : Score ${h.score}/${h.total}</div>
+          `).join("");
+        }
+
+        historiqueBox.innerHTML = historiqueHTML;
+      }
+
+      // Fonction pour réessayer l'exercice actuel
+      function reessayerExercice() {
+        // Cacher les boutons de réessai et de continuation
+        document.getElementById('reessayer-btn').classList.add('hidden');
+        document.getElementById('continuer-btn').classList.add('hidden');
+
+        // Réinitialiser l'exercice
+        afficherExercice();
+      }
+
+      // Exposer les fonctions nécessaires globalement
+      window.demarrerActivite = demarrerActivite;
+      window.afficherExercice = afficherExercice;
+      window.verifierClasseInfos = verifierClasseInfos;
+      window.verifierProcedure = verifierProcedure;
+      window.verifierPieges = verifierPieges;
+      window.allowDrop = allowDrop;
+      window.drop = drop;
+      window.handleTouchStart = handleTouchStart;
+      window.handleTouchMove = handleTouchMove;
+      window.handleTouchEnd = handleTouchEnd;
+      window.retournerAccueil = function() {
+        exerciceSection.classList.add("hidden");
+        historiqueSection.classList.add("hidden");
+        accueilSection.classList.remove("hidden");
+        historiqueAccueil.classList.remove("hidden");
+      };
+      window.afficherFeedbackTemporaire = afficherFeedbackTemporaire;
+      window.passerExerciceSuivant = passerExerciceSuivant;
+      window.afficherResultatFinal = afficherResultatFinal;
+      window.reessayerExercice = reessayerExercice;
+    });
+
+    // Fonctions de vérification pour chaque type d'activité
+    function verifierClasseInfos() {
+      const utileColumn = document.getElementById('utile-column');
+      const inutileColumn = document.getElementById('inutile-column');
+      const verifierBtn = document.getElementById('verifier-btn');
+      const reessayerBtn = document.getElementById('reessayer-btn');
+      const continuerBtn = document.getElementById('continuer-btn');
+      const exercice = exercicesUtilises[currentExerciceIndex];
+
+      // Verrouiller les éléments pour empêcher le déplacement
+      elementsVerrouilles = true;
+
+      // Ajouter la classe 'locked' à tous les éléments draggable
+      document.querySelectorAll('.draggable').forEach(el => {
+        el.classList.add('locked');
+        el.setAttribute('draggable', 'false');
+      });
+
+      let correct = 0;
+      let total = exercice.etiquettes.length;
+      let isCorrect = false;
+
+      // Vérifier les étiquettes dans la colonne "utile" et colorer en vert/rouge
+      const utileDraggables = utileColumn.querySelectorAll('.draggable');
+      utileDraggables.forEach(el => {
+        if (el.dataset.utile === "true") {
+          el.classList.add('correct-placement');
+          correct++;
+        } else {
+          el.classList.add('incorrect-placement');
+        }
+      });
+
+      // Vérifier les étiquettes dans la colonne "inutile" et colorer en vert/rouge
+      const inutileDraggables = inutileColumn.querySelectorAll('.draggable');
+      inutileDraggables.forEach(el => {
+        if (el.dataset.utile === "false") {
+          el.classList.add('correct-placement');
+          correct++;
+        } else {
+          el.classList.add('incorrect-placement');
+        }
+      });
+
+      isCorrect = (correct === total);
+
+      // Enregistrer le résultat de la première tentative
+      if (firstAttemptResult === null) {
+        firstAttemptResult = isCorrect;
+
+        // Enregistrer le feedback basé sur la première tentative
+        detailedFeedback.push({
+          question: exercice.question,
+          correct: firstAttemptResult,
+          explication: exercice.explication
+        });
+
+        // Mettre à jour le score si correct à la première tentative
+        if (firstAttemptResult) {
+          score++;
+        }
+      }
+
+      // Désactiver le bouton de vérification
+      verifierBtn.disabled = true;
+
+      // Si correct, afficher le bouton pour continuer
+      // Sinon, afficher le bouton pour réessayer
+      if (isCorrect) {
+        continuerBtn.classList.remove('hidden');
+        reessayerBtn.classList.add('hidden');
+      } else {
+        reessayerBtn.classList.remove('hidden');
+        continuerBtn.classList.add('hidden');
+      }
+    }
+
+    function verifierProcedure(index) {
+      const buttons = document.querySelectorAll('.options button');
+      const selectedButton = buttons[index];
+      const isCorrect = selectedButton.dataset.correct === "true";
+      const exercice = exercicesUtilises[currentExerciceIndex];
+      const continuerBtn = document.getElementById('continuer-btn');
+
+      // Mettre en évidence la réponse sélectionnée
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        if (btn === selectedButton) {
+          btn.style.backgroundColor = isCorrect ? "#8bc34a" : "#f44336";
+          btn.style.color = "white";
+        }
+      });
+
+      // Enregistrer le feedback
+      detailedFeedback.push({
+        question: exercice.enonce,
+        correct: isCorrect,
+        explication: exercice.explication
+      });
+
+      // Mettre à jour le score si correct
+      if (isCorrect) {
+        score++;
+      }
+
+      // Afficher le feedback temporaire
+      afficherFeedbackTemporaire(isCorrect, isCorrect ?
+        `✓ Bonne réponse !` :
+        `✗ Ce n'est pas la bonne procédure.`);
+
+      // Afficher le bouton continuer
+      continuerBtn.classList.remove('hidden');
+    }
+
+    function verifierPieges(index) {
+      const items = document.querySelectorAll('.pieges li');
+      const selectedItem = items[index];
+      const isCorrect = selectedItem.dataset.correct === "true";
+      const exercice = exercicesUtilises[currentExerciceIndex];
+      const continuerBtn = document.getElementById('continuer-btn');
+
+      // Mettre en évidence la réponse sélectionnée
+      items.forEach(item => {
+        item.style.pointerEvents = "none";
+        if (item === selectedItem) {
+          item.style.backgroundColor = isCorrect ? "#8bc34a" : "#f44336";
+          item.style.color = "white";
+        }
+      });
+
+      // Enregistrer le feedback
+      detailedFeedback.push({
+        question: exercice.enonce,
+        correct: isCorrect,
+        explication: exercice.explication
+      });
+
+      // Mettre à jour le score si correct
+      if (isCorrect) {
+        score++;
+      }
+
+      // Afficher le feedback temporaire
+      afficherFeedbackTemporaire(isCorrect, isCorrect ?
+        `✓ Bonne réponse ! Tu as identifié le piège.` :
+        `✗ Ce n'est pas le bon piège.`);
+
+      // Afficher le bouton continuer
+      continuerBtn.classList.remove('hidden');
+    }
+
+    // Fonctions pour le drag and drop
+    function allowDrop(e) {
+      if (elementsVerrouilles) {
+        e.preventDefault();
+        return;
+      }
+      e.preventDefault();
+    }
+
+    function drop(e, columnType) {
+      if (elementsVerrouilles) {
+        e.preventDefault();
+        return;
+      }
+
+      e.preventDefault();
+
+      // Récupérer les données
+      const data = e.dataTransfer.getData('text/plain');
+      const sourceId = e.dataTransfer.getData('sourceId');
+
+      // Créer un nouvel élément à partir des données
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = data;
+      const newElement = tempDiv.firstChild;
+
+      // Ajouter l'élément à la colonne cible
+      let target = e.target;
+      while (target && !target.classList.contains('column')) {
+        target = target.parentNode;
+      }
+
+      if (target) {
+        // Vérifier si l'élément existe déjà dans une colonne
+        const existingElement = document.querySelector(`.draggable[data-id="${sourceId}"]`);
+        if (existingElement && existingElement.parentNode.classList.contains('column')) {
+          // Si l'élément est déjà dans une colonne, le supprimer
+          existingElement.parentNode.removeChild(existingElement);
+          // Ne pas incrémenter placedEtiquettes car on déplace juste l'élément
+        } else {
+          // Si l'élément n'est pas encore dans une colonne, incrémenter placedEtiquettes
+          placedEtiquettes++;
+        }
+
+        // Ajouter l'élément à la colonne cible
+        target.appendChild(newElement);
+
+        // Réinitialiser les événements pour le nouvel élément
+        newElement.addEventListener('dragstart', e => {
+          if (elementsVerrouilles) {
+            e.preventDefault();
+            return;
+          }
+          e.dataTransfer.setData('text/plain', e.target.outerHTML);
+          e.dataTransfer.setData('sourceId', e.target.dataset.id);
+        });
+
+        // Support tactile pour mobile
+        newElement.addEventListener('touchstart', handleTouchStart, { passive: false });
+        newElement.addEventListener('touchmove', handleTouchMove, { passive: false });
+        newElement.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+        // Supprimer l'élément source s'il existe encore dans le conteneur d'étiquettes
+        const sourceElement = document.querySelector(`#etiquettes-container .draggable[data-id="${sourceId}"]`);
+        if (sourceElement) {
+          sourceElement.parentNode.removeChild(sourceElement);
+        }
+
+        // Activer le bouton de vérification si toutes les étiquettes sont placées
+        const verifierBtn = document.getElementById('verifier-btn');
+        if (verifierBtn && placedEtiquettes === totalEtiquettes) {
+          verifierBtn.disabled = false;
+        }
+      }
+    }
+
+    // Support tactile pour le drag and drop sur mobile
+    let touchDragging = false;
+    let touchTarget = null;
+    let touchOffsetX = 0;
+    let touchOffsetY = 0;
+    let ghostElement = null;
+
+    function handleTouchStart(e) {
+      if (elementsVerrouilles) {
+        e.preventDefault();
+        return;
+      }
+
+      e.preventDefault();
+      const touch = e.touches[0];
+
+      // Remonter jusqu'à l'élément avec la classe draggable
+      // (e.target peut être un nœud enfant texte ou un sous-élément)
+      let el = e.target;
+      while (el && !el.classList.contains('draggable')) {
+        el = el.parentElement;
+      }
+      if (!el) return;
+      touchTarget = el;
+
+      // Calculer l'offset pour positionner correctement l'élément fantôme
+      const rect = touchTarget.getBoundingClientRect();
+      touchOffsetX = touch.clientX - rect.left;
+      touchOffsetY = touch.clientY - rect.top;
+
+      // Créer un élément fantôme pour visualiser le déplacement
+      ghostElement = touchTarget.cloneNode(true);
+      ghostElement.style.position = "fixed";
+      ghostElement.style.opacity = "0.7";
+      ghostElement.style.zIndex = "1000";
+      ghostElement.style.pointerEvents = "none";
+      ghostElement.style.margin = "0";
+      document.body.appendChild(ghostElement);
+
+      // Positionner l'élément fantôme
+      updateGhostPosition(touch.clientX, touch.clientY);
+
+      touchDragging = true;
+    }
+
+    function handleTouchMove(e) {
+      if (!touchDragging || elementsVerrouilles) return;
+      e.preventDefault();
+
+      const touch = e.touches[0];
+      updateGhostPosition(touch.clientX, touch.clientY);
+    }
+
+    function updateGhostPosition(clientX, clientY) {
+      if (ghostElement) {
+        // position: fixed + clientX/clientY évite le décalage dû au scroll
+        ghostElement.style.left = (clientX - touchOffsetX) + "px";
+        ghostElement.style.top  = (clientY - touchOffsetY) + "px";
+      }
+    }
+
+    function handleTouchEnd(e) {
+      if (!touchDragging || elementsVerrouilles) return;
+      e.preventDefault();
+
+      const touch = e.changedTouches[0];
+
+      // Masquer temporairement le ghost pour que elementFromPoint
+      // ne le détecte pas comme cible à la place de la colonne
+      if (ghostElement) {
+        ghostElement.style.display = "none";
+      }
+
+      const target = document.elementFromPoint(touch.clientX, touch.clientY);
+
+      // Réafficher le ghost avant de le supprimer
+      if (ghostElement) {
+        ghostElement.style.display = "";
+      }
+
+      let column = null;
+
+      // Remonter jusqu'à trouver une colonne
+      let currentElement = target;
+      while (currentElement && !column) {
+        if (currentElement.classList && currentElement.classList.contains('column')) {
+          column = currentElement;
+        }
+        currentElement = currentElement.parentElement;
+      }
+
+      // Si une colonne est trouvée, y déplacer l'élément
+      if (column) {
+        const sourceId = touchTarget.dataset.id;
+
+        // Vérifier si l'élément existe déjà dans une colonne
+        const existingElement = document.querySelector(`.draggable[data-id="${sourceId}"]`);
+        if (existingElement && existingElement.parentNode.classList.contains('column')) {
+          // Si l'élément est déjà dans une colonne, le supprimer
+          existingElement.parentNode.removeChild(existingElement);
+          // Ne pas incrémenter placedEtiquettes car on déplace juste l'élément
+        } else {
+          // Si l'élément n'est pas encore dans une colonne, incrémenter placedEtiquettes
+          placedEtiquettes++;
+        }
+
+        const clone = touchTarget.cloneNode(true);
+        column.appendChild(clone);
+
+        // Réinitialiser les événements pour le nouvel élément
+        clone.addEventListener('touchstart', handleTouchStart, { passive: false });
+        clone.addEventListener('touchmove', handleTouchMove, { passive: false });
+        clone.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+        // Supprimer l'élément original s'il est dans le conteneur d'étiquettes
+        if (touchTarget.parentNode && touchTarget.parentNode.id === 'etiquettes-container') {
+          touchTarget.parentNode.removeChild(touchTarget);
+        }
+
+        // Activer le bouton de vérification si toutes les étiquettes sont placées
+        const verifierBtn = document.getElementById('verifier-btn');
+        if (verifierBtn && placedEtiquettes === totalEtiquettes) {
+          verifierBtn.disabled = false;
+        }
+      }
+
+      // Nettoyer
+      if (ghostElement && ghostElement.parentNode) {
+        ghostElement.parentNode.removeChild(ghostElement);
+      }
+      ghostElement = null;
+      touchDragging = false;
+      touchTarget = null;
+    }
+
+    // Gestion des feedbacks et de la progression
+    function afficherFeedbackTemporaire(isCorrect, message) {
+      const exerciceFeedback = document.getElementById("exercice-feedback");
+
+      // Afficher le feedback uniquement pour les modes autres que "Classe les infos"
+      if (currentActivite.id !== "classeInfos") {
+        // Pour les autres activités, utiliser le texte fourni
+        exerciceFeedback.textContent = message;
+        exerciceFeedback.className = isCorrect ? "feedback-success" : "feedback-error";
+        exerciceFeedback.classList.remove("hidden");
+      }
+    }
+
+    function passerExerciceSuivant(isCorrect) {
+      // Effacer le feedback s'il est affiché
+      const exerciceFeedback = document.getElementById("exercice-feedback");
+      exerciceFeedback.classList.add("hidden");
+
+      // Passer à l'exercice suivant
+      currentExerciceIndex++;
+
+      // Si tous les exercices sont terminés
+      if (currentExerciceIndex >= exercicesUtilises.length) {
+        afficherResultatFinal();
+      } else {
+        afficherExercice();
+      }
+    }
+
+    function afficherResultatFinal() {
+      const exerciceProgressBar = document.getElementById("exercice-progress-bar");
+      const exerciceContenu = document.getElementById("exercice-contenu");
+
+      // Mettre à jour la barre de progression
+      exerciceProgressBar.style.width = "100%";
+      exerciceProgressBar.textContent = "Terminé !";
+
+      // Préparer le contenu du feedback détaillé
+      let feedbackHTML = `<h3>Score final : ${score}/${exercicesUtilises.length}</h3>`;
+
+      // Traitement spécial pour "Classe les infos"
+      if (currentActivite.id === "classeInfos") {
+        // Créer un feedback orange pour chaque exercice
+        exercicesUtilises.forEach((exercice, index) => {
+          // Extraire les informations utiles de l'exercice
+          const infoUtiles = exercice.etiquettes.filter(e => e.utile).map(e => e.texte);
+
+          feedbackHTML += `
+            <div class="feedback-orange">
+              <p><strong>Question ${index + 1}:</strong> ${exercice.question}</p>
+              <p><strong>Informations utiles :</strong></p>
+              <ul>
+                ${infoUtiles.map(info => `<li>${info}</li>`).join('')}
+              </ul>
+              <p><em>Explication :</em> ${exercice.explication}</p>
+            </div>
+          `;
+        });
+      } else {
+        // Pour les autres activités, garder le format original
+        detailedFeedback.forEach((fb, index) => {
+          feedbackHTML += `
+            <div class="${fb.correct ? 'feedback-success' : 'feedback-error'}">
+              <p><strong>Question ${index + 1}:</strong> ${fb.question}</p>
+              <p>${fb.correct ? '✓ Bonne réponse !' : '✗ Réponse incorrecte'}</p>
+              <p><em>Explication :</em> ${fb.explication}</p>
+            </div>
+          `;
+        });
+      }
+
+      // Ajouter un bouton pour retourner à l'accueil
+      feedbackHTML += `<button class="action-btn" onclick="retournerAccueil()">Retour à l'accueil</button>`;
+
+      // Afficher le feedback détaillé
+      exerciceContenu.innerHTML = feedbackHTML;
+
+      // Gérer l'historique
+      history.push({
+        date: new Date().toLocaleString(),
+        activite: currentActivite.titre,
+        score: score,
+        total: exercicesUtilises.length
+      });
+      localStorage.setItem("targetmath_history", JSON.stringify(history));
+    }
+  </script>
+</body>
+</html>
