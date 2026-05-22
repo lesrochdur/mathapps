@@ -21,7 +21,7 @@ export default function AppCard({ slug, nom, description }: AppCardProps) {
         {!imgFailed && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={`/images/${slug}.png`}
+            src={`/images/${slug.toUpperCase()}.png`}
             alt={nom}
             className="absolute inset-0 w-full h-full object-cover"
             onError={() => setImgFailed(true)}
@@ -71,7 +71,7 @@ export default function AppCard({ slug, nom, description }: AppCardProps) {
             🎮 Jouer
           </a>
           <a
-            href={`/pdf/${slug}-theorie.pdf`}
+            href={`/pdf/${slug.charAt(0).toUpperCase() + slug.slice(1)}-Theorie.pdf`}
             download
             className="flex-1 text-center py-2 px-3 rounded-xl text-sm font-bold transition-all hover:opacity-90 hover:-translate-y-0.5"
             style={{
