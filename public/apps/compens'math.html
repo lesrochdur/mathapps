@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compens'math</title>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600&family=Source+Sans+Pro&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --violet: #8f67ca;
+      --turquoise: #01b7c4;
+      --vert: #01b7c4;
+      --blanc: #ffffff;
+      --gris-clair: #f0f0f0;
+      --noir: #222;
+      --progress-bar-bg: #e0e0e0;
+      --progress-bar-fill: var(--violet);
+    }
+    body {
+      margin: 0;
+      font-family: 'Source Sans Pro', sans-serif;
+      background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+      color: var(--noir);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      padding: 1rem 0;
+    }
+    main {
+      flex-grow: 1;
+      padding: 0 1rem;
+    }
+    h1 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--violet);
+      font-size: 2.5rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--noir);
+      font-size: 1.8rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    .app-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #dcdcdc;
+      border-radius: 12px;
+      background-color: var(--blanc);
+      font-size: 1.3rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    button {
+      border: none;
+      padding: 14px 22px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      color: var(--blanc);
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+    .theory-btn { background-color: var(--turquoise); }
+    .exercise-btn { background-color: var(--violet); }
+    .action-btn { background-color: var(--vert); margin-top: 10px; }
+    .home-btn { background-color: #f0ad4e; margin-top: 15px; } /* Bouton retour orange */
+    .hidden { display: none !important; }
+    .content-box {
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 2px solid var(--violet);
+      border-radius: 12px;
+      background-color: var(--blanc);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: left;
+      font-size: 1.3rem;
+      line-height: 1.8;
+    }
+    input[type="text"] {
+        font-size: 1.2rem; 
+        padding: 10px;
+        width: calc(100% - 22px); /* Ajusté pour padding */
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+    #progress-bar-container {
+        width: 100%;
+        background-color: var(--progress-bar-bg);
+        border-radius: 5px;
+        margin: 15px 0;
+        height: 20px;
+        overflow: hidden;
+    }
+    #progress-bar-fill {
+        height: 100%;
+        width: 0%;
+        background-color: var(--progress-bar-fill);
+        border-radius: 5px;
+        transition: width 0.3s ease-in-out;
+        text-align: center;
+        color: white;
+        font-size: 0.9rem;
+        line-height: 20px;
+    }
+    .exercise-expression {
+        font-size: 1.5rem;
+        margin: 15px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        border: 1px dashed #ccc;
+    }
+
+    footer {
+      margin-top: 2rem;
+      padding: 1rem;
+      font-size: 1rem;
+      background-color: #ffffff;
+      border-top: 1px solid #eee;
+    }
+
+    footer a {
+      color: var(--violet);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      h4 {
+        font-size: 1.1rem;
+      }
+      button {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+      }
+      .content-box {
+        padding: 15px;
+        font-size: 1rem;
+      }
+      .timer {
+        font-size: 1.5rem;
+      }
+      .app-section {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header><h1>Compens'math</h1></header>
+  <main id="main-content">
+    <div id="home-view">
+        <section class="app-section" id="theory-section-main-container">
+          <h2>Théorie de la Compensation</h2>
+          <div class="buttons-container">
+            <button class="theory-btn" id="show-compensation-theory-btn">Principe de la compensation</button>
+          </div>
+        </section>
+
+        <section class="app-section" id="exercise-section-main-container">
+          <h2>Exercices de Compensation</h2>
+          <div class="buttons-container" id="exercise-type-buttons">
+            <button class="exercise-btn" data-type="addition">Addition compensée</button>
+            <button class="exercise-btn" data-type="soustraction">Soustraction compensée</button>
+            <button class="exercise-btn" data-type="multiplication">Multiplication compensée</button>
+            <button class="exercise-btn" data-type="division">Division compensée</button>
+            <button class="exercise-btn" data-type="mixte">Mélange d'exercices</button>
+          </div>
+        </section>
+
+        <section class="app-section" id="history-section-main-container">
+          <h2>Historique</h2>
+          <button class="action-btn" id="show-history-btn">Afficher l'historique</button>
+        </section>
+    </div>
+
+    <div class="content-box hidden" id="theory-content-box">
+        <div id="theory-text-content"></div>
+        <button class="home-btn" id="theory-home-btn">Retour à l'accueil</button>
+    </div>
+
+    <div class="content-box hidden" id="exercise-box">
+        <button class="home-btn" id="exercise-in-progress-home-btn">Retour à l'accueil</button> <!-- Bouton retour visible pendant l'exercice -->
+        <div id="progress-bar-container" class="hidden">
+          <div id="progress-bar-fill">0 / 10</div>
+        </div>
+        <div id="exercise-question" class="exercise-expression"></div>
+        <input type="text" id="exercise-answer" placeholder="Votre réponse">
+        <button class="action-btn" id="validate-answer-btn">Valider</button>
+        <div id="exercise-feedback"></div>
+        <button class="home-btn hidden" id="exercise-results-home-btn">Retour à l'accueil</button> <!-- Bouton retour après résultats -->
+    </div>
+
+    <div class="content-box hidden" id="history-box">
+        <div id="history-list-content"></div>
+        <button class="home-btn" id="history-home-btn">Retour à l'accueil</button>
+    </div>
+
+  </main>
+
+  <footer>
+    Compens'math par <a href="https://lesrochdur.com/" target="_blank">Les RochDur</a>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const THEORIE_COMPENSATION = `
+          <p><center><strong>🧠 LE PRINCIPE DE LA COMPENSATION</strong></center></p>
+          <p>Quand on transforme une expression mathématique, on peut modifier certains nombres, à condition d'équilibrer le changement ailleurs dans l'expression. C'est ce qu'on appelle la compensation.</p>
+          <p>💡 L'objectif ? Garder le même résultat final, même si les nombres changent.</p>
+          <p><strong><center>Quelques exemples de compensation</strong></center></p>
+          <p><strong>➕ En addition</strong><br>
+          On peut ajouter un peu à un nombre… si on enlève la même chose à l'autre.<br>
+          Exemple → 79,6 + 12,7 = 80 + 12,3<br>
+          ✨ On a ajouté 0,4 à 79,6 → on enlève 0,4 à 12,7.</p>
+          <p><strong>➖ En soustraction</strong><br>
+          On peut ajouter ou enlever la même quantité aux deux nombres.<br>
+          Exemple → 2 765 – 621 = 2 764 – 620<br>
+          ✨ On a diminué les deux nombres d'une même unité, le résultat reste inchangé.</p>
+          <p><strong>✖️ En multiplication</strong><br>
+          On peut doubler un nombre si on divise l'autre par deux.<br>
+          Exemple → 0,5 × 6 = 1 × 3<br>
+          ✨ On a multiplié 0,5 par 2 → on divise 6 par 2.</p>
+          <p><strong>➗ En division</strong><br>
+          On peut multiplier ou diviser les deux nombres par la même valeur.<br>
+          Exemple → 10 000 : 125 = 80 000 : 1 000<br>
+          ✨ On a multiplié 10 000 par 8 → on multiplie 125 par 8 aussi.</p>
+          <p><strong>📌 À retenir</strong><br>
+          Si tu modifies un nombre, il faut compenser ailleurs dans l'expression pour que le résultat reste identique.</p>
+        `;
+
+        const exerciseTypes = {
+          addition: {
+            label: "Addition compensée",
+            generate: function() {
+              const n1 = parseFloat((Math.random() * 50 + 20).toFixed(1));
+              const n2 = parseFloat((Math.random() * 20 + 5).toFixed(1));
+              let compensation = parseFloat((Math.random() * 5 - 2.5).toFixed(1));
+              if (compensation === 0) compensation = 0.1;
+              const n1_comp = parseFloat((n1 + compensation).toFixed(1));
+              const answer = parseFloat((n2 - compensation).toFixed(1));
+              return { type: 'addition', questionText: `${n1.toLocaleString('fr-FR')} + ${n2.toLocaleString('fr-FR')} = ${n1_comp.toLocaleString('fr-FR')} + [ ____ ]`, answer: answer, values: {n1, n2, n1_comp, compensation} };
+            },
+            explanation: (q) => `Pour l'addition ${q.values.n1.toLocaleString('fr-FR')} + ${q.values.n2.toLocaleString('fr-FR')} → ${q.values.n1.toLocaleString('fr-FR')} est devenu ${q.values.n1_comp.toLocaleString('fr-FR')} (on a ajouté ${q.values.compensation.toLocaleString('fr-FR')}). Pour compenser, il faut enlever ${q.values.compensation.toLocaleString('fr-FR')} à ${q.values.n2.toLocaleString('fr-FR')}, ce qui donne ${q.answer.toLocaleString('fr-FR')}.`
+          },
+          soustraction: {
+            label: "Soustraction compensée",
+            generate: function() {
+              let n1 = Math.floor(Math.random() * 1000) + 500;
+              let n2 = Math.floor(Math.random() * (n1 - 200)) + 100;
+              let compensation = Math.floor(Math.random() * 50) + 10;
+              if (Math.random() < 0.5) compensation *= -1;
+              if (compensation === 0) compensation = 1;
+              let questionText, answer, type_op, values;
+              if (Math.random() < 0.5) { 
+                const n1_comp = n1 + compensation;
+                answer = n2 + compensation;
+                questionText = `${n1.toLocaleString('fr-FR')} - ${n2.toLocaleString('fr-FR')} = ${n1_comp.toLocaleString('fr-FR')} - [ ____ ]`;
+                type_op = 'both_add_sub';
+                values = {n1, n2, n1_comp, compensation, type_op};
+              } else { 
+                const n2_mod = n2 - compensation;
+                answer = n1 - compensation;
+                questionText = `${n1.toLocaleString('fr-FR')} – ${n2.toLocaleString('fr-FR')} = [ ____ ] – ${n2_mod.toLocaleString('fr-FR')}`;
+                type_op = 'one_mod';
+                values = {n1, n2, n2_mod, compensation, type_op};
+              }
+              return { type: 'soustraction', questionText, answer, values };
+            },
+            explanation: (q) => {
+              if (q.values.type_op === 'both_add_sub') {
+                return `Pour la soustraction ${q.values.n1.toLocaleString('fr-FR')} - ${q.values.n2.toLocaleString('fr-FR')} → si on ajoute (ou enlève) la même quantité (${q.values.compensation.toLocaleString('fr-FR')}) aux deux nombres, le résultat reste inchangé. ${q.values.n1.toLocaleString('fr-FR')} est devenu ${q.values.n1_comp.toLocaleString('fr-FR')}. Donc, ${q.values.n2.toLocaleString('fr-FR')} doit aussi devenir ${(q.values.n2 + q.values.compensation).toLocaleString('fr-FR')}, soit ${q.answer.toLocaleString('fr-FR')}.`;
+              } else {
+                return `Pour la soustraction ${q.values.n1.toLocaleString('fr-FR')} – ${q.values.n2.toLocaleString('fr-FR')} → si ${q.values.n2.toLocaleString('fr-FR')} devient ${q.values.n2_mod.toLocaleString('fr-FR')} (on a enlevé ${q.values.compensation.toLocaleString('fr-FR')}), alors pour garder la même différence, ${q.values.n1.toLocaleString('fr-FR')} doit aussi être diminué de ${q.values.compensation.toLocaleString('fr-FR')}, devenant ${q.answer.toLocaleString('fr-FR')}.`;
+              }
+            }
+          },
+          multiplication: {
+            label: "Multiplication compensée",
+            generate: function() {
+              let factor = [2, 3, 4, 5, 10][Math.floor(Math.random()*5)];
+              let n1, n2, n1_comp, answer, type_op, values;
+              if (Math.random() < 0.5) { 
+                 n2 = (Math.floor(Math.random() * 10) + 1) * factor;
+                 n1 = parseFloat((Math.random() * 10 + 1).toFixed(Math.random() < 0.3 ? 1:0));
+                 n1_comp = parseFloat((n1 * factor).toFixed(1));
+                 answer = parseFloat((n2 / factor).toFixed(1));
+                 type_op = 'n1_mult_n2_div';
+                 values = {n1, n2, n1_comp, factor, type_op};
+              } else { 
+                 n1 = (Math.floor(Math.random() * 10) + 1) * factor;
+                 n2 = parseFloat((Math.random() * 10 + 1).toFixed(Math.random() < 0.3 ? 1:0));
+                 n1_comp = parseFloat((n1 / factor).toFixed(1));
+                 answer = parseFloat((n2 * factor).toFixed(1));
+                 type_op = 'n1_div_n2_mult';
+                 values = {n1, n2, n1_comp, factor, type_op};
+              }
+              return { type: 'multiplication', questionText: `${n1.toLocaleString('fr-FR')} × ${n2.toLocaleString('fr-FR')} = ${n1_comp.toLocaleString('fr-FR')} × [ ____ ]`, answer, values };
+            },
+            explanation: (q) => {
+              if (q.values.type_op === 'n1_mult_n2_div'){
+                return `Pour la multiplication ${q.values.n1.toLocaleString('fr-FR')} × ${q.values.n2.toLocaleString('fr-FR')} → si ${q.values.n1.toLocaleString('fr-FR')} est multiplié par ${q.values.factor} (devenant ${q.values.n1_comp.toLocaleString('fr-FR')}), alors pour compenser, ${q.values.n2.toLocaleString('fr-FR')} doit être divisé par ${q.values.factor}, ce qui donne ${q.answer.toLocaleString('fr-FR')}.`;
+              } else {
+                return `Pour la multiplication ${q.values.n1.toLocaleString('fr-FR')} × ${q.values.n2.toLocaleString('fr-FR')} → si ${q.values.n1.toLocaleString('fr-FR')} est divisé par ${q.values.factor} (devenant ${q.values.n1_comp.toLocaleString('fr-FR')}), alors pour compenser, ${q.values.n2.toLocaleString('fr-FR')} doit être multiplié par ${q.values.factor}, ce qui donne ${q.answer.toLocaleString('fr-FR')}.`;
+              }
+            }
+          },
+          division: {
+            label: "Division compensée",
+            generate: function() {
+              let factor = [2, 4, 5, 8, 10][Math.floor(Math.random()*5)];
+              let n1, n2, n2_comp, answer, type_op, values;
+              if (Math.random() < 0.5) { 
+                n2 = (Math.floor(Math.random() * 20) + 5);
+                n1 = n2 * (Math.floor(Math.random() * 10) + 2) * factor;
+                n2_comp = n2 * factor;
+                answer = n1 * factor;
+                type_op = 'both_mult';
+                values = {n1, n2, n2_comp, factor, type_op};
+              } else { 
+                n2_comp = (Math.floor(Math.random() * 20) + 5);
+                n2 = n2_comp * factor;
+                n1 = n2 * (Math.floor(Math.random() * 10) + 2);
+                answer = n1 / factor;
+                type_op = 'both_div';
+                values = {n1, n2, n2_comp, factor, type_op};
+              }
+              return { type: 'division', questionText: `${n1.toLocaleString('fr-FR')} : ${n2.toLocaleString('fr-FR')} = [ ____ ] : ${n2_comp.toLocaleString('fr-FR')}`, answer, values };
+            },
+            explanation: (q) => {
+              if (q.values.type_op === 'both_mult'){
+                return `Pour la division ${q.values.n1.toLocaleString('fr-FR')} : ${q.values.n2.toLocaleString('fr-FR')} → si on multiplie le diviseur ${q.values.n2.toLocaleString('fr-FR')} par ${q.values.factor} (devenant ${q.values.n2_comp.toLocaleString('fr-FR')}), alors pour compenser, il faut aussi multiplier le dividende ${q.values.n1.toLocaleString('fr-FR')} par ${q.values.factor}, ce qui donne ${q.answer.toLocaleString('fr-FR')}.`;
+              } else {
+                return `Pour la division ${q.values.n1.toLocaleString('fr-FR')} : ${q.values.n2.toLocaleString('fr-FR')} → si on divise le diviseur ${q.values.n2.toLocaleString('fr-FR')} par ${q.values.factor} (devenant ${q.values.n2_comp.toLocaleString('fr-FR')}), alors pour compenser, il faut aussi diviser le dividende ${q.values.n1.toLocaleString('fr-FR')} par ${q.values.factor}, ce qui donne ${q.answer.toLocaleString('fr-FR')}.`;
+              }
+            }
+          }
+        };
+
+        const homeView = document.getElementById("home-view");
+        const theoryBtn = document.getElementById("show-compensation-theory-btn");
+        const theoryContentBox = document.getElementById("theory-content-box");
+        const theoryTextContent = document.getElementById("theory-text-content");
+        const theoryHomeBtn = document.getElementById("theory-home-btn");
+        
+        const exerciseTypeButtonsContainer = document.getElementById("exercise-type-buttons");
+        const exerciseBox = document.getElementById("exercise-box");
+        const exerciseQuestionEl = document.getElementById("exercise-question");
+        const exerciseAnswerEl = document.getElementById("exercise-answer");
+        const exerciseFeedbackEl = document.getElementById("exercise-feedback");
+        const exerciseInProgressHomeBtn = document.getElementById("exercise-in-progress-home-btn");
+        const exerciseResultsHomeBtn = document.getElementById("exercise-results-home-btn");
+
+        const showHistoryBtn = document.getElementById("show-history-btn");
+        const historyBoxEl = document.getElementById("history-box");
+        const historyListContent = document.getElementById("history-list-content");
+        const historyHomeBtn = document.getElementById("history-home-btn");
+
+        const progressBarContainer = document.getElementById("progress-bar-container");
+        const progressBarFill = document.getElementById("progress-bar-fill");
+        const validateAnswerBtn = document.getElementById("validate-answer-btn");
+
+        let currentSeries = [];
+        let currentQuestionData = null;
+        let currentIndex = 0;
+        let score = 0;
+        let history = JSON.parse(localStorage.getItem("compensmath_history") || "[]");
+        let detailedFeedback = [];
+
+        function showView(viewToShow) {
+            [homeView, theoryContentBox, exerciseBox, historyBoxEl].forEach(view => {
+                view.classList.add('hidden');
+            });
+            if (viewToShow) {
+                viewToShow.classList.remove('hidden');
+            }
+        }
+
+        function showHomeView() { showView(homeView); }
+        function showTheoryView() {
+            theoryTextContent.innerHTML = THEORIE_COMPENSATION;
+            showView(theoryContentBox);
+        }
+        function showExerciseView() {
+            showView(exerciseBox);
+            progressBarContainer.classList.remove("hidden");
+            exerciseQuestionEl.classList.remove("hidden");
+            exerciseAnswerEl.classList.remove("hidden");
+            validateAnswerBtn.classList.remove("hidden");
+            exerciseInProgressHomeBtn.classList.remove("hidden"); // Rendre visible pendant l'exercice
+            exerciseResultsHomeBtn.classList.add("hidden"); // Masquer celui des résultats
+            exerciseFeedbackEl.innerHTML = '';
+            exerciseFeedbackEl.classList.add("hidden");
+        }
+        function showHistoryView() {
+            if (history.length === 0) {
+                historyListContent.innerHTML = "<p>Aucun historique pour le moment.</p>";
+            } else {
+                historyListContent.innerHTML = history.map(h => `<div>${h.date} — ${exerciseTypes[h.type] ? exerciseTypes[h.type].label : (h.type === 'mixte' ? 'Mélange d\'exercices' : 'Type inconnu')} — Score : ${h.score}</div>`).reverse().join("");
+            }
+            showView(historyBoxEl);
+        }
+
+        theoryBtn.addEventListener('click', showTheoryView);
+        theoryHomeBtn.addEventListener('click', showHomeView);
+        showHistoryBtn.addEventListener('click', showHistoryView);
+        historyHomeBtn.addEventListener('click', showHomeView);
+        exerciseInProgressHomeBtn.addEventListener('click', showHomeView); // Nouveau bouton
+        exerciseResultsHomeBtn.addEventListener('click', showHomeView);
+        validateAnswerBtn.addEventListener('click', validateAnswer);
+
+        exerciseTypeButtonsContainer.addEventListener('click', function(event) {
+            if (event.target.classList.contains('exercise-btn')) {
+                const type = event.target.dataset.type;
+                startExerciseSeries(type);
+            }
+        });
+
+        exerciseAnswerEl.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                validateAnswer();
+            }
+        });
+
+        function updateProgressBar() {
+            const totalQuestions = currentSeries.length;
+            const progress = totalQuestions > 0 ? (currentIndex / totalQuestions) * 100 : 0;
+            progressBarFill.style.width = `${progress}%`;
+            progressBarFill.textContent = `${currentIndex} / ${totalQuestions}`;
+        }
+
+        function startExerciseSeries(type) {
+          currentSeries = [];
+          const numQuestions = 10;
+          if (type === 'mixte') {
+            const allTypeKeys = Object.keys(exerciseTypes);
+            for (let i = 0; i < numQuestions; i++) {
+                const randomTypeKey = allTypeKeys[Math.floor(Math.random() * allTypeKeys.length)];
+                currentSeries.push(exerciseTypes[randomTypeKey].generate());
+            }
+          } else {
+            for (let i = 0; i < numQuestions; i++) {
+                currentSeries.push(exerciseTypes[type].generate());
+            }
+          }
+          currentIndex = 0;
+          score = 0;
+          detailedFeedback = [];
+          showExerciseView();
+          showQuestion();
+        }
+
+        function showQuestion() {
+          updateProgressBar();
+          if (currentIndex >= currentSeries.length) {
+            showResult(); 
+            return;
+          }
+          currentQuestionData = currentSeries[currentIndex];
+          exerciseQuestionEl.innerHTML = currentQuestionData.questionText;
+          exerciseAnswerEl.value = "";
+          exerciseFeedbackEl.innerHTML = "";
+          exerciseFeedbackEl.classList.add("hidden");
+          exerciseInProgressHomeBtn.classList.remove("hidden"); // S'assurer qu'il est visible
+          exerciseResultsHomeBtn.classList.add("hidden");
+          exerciseAnswerEl.focus();
+        }
+
+        function validateAnswer() {
+          if (currentIndex >= currentSeries.length || !currentQuestionData) return;
+
+          const userAnswerText = exerciseAnswerEl.value.replace(",", ".").trim();
+          const userNum = parseFloat(userAnswerText);
+          const expectedNum = parseFloat(currentQuestionData.answer.toFixed(2)); 
+          let correct = false;
+
+          if (!isNaN(userNum) && Math.abs(userNum - expectedNum) < 0.01) {
+            score++;
+            correct = true;
+            exerciseFeedbackEl.innerHTML = "<strong style='color:green;'>✅ Bravo, le résultat est identique !</strong>";
+          } else {
+            let explanation = "Essaie encore… Pense à ce que tu as ajouté ou enlevé.";
+            const exerciseDef = exerciseTypes[currentQuestionData.type];
+            if (exerciseDef && exerciseDef.explanation) {
+                explanation = exerciseDef.explanation(currentQuestionData);
+            }
+            exerciseFeedbackEl.innerHTML = `<strong style='color:red;'>❌ Mauvais.</strong> La réponse attendue était : <strong>${expectedNum.toLocaleString("fr-FR")}</strong>.<br><em>${explanation}</em>`;
+          }
+          exerciseFeedbackEl.classList.remove("hidden");
+
+          detailedFeedback.push({
+            question: currentQuestionData.questionText,
+            user: isNaN(userNum) ? (userAnswerText || "Pas de réponse") : userNum,
+            expected: expectedNum,
+            correct,
+            explanation: correct ? "" : (exerciseTypes[currentQuestionData.type] && exerciseTypes[currentQuestionData.type].explanation ? exerciseTypes[currentQuestionData.type].explanation(currentQuestionData) : "")
+          });
+
+          currentIndex++;
+          
+          if (currentIndex < currentSeries.length) {
+            setTimeout(showQuestion, 3000); 
+          } else {
+            updateProgressBar();
+            setTimeout(showResult, 3000);
+          }
+        }
+
+        function showResult() {
+          updateProgressBar();
+
+          let finalMessage = "";
+          if (score === currentSeries.length) {
+            finalMessage = "🎉 Excellent ! Vous avez tout bon ! Continuez comme ça !";
+          } else if (score >= currentSeries.length * 0.7) {
+            finalMessage = "👍 Très bien ! Vous maîtrisez bien ces astuces.";
+          } else if (score >= currentSeries.length * 0.5) {
+            finalMessage = "🙂 Pas mal ! Continuez à vous entraîner pour vous améliorer.";
+          } else {
+            finalMessage = "💪 Encore un effort ! Revoyez bien les astuces et réessayez.";
+          }
+
+          let feedbackHTML = `<p><strong>${finalMessage}</strong></p><p><strong>Score final : ${score}/${currentSeries.length}</strong></p><hr><ul>`;
+          detailedFeedback.forEach(fb => {
+            feedbackHTML += `<li>${fb.correct ? '<span style="color:green;">✅</span>' : '<span style="color:red;">❌</span>'} ${fb.question.replace('[ ____ ]', `<strong>${fb.expected.toLocaleString("fr-FR")}</strong>`)}.`;
+            feedbackHTML += ` Votre réponse → ${(typeof fb.user === 'number' ? fb.user.toLocaleString("fr-FR") : fb.user)}.`;
+            if (!fb.correct && fb.explanation) {
+              feedbackHTML += `<br><em>Explication → ${fb.explanation}</em>`;
+            }
+            feedbackHTML += `</li>`;
+          });
+          feedbackHTML += '</ul>';
+
+          exerciseQuestionEl.classList.add("hidden");
+          exerciseAnswerEl.classList.add("hidden");
+          validateAnswerBtn.classList.add("hidden");
+          exerciseInProgressHomeBtn.classList.add("hidden"); // Masquer celui en cours
+          exerciseResultsHomeBtn.classList.remove("hidden"); // Afficher celui des résultats
+
+          exerciseFeedbackEl.innerHTML = feedbackHTML;
+          exerciseFeedbackEl.classList.remove("hidden");
+
+          history.push({ date: new Date().toLocaleString("fr-FR"), score: `${score}/${currentSeries.length}`, type: currentSeries[0] ? currentSeries[0].type : 'mixte' });
+          localStorage.setItem("compensmath_history", JSON.stringify(history));
+        }
+
+        showHomeView();
+    });
+  </script>
+</body>
+</html>
+

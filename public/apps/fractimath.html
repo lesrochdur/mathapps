@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fractimath</title>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600&family=Source+Sans+Pro&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --violet: #8f67ca;
+      --turquoise: #01b7c4;
+      --vert: #01b7c4;
+      --blanc: #ffffff;
+      --gris-clair: #ffffff;
+      --noir: #222;
+    }
+    .progress-bar-container {
+      width: 100%;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      margin-bottom: 15px; /* Espace sous la barre */
+    }
+    .progress-bar {
+      width: 0%; /* Initialement vide */
+      height: 20px;
+      background-color: var(--violet);
+      border-radius: 4px;
+      text-align: center;
+      line-height: 20px; /* Centrer le texte verticalement */
+      color: white;
+      transition: width 0.3s ease-in-out;
+    }
+    body {
+      margin: 0;
+      font-family: 'Source Sans Pro', sans-serif;
+      background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%); /* Dégradé plus doux */
+      color: var(--noir);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      padding: 1rem 0;
+    }
+    main {
+      flex-grow: 1;
+      padding: 0 1rem;
+    }
+    h1 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--violet);
+      font-size: 2.5rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--noir);
+      font-size: 1.8rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    .app-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #e0e0e0; /* Bordure plus subtile */
+      border-radius: 12px; /* Rayon de bordure légèrement augmenté */
+      background-color: #fdfdfd;
+      font-size: 1.3rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05); /* Ombre plus douce */
+    }
+    .buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    button {
+      border: none;
+      padding: 14px 22px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      color: var(--blanc);
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+    .theory-btn { background-color: var(--turquoise); }
+    .exercise-btn { background-color: var(--violet); }
+    .action-btn { background-color: var(--vert); margin-top: 10px; }
+    .hidden { display: none; }
+    .content-box {
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 2px solid var(--violet);
+      border-radius: 12px;
+      background-color: var(--blanc);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: left;
+      font-size: 1.3rem;
+      line-height: 1.8; /* Augmentation de l'interligne */
+    }
+    footer {
+      margin-top: 2rem;
+      padding: 1rem;
+      font-size: 1rem;
+      background-color: var(--gris-clair);
+      border-top: 1px solid #eee;
+    }
+
+    footer a {
+      color: var(--violet);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      h4 {
+        font-size: 1.1rem;
+      }
+      button {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+      }
+      .content-box {
+        padding: 15px;
+        font-size: 1rem;
+      }
+      .timer {
+        font-size: 1.5rem;
+      }
+      .app-section {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header><h1>Fractimath</h1></header>
+  <main>
+    <section class="app-section">
+      <h2>Théorie</h2>
+      <div class="buttons-container" id="theory-buttons"></div>
+      <div class="content-box hidden" id="theory-content"></div>
+    </section>
+
+    <section class="app-section">
+      <h2>Exercices</h2>
+      <div class="buttons-container" id="exercise-buttons"></div>
+      <div class="buttons-container">
+        <button class="exercise-btn" onclick="startMixedExercises()">Mélange</button>
+      </div>
+      <div class="content-box hidden" id="exercise-box">
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="exercise-progress-bar"></div>
+        </div>
+        <div id="exercise-question"></div>
+        <input type="text" id="exercise-answer" placeholder="Votre réponse" style="font-size: 1.2rem; padding: 8px; width: 100%;">
+        <button class="action-btn" onclick="validateAnswer()">Valider</button>
+        <div id="exercise-feedback"></div>
+      </div>
+    </section>
+
+    <section class="app-section">
+      <h2>Historique</h2>
+      <button class="action-btn" onclick="showHistory()">Afficher l'historique</button>
+      <div class="content-box hidden" id="history-box"></div>
+    </section>
+  </main>
+
+  <footer>
+    Fractimath par <a href="https://lesrochdur.com/" target="_blank">Les RochDur</a>
+  </footer>
+
+  <script>
+    const ASTUCES = [
+      { id: "frac1_2", text: "½ de N = N : 2", div: 2, ex: "½ de 10 = 10 : 2 = 5" },
+      { id: "frac1_3", text: "⅓ de N = N : 3", div: 3, ex: "⅓ de 9 = 9 : 3 = 3" },
+      { id: "frac1_4", text: "¼ de N = N : 4", div: 4, ex: "¼ de 20 = 20 : 4 = 20 : 2 : 2 = 5" },
+      { id: "frac1_5", text: "⅕ de N = N : 5", div: 5, ex: "⅕ de 100 = 100 : 5 = 100 : 10 × 2 = 20" },
+      { id: "frac1_8", text: "⅛ de N = N : 8", div: 8, ex: "⅛ de 64 = 64 : 8 = 64 : 2 : 2 : 2 = 8" },
+      { id: "frac1_10", text: "¹⁄₁₀ de N = N : 10", div: 10, ex: "¹⁄₁₀ de 70 = 70 : 10 = 7" },
+      { id: "frac1_100", text: "¹⁄₁₀₀ de N = N : 100", div: 100, ex: "¹⁄₁₀₀ de 500 = 500 : 100 = 5" },
+      { id: "frac3_4", text: "¾ de N = (N : 4) × 3", div: 4, mult: 3, ex: "¾ de 20 = (20 : 4) × 3 = 5 × 3 = 15" },
+      { id: "frac2_3", text: "⅔ de N = (N : 3) × 2", div: 3, mult: 2, ex: "⅔ de 12 = (12 : 3) × 2 = 4 × 2 = 8" },
+      { id: "frac2_5", text: "⅖ de N = (N : 5) × 2", div: 5, mult: 2, ex: "⅖ de 100 = (100 : 5) × 2 = 40" }
+    ];
+
+    const theoryButtons = document.getElementById("theory-buttons");
+    const theoryContent = document.getElementById("theory-content");
+    const exerciseButtons = document.getElementById("exercise-buttons");
+    const exerciseBox = document.getElementById("exercise-box");
+    const exerciseQuestion = document.getElementById("exercise-question");
+    const exerciseAnswer = document.getElementById("exercise-answer");
+    const exerciseFeedback = document.getElementById("exercise-feedback");
+    const exerciseProgressBar = document.getElementById("exercise-progress-bar"); // Ajout de la barre de progression
+    const historyBox = document.getElementById("history-box");
+
+    let currentSeries = [];
+    let currentIndex = 0;
+    let score = 0;
+    let history = JSON.parse(localStorage.getItem("fractimath_history") || "[]");
+    let detailedFeedback = [];
+
+    ASTUCES.forEach(astuce => {
+      const btn = document.createElement("button");
+      btn.className = "theory-btn";
+      btn.textContent = astuce.text.split('=')[0].trim();
+      btn.onclick = () => {
+        theoryContent.innerHTML = `<strong>${astuce.text}</strong><br><em>Exemple →</em> ${astuce.ex}`;
+        theoryContent.classList.remove("hidden");
+      };
+      theoryButtons.appendChild(btn);
+
+      const btnEx = document.createElement("button");
+      btnEx.className = "exercise-btn";
+      btnEx.textContent = astuce.text.split('=')[0].trim();
+      btnEx.onclick = () => startExercise(astuce);
+      exerciseButtons.appendChild(btnEx);
+    });
+
+    const recapBtn = document.createElement("button");
+    recapBtn.className = "theory-btn";
+    recapBtn.textContent = "🧠 Récapitulatif";
+    recapBtn.onclick = () => {
+      theoryContent.innerHTML = ASTUCES.map(ast => `<p><strong>${ast.text}</strong><br><em>Exemple →</em> ${ast.ex}</p>`).join("");
+      theoryContent.classList.remove("hidden");
+    };
+    theoryButtons.appendChild(recapBtn);
+
+    function startExercise(astuce) {
+      currentSeries = Array.from({ length: 10 }, () => generateQuestion(astuce));
+      currentIndex = 0;
+      score = 0;
+      detailedFeedback = [];
+      // Réinitialiser et afficher la barre de progression
+      exerciseProgressBar.style.width = "0%";
+      exerciseProgressBar.textContent = "0/10";
+      document.querySelector(".progress-bar-container").classList.remove("hidden");
+      // Afficher les éléments de l'exercice
+      exerciseQuestion.classList.remove("hidden");
+      exerciseAnswer.classList.remove("hidden");
+      document.querySelector("#exercise-box > button.action-btn").classList.remove("hidden");
+      exerciseFeedback.classList.add("hidden"); // Cacher le feedback précédent
+      showQuestion();
+    }
+
+    function startMixedExercises() {
+      currentSeries = Array.from({ length: 10 }, () => generateQuestion(ASTUCES[Math.floor(Math.random() * ASTUCES.length)]));
+      currentIndex = 0;
+      score = 0;
+      detailedFeedback = [];
+      // Réinitialiser et afficher la barre de progression
+      exerciseProgressBar.style.width = "0%";
+      exerciseProgressBar.textContent = "0/10";
+      document.querySelector(".progress-bar-container").classList.remove("hidden");
+      // Afficher les éléments de l'exercice
+      exerciseQuestion.classList.remove("hidden");
+      exerciseAnswer.classList.remove("hidden");
+      document.querySelector("#exercise-box > button.action-btn").classList.remove("hidden");
+      exerciseFeedback.classList.add("hidden"); // Cacher le feedback précédent
+      showQuestion();
+    }
+
+    function generateQuestion(astuce) {
+      let base;
+      let val;
+      do {
+        base = Math.floor(Math.random() * 90 + 10);
+        val = astuce.mult ? (base / astuce.div) * astuce.mult : base / astuce.div;
+        
+        const valTimes100 = Number(val.toFixed(10)) * 100;
+
+        if (Math.abs(valTimes100 - Math.round(valTimes100)) < 1e-9) {
+          const finalResult = parseFloat(val.toFixed(2));
+          return { astuce, base, result: finalResult };
+        }
+      } while (true);
+    }
+    function showQuestion() {
+      const q = currentSeries[currentIndex];
+      exerciseQuestion.textContent = `${q.astuce.text.split('=')[0].replace("N", q.base)}`;
+      exerciseAnswer.value = "";
+      exerciseFeedback.textContent = "";
+      exerciseBox.classList.remove("hidden");
+
+      // Mettre à jour la barre de progression
+      const progress = (currentIndex / currentSeries.length) * 100;
+      exerciseProgressBar.style.width = `${progress}%`;
+      exerciseProgressBar.textContent = `${currentIndex}/${currentSeries.length}`;
+    }
+
+    function validateAnswer() {
+      const user = parseFloat(exerciseAnswer.value.replace(",", "."));
+      const q = currentSeries[currentIndex];
+      const good = q.result;
+      let correct = false;
+
+      if (Math.abs(user - good) < 0.01) {
+        score++;
+        correct = true;
+        exerciseFeedback.textContent = "✅ Bonne réponse !";
+      } else {
+        exerciseFeedback.textContent = `❌ Mauvais. Réponse attendue : ${good.toLocaleString("fr-FR")}`;
+      }
+
+      detailedFeedback.push({
+        question: q.astuce.text.split("=")[0].replace("N", q.base),
+        user: isNaN(user) ? "Pas de réponse" : user,
+        expected: good,
+        correct,
+        reminder: correct ? null : q.astuce.text
+      });
+
+      currentIndex++;
+      // Mettre à jour la barre de progression après validation
+      const progress = (currentIndex / currentSeries.length) * 100;
+      exerciseProgressBar.style.width = `${progress}%`;
+      exerciseProgressBar.textContent = `${currentIndex}/${currentSeries.length}`;
+
+      if (currentIndex < currentSeries.length) {
+        setTimeout(showQuestion, 1000);
+      } else {
+        exerciseProgressBar.textContent = "Terminé !"; // Indiquer que la série est finie
+        setTimeout(showResult, 1000);
+      }
+    }
+    function showResult() {
+      let feedbackHTML = `<p>Score final : ${score}/10</p><ul>`;
+      detailedFeedback.forEach(fb => {
+        feedbackHTML += `<li>${fb.correct ? '✅' : '❌'} ${fb.question} → Réponse donnée : ${(typeof fb.user === 'number' ? fb.user.toLocaleString("fr-FR") : fb.user)}, Attendu : ${fb.expected.toLocaleString("fr-FR")}${fb.reminder ? `<br><em>Rappel de l’astuce :</em> ${fb.reminder}` : ''}</li>`;
+      });
+      feedbackHTML += '</ul>';
+
+      // Cacher les éléments de question, réponse et le bouton valider
+      exerciseQuestion.classList.add("hidden");
+      exerciseAnswer.classList.add("hidden");
+      document.querySelector("#exercise-box > button.action-btn").classList.add("hidden");
+
+      // Afficher le résultat final dans exerciseFeedback
+      exerciseFeedback.innerHTML = feedbackHTML;
+      exerciseFeedback.classList.remove("hidden");
+
+      // S'assurer que la boîte d'exercice principale reste visible
+      exerciseBox.classList.remove("hidden");
+
+      // Gérer l'historique
+      history.push({ date: new Date().toLocaleString(), score });
+      localStorage.setItem("fractimath_history", JSON.stringify(history));
+    }
+
+    function showHistory() {
+      historyBox.innerHTML = history.map(h => `<div>${h.date} — Score : ${h.score}/10</div>`).join("");
+      historyBox.classList.remove("hidden");
+    }
+  </script>
+</body>
+</html>

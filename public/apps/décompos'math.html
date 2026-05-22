@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Décompos'math</title>
+  <style>
+    :root {
+      --violet: #8f67ca;
+      --turquoise: #01b7c4;
+      --orange: #f0ad4e;
+      --blanc: #ffffff;
+      --gris-clair: #f0f0f0;
+      --noir: #222;
+      --feedback-success: #28a745;
+      --feedback-error: #dc3545;
+    }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+      color: var(--noir);
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: var(--violet);
+      font-size: 2.5rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      color: var(--noir);
+      font-size: 1.8rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    .app-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #dcdcdc;
+      border-radius: 12px;
+      background-color: var(--blanc);
+      font-size: 1.3rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .content-box {
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 2px solid var(--violet);
+      border-radius: 12px;
+      background-color: var(--blanc);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: left;
+      font-size: 1.3rem;
+      line-height: 1.8;
+    }
+    .btn {
+      display: inline-block;
+      border: none;
+      padding: 14px 22px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      color: var(--blanc);
+      cursor: pointer;
+      text-decoration: none;
+      margin: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    .btn:hover {
+      opacity: 0.9;
+    }
+    .theory-btn { background-color: var(--turquoise); }
+    .exercise-btn { background-color: var(--violet); }
+    .home-btn { background-color: var(--orange); }
+    .choice-btn {
+      display: block;
+      width: 100%;
+      background-color: #f0f0f0;
+      color: var(--noir);
+      text-align: left;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      font-size: 1.2rem;
+      text-decoration: none;
+    }
+    .choice-btn:hover {
+      background-color: #e0e0e0;
+    }
+    .exercise-expression {
+      font-size: 1.8rem;
+      margin: 15px 0;
+      padding: 15px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      border: 1px dashed #ccc;
+      text-align: center;
+      font-weight: bold;
+    }
+    .exercise-instruction {
+      font-size: 1.4rem;
+      margin: 15px 0;
+      padding: 10px;
+      background-color: #ffe8cc;
+      border-radius: 8px;
+      border: 1px solid var(--orange);
+      text-align: center;
+      font-weight: bold;
+      color: #d35400;
+    }
+    .progress-container {
+      width: 100%;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      margin: 15px 0;
+      height: 20px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background-color: var(--violet);
+      border-radius: 5px;
+      transition: width 0.3s ease;
+      text-align: center;
+      color: white;
+      font-size: 0.9rem;
+      line-height: 20px;
+    }
+    .feedback-success {
+      background-color: var(--feedback-success);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      text-align: center;
+    }
+    .feedback-error {
+      background-color: var(--feedback-error);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      text-align: center;
+    }
+    .recap-item {
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .recap-correct {
+      background-color: rgba(40, 167, 69, 0.2);
+      border: 1px solid var(--feedback-success);
+    }
+    .recap-incorrect {
+      background-color: rgba(220, 53, 69, 0.2);
+      border: 1px solid var(--feedback-error);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    footer {
+      margin-top: 2rem;
+      padding: 1rem;
+      font-size: 1rem;
+      background-color: #ffffff;
+      border-top: 1px solid #eee;
+    }
+    footer a {
+      color: var(--violet);
+      text-decoration: none;
+      font-weight: bold;
+    }
+    @media (max-width: 768px) {
+      h1 { font-size: 2rem; }
+      h2 { font-size: 1.5rem; }
+      .btn { 
+        padding: 10px 15px;
+        font-size: 0.9rem;
+        width: 100%;
+        max-width: 250px;
+        margin: 5px auto;
+      }
+      .content-box {
+        padding: 15px;
+        font-size: 1rem;
+        margin: 10px;
+        width: calc(100% - 20px);
+      }
+      .exercise-expression { font-size: 1.4rem; }
+      .choice-btn { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <header><h1>Décompos'math</h1></header>
+  
+  <!-- Page d'accueil -->
+  <div id="home-page">
+    <section class="app-section">
+      <h2>Théorie</h2>
+      <button class="btn theory-btn" onclick="showTheoryPage()">Opération décomposée</button>
+    </section>
+
+    <section class="app-section">
+      <h2>Exercices</h2>
+      <button class="btn exercise-btn" onclick="startExercises('multiplication')">Multiplication</button>
+      <button class="btn exercise-btn" onclick="startExercises('division')">Division</button>
+      <button class="btn exercise-btn" onclick="startExercises('mixte')">Mixte</button>
+    </section>
+
+    <section class="app-section">
+      <h2>Historique</h2>
+      <button class="btn theory-btn" onclick="showHistoryPage()">Afficher l'historique</button>
+    </section>
+  </div>
+
+  <!-- Page théorie -->
+  <div id="theory-page" class="content-box" style="display: none;">
+    <h2>⚙️ Méthode : opération décomposée</h2>
+    
+    <p>Décomposer une multiplication ou une division permet de transformer une opération plus complexe en plusieurs calculs simples, souvent basés sur des nombres ronds.</p>
+    
+    <h3>✖️ Multiplication : décomposer un des deux facteurs</h3>
+    <p>Exemple : 15 × 45</p>
+    <p>On peut décomposer 45 en 40 + 5 →</p>
+    <p>15 × 45</p>
+    <p>= 15 × (40 + 5)</p>
+    <p>= 15 × 40 + 15 × 5</p>
+    <p>= 600 + 75</p>
+    <p>= 675</p>
+    
+    <p>Ou bien décomposer 15 en 10 + 5 →</p>
+    <p>15 × 45</p>
+    <p>= (10 + 5) × 45</p>
+    <p>= 10 × 45 + 5 × 45</p>
+    <p>= 450 + 225</p>
+    <p>= 675</p>
+    
+    <h3>➗ Division : décomposer le dividende</h3>
+    <p>Exemple : 880 : 20</p>
+    <p>On peut décomposer 880 en 400 + 400 + 80 →</p>
+    <p>880 : 20</p>
+    <p>= (400 + 400 + 80) : 20</p>
+    <p>= (400 : 20) + (400 : 20) + (80 : 20)</p>
+    <p>= 20 + 20 + 4</p>
+    <p>= 44</p>
+    
+    <p>Autre décomposition possible : 600 + 280</p>
+    <p>880 : 20 = (600 + 280) : 20 = (600 : 20) + (280 : 20) = 30 + 14 = 44</p>
+    
+    <p>La décomposition peut varier, mais l'objectif est toujours d'obtenir des divisions plus simples à effectuer mentalement.</p>
+    
+    <h3>✅ Résumé des stratégies</h3>
+    <table>
+      <tr>
+        <th>Type d'opération</th>
+        <th>Élément décomposé</th>
+        <th>Exemple de décomposition</th>
+      </tr>
+      <tr>
+        <td>Multiplication</td>
+        <td>Un facteur</td>
+        <td>15 × 45 = 15 × (40 + 5) = 15 × 40 + 15 × 5</td>
+      </tr>
+      <tr>
+        <td>Multiplication</td>
+        <td>L'autre facteur</td>
+        <td>15 × 45 = (10 + 5) × 45 = 10 × 45 + 5 × 45</td>
+      </tr>
+      <tr>
+        <td>Division</td>
+        <td>Le dividende</td>
+        <td>880 : 20 = (400 + 400 + 80) : 20 = 20 + 20 + 4 = 44</td>
+      </tr>
+    </table>
+    
+    <button class="btn home-btn" onclick="showHomePage()">Retour à l'accueil</button>
+  </div>
+
+  <!-- Page exercices -->
+  <div id="exercise-page" class="content-box" style="display: none;">
+    <h2 id="exercise-title">Exercice</h2>
+    
+    <div class="progress-container">
+      <div id="progress-bar" class="progress-bar" style="width: 0%">0/5</div>
+    </div>
+    
+    <div id="exercise-content">
+      <div class="exercise-expression" id="exercise-question"></div>
+      <div class="exercise-instruction">Clique sur la bonne décomposition</div>
+      
+      <div id="choices-container"></div>
+    </div>
+    
+    <div id="feedback-container"></div>
+    
+    <button class="btn home-btn" onclick="showHomePage()">Retour à l'accueil</button>
+  </div>
+
+  <!-- Page récapitulatif -->
+  <div id="recap-page" class="content-box" style="display: none;">
+    <h2 id="recap-title">Récapitulatif</h2>
+    
+    <div id="recap-content"></div>
+    
+    <button class="btn home-btn" onclick="showHomePage()">Retour à l'accueil</button>
+  </div>
+
+  <!-- Page historique -->
+  <div id="history-page" class="content-box" style="display: none;">
+    <h2>Historique des exercices</h2>
+    
+    <div id="history-content">
+      <p>Cette section afficherait normalement l'historique de vos exercices précédents.</p>
+      <p>Pour l'instant, aucun exercice n'a été enregistré dans l'historique.</p>
+    </div>
+    
+    <button class="btn home-btn" onclick="showHomePage()">Retour à l'accueil</button>
+  </div>
+
+  <footer>
+    Décompos'math par <a href="https://lesrochdur.com/" target="_blank">Les RochDur</a>
+  </footer>
+
+  <script>
+    // Données des exercices importées du fichier Excel
+    const allExercises = [
+      {
+        "calcul": "520 × 23 =",
+        "options": [
+          {
+            "text": "(500 × 20) + (20 × 3)",
+            "isCorrect": false
+          },
+          {
+            "text": "(500 × 23) + (20 × 23)",
+            "isCorrect": true
+          },
+          {
+            "text": "(52 × 23) + (10 × 23)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(500 × 23) + (20 × 23)"
+      },
+      {
+        "calcul": "87 × 31 =",
+        "options": [
+          {
+            "text": "(80 × 31) + (7 × 31)",
+            "isCorrect": true
+          },
+          {
+            "text": "(80 × 30) + (7 × 1)",
+            "isCorrect": false
+          },
+          {
+            "text": "(3 × 31) + (29 × 31)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(80 × 31) + (7 × 31)"
+      },
+      {
+        "calcul": "48 × 45 =",
+        "options": [
+          {
+            "text": "(40× 40) + (8 × 5)",
+            "isCorrect": false
+          },
+          {
+            "text": "(8 × 45) + (6 × 45)",
+            "isCorrect": false
+          },
+          {
+            "text": "(40 × 45) + (8 × 45)",
+            "isCorrect": true
+          }
+        ],
+        "bonneReponse": "(40 × 45) + (8 × 45)"
+      },
+      {
+        "calcul": "25 : 23 =",
+        "options": [
+          {
+            "text": "(20 : 23) + (5 : 23)",
+            "isCorrect": true
+          },
+          {
+            "text": "(20 : 20) + (5 : 3)",
+            "isCorrect": false
+          },
+          {
+            "text": "(5 : 23) + (5 : 23)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(20 : 23) + (5 : 23)"
+      },
+      {
+        "calcul": "730 : 12 =",
+        "options": [
+          {
+            "text": "(700 : 10 ) + (30 : 2)",
+            "isCorrect": false
+          },
+          {
+            "text": "(73 : 12) + (10 : 12)",
+            "isCorrect": false
+          },
+          {
+            "text": "(700 : 12) + (30 : 12)",
+            "isCorrect": true
+          }
+        ],
+        "bonneReponse": "(700 : 12) + (30 : 12)"
+      },
+      {
+        "calcul": "730 × 30 =",
+        "options": [
+          {
+            "text": "(700 × 30) + (30 × 30)",
+            "isCorrect": true
+          },
+          {
+            "text": "(700 × 30) + (30 × 0)",
+            "isCorrect": false
+          },
+          {
+            "text": "(73 × 30) + (10 × 30)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(700 × 30) + (30 × 30)"
+      },
+      {
+        "calcul": "92 × 30 =",
+        "options": [
+          {
+            "text": "(90 × 30) + (2 × 0)",
+            "isCorrect": false
+          },
+          {
+            "text": "(90 × 30) + (2 × 30)",
+            "isCorrect": true
+          },
+          {
+            "text": "(46 × 30) + (2 × 30)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(90 × 30) + (2 × 30)"
+      },
+      {
+        "calcul": "87 : 12 =",
+        "options": [
+          {
+            "text": "(80 : 12) + (7 : 12)",
+            "isCorrect": true
+          },
+          {
+            "text": "(80 : 10) + (2 : 2)",
+            "isCorrect": false
+          },
+          {
+            "text": "(29 : 12) + (3 : 12)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(80 : 12) + (7 : 12)"
+      },
+      {
+        "calcul": "25 × 23 =",
+        "options": [
+          {
+            "text": "(20 × 23) + (5 × 23)",
+            "isCorrect": true
+          },
+          {
+            "text": "(20 × 20) + (5 × 3)",
+            "isCorrect": false
+          },
+          {
+            "text": "(5 × 23) + (5 × 23)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(20 × 23) + (5 × 23)"
+      },
+      {
+        "calcul": "92 : 30 =",
+        "options": [
+          {
+            "text": "(90 : 30) + (2 : 30)",
+            "isCorrect": true
+          },
+          {
+            "text": "(90 : 30) + (2 : 0)",
+            "isCorrect": false
+          },
+          {
+            "text": "(46 : 30) + (2 : 30)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(90 : 30) + (2 : 30)"
+      },
+      {
+        "calcul": "92 : 52 =",
+        "options": [
+          {
+            "text": "(90 : 52) + (2 : 52)",
+            "isCorrect": true
+          },
+          {
+            "text": "(90 : 50) + (2 : 2)",
+            "isCorrect": false
+          },
+          {
+            "text": "(46 : 52) + (2 : 52)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(90 : 52) + (2 : 52)"
+      },
+      {
+        "calcul": "520 : 12 =",
+        "options": [
+          {
+            "text": "(500 : 10) + (20 : 2)",
+            "isCorrect": false
+          },
+          {
+            "text": "(500 : 12) + (20 : 12)",
+            "isCorrect": true
+          },
+          {
+            "text": "(52 : 12) + (10 : 12)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(500 : 12) + (20 : 12)"
+      },
+      {
+        "calcul": "63 : 100 =",
+        "options": [
+          {
+            "text": "(60 : 100) + (3 : 0)",
+            "isCorrect": false
+          },
+          {
+            "text": "(21 : 100) + (3 : 100)",
+            "isCorrect": false
+          },
+          {
+            "text": "(60 : 100) + (3 : 100)",
+            "isCorrect": true
+          }
+        ],
+        "bonneReponse": "(60 : 100) + (3 : 100)"
+      },
+      {
+        "calcul": "34 × 30 =",
+        "options": [
+          {
+            "text": "(30 × 30) + (4 × 30)",
+            "isCorrect": true
+          },
+          {
+            "text": "(30 × 30) + (4 × 0)",
+            "isCorrect": false
+          },
+          {
+            "text": "(17 × 30) + (2 × 30)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(30 × 30) + (4 × 30)"
+      },
+      {
+        "calcul": "310 : 100 =",
+        "options": [
+          {
+            "text": "(300 : 100) + (10 : 100)",
+            "isCorrect": true
+          },
+          {
+            "text": "(300 : 100) + (10 : 0)",
+            "isCorrect": false
+          },
+          {
+            "text": "(31 : 100) + (10 : 100)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(300 : 100) + (10 : 100)"
+      },
+      {
+        "calcul": "730 : 52 =",
+        "options": [
+          {
+            "text": "(700 : 52) + (30 : 52)",
+            "isCorrect": true
+          },
+          {
+            "text": "(700 : 50) + (30 : 2)",
+            "isCorrect": false
+          },
+          {
+            "text": "(73 : 52) + (10 : 52)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(700 : 52) + (30 : 52)"
+      },
+      {
+        "calcul": "92 : 12 =",
+        "options": [
+          {
+            "text": "(90 : 10) + (2 : 2)",
+            "isCorrect": false
+          },
+          {
+            "text": "(46 : 12) + (2 : 12)",
+            "isCorrect": false
+          },
+          {
+            "text": "(90 : 12) + (2 : 12)",
+            "isCorrect": true
+          }
+        ],
+        "bonneReponse": "(90 : 12) + (2 : 12)"
+      },
+      {
+        "calcul": "310 × 30 =",
+        "options": [
+          {
+            "text": "(300 × 30) + (10 × 0)",
+            "isCorrect": false
+          },
+          {
+            "text": "(300 × 30) + (10 × 30)",
+            "isCorrect": true
+          },
+          {
+            "text": "(31 × 30) + (10 × 30)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(300 × 30) + (10 × 30)"
+      },
+      {
+        "calcul": "48 × 45 =",
+        "options": [
+          {
+            "text": "(40 × 45) + (8 × 45)",
+            "isCorrect": true
+          },
+          {
+            "text": "(40 × 10) + (8 × 5)",
+            "isCorrect": false
+          },
+          {
+            "text": "(4 × 45) + (12 × 45)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(40 × 45) + (8 × 45)"
+      },
+      {
+        "calcul": "310 × 60 =",
+        "options": [
+          {
+            "text": "(31 × 60) + (10 × 60)",
+            "isCorrect": false
+          },
+          {
+            "text": "(300 × 60) + (10 × 0)",
+            "isCorrect": false
+          },
+          {
+            "text": "(300 × 60) + (10 × 60)",
+            "isCorrect": true
+          }
+        ],
+        "bonneReponse": "(300 × 60) + (10 × 60)"
+      },
+      {
+        "calcul": "520 : 12 =",
+        "options": [
+          {
+            "text": "(500 : 10) + (20 : 2)",
+            "isCorrect": false
+          },
+          {
+            "text": "(500 : 12) + (20 : 12)",
+            "isCorrect": true
+          },
+          {
+            "text": "(260 : 12) + (2 : 12)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(500 : 12) + (20 : 12)"
+      },
+      {
+        "calcul": "730 : 45 =",
+        "options": [
+          {
+            "text": "(700 : 40) + (30 : 5)",
+            "isCorrect": false
+          },
+          {
+            "text": "(360 : 45) + (2 : 45)",
+            "isCorrect": false
+          },
+          {
+            "text": "(700 : 45) + (30 : 45)",
+            "isCorrect": true
+          }
+        ],
+        "bonneReponse": "(700 : 45) + (30 : 45)"
+      },
+      {
+        "calcul": "25 × 60 =",
+        "options": [
+          {
+            "text": "(5 × 60) + (5 × 60)",
+            "isCorrect": false
+          },
+          {
+            "text": "(20 × 60) + (5 × 0)",
+            "isCorrect": false
+          },
+          {
+            "text": "(20 × 60) + (5 × 60)",
+            "isCorrect": true
+          }
+        ],
+        "bonneReponse": "(20 × 60) + (5 × 60)"
+      },
+      {
+        "calcul": "25 × 45 =",
+        "options": [
+          {
+            "text": "(20 × 45) + (5 × 45)",
+            "isCorrect": true
+          },
+          {
+            "text": "(5 × 45) + (5 × 45)",
+            "isCorrect": false
+          },
+          {
+            "text": "(20 × 40) + (5 × 5)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(20 × 45) + (5 × 45)"
+      },
+      {
+        "calcul": "34 : 52 =",
+        "options": [
+          {
+            "text": "(30 : 50) + (4 : 2)",
+            "isCorrect": false
+          },
+          {
+            "text": "(17 : 52) + (2 : 52)",
+            "isCorrect": false
+          },
+          {
+            "text": "(30 : 52) + (4 : 52)",
+            "isCorrect": true
+          }
+        ],
+        "bonneReponse": "(30 : 52) + (4 : 52)"
+      },
+      {
+        "calcul": "310 : 23 =",
+        "options": [
+          {
+            "text": "(300 : 20) + (10 : 3)",
+            "isCorrect": false
+          },
+          {
+            "text": "(31 : 23) + (10 : 23)",
+            "isCorrect": false
+          },
+          {
+            "text": "(300 : 23) + (10 : 23)",
+            "isCorrect": true
+          }
+        ],
+        "bonneReponse": "(300 : 23) + (10 : 23)"
+      },
+      {
+        "calcul": "25 × 52 =",
+        "options": [
+          {
+            "text": "(5 × 52) + (5 × 52)",
+            "isCorrect": false
+          },
+          {
+            "text": "(20 × 52) + (5 × 52)",
+            "isCorrect": true
+          },
+          {
+            "text": "(20 × 50) + (5 × 2)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(20 × 52) + (5 × 52)"
+      },
+      {
+        "calcul": "310 : 30 =",
+        "options": [
+          {
+            "text": "(300 : 30) + (10 : 0)",
+            "isCorrect": false
+          },
+          {
+            "text": "(31 : 30) + (10 : 30)",
+            "isCorrect": false
+          },
+          {
+            "text": "(300 : 30) + (10 : 30)",
+            "isCorrect": true
+          }
+        ],
+        "bonneReponse": "(300 : 30) + (10 : 30)"
+      },
+      {
+        "calcul": "730 : 52 =",
+        "options": [
+          {
+            "text": "(73 : 52) + (10 : 52)",
+            "isCorrect": false
+          },
+          {
+            "text": "(700 : 50) + (30 : 2)",
+            "isCorrect": false
+          },
+          {
+            "text": "(700 : 52) + (30 : 52)",
+            "isCorrect": true
+          }
+        ],
+        "bonneReponse": "(700 : 52) + (30 : 52)"
+      },
+      {
+        "calcul": "92 : 60 =",
+        "options": [
+          {
+            "text": "(46 : 60) + (2 : 60)",
+            "isCorrect": false
+          },
+          {
+            "text": "(90 : 60) + (2 : 60)",
+            "isCorrect": true
+          },
+          {
+            "text": "(90 : 60) + (2 : 0)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(90 : 60) + (2 : 60)"
+      },
+      {
+        "calcul": "730 × 45 =",
+        "options": [
+          {
+            "text": "(73 × 45) + (10 × 45)",
+            "isCorrect": false
+          },
+          {
+            "text": "(700 × 40) + (30 × 5)",
+            "isCorrect": false
+          },
+          {
+            "text": "(700 × 45) + (30 × 45)",
+            "isCorrect": true
+          }
+        ],
+        "bonneReponse": "(700 × 45) + (30 × 45)"
+      },
+      {
+        "calcul": "310 : 52 =",
+        "options": [
+          {
+            "text": "(300 : 50) + (10 : 2)",
+            "isCorrect": false
+          },
+          {
+            "text": "(31 : 52) + (10 : 52)",
+            "isCorrect": false
+          },
+          {
+            "text": "(300 : 52) + (10 : 52)",
+            "isCorrect": true
+          }
+        ],
+        "bonneReponse": "(300 : 52) + (10 : 52)"
+      },
+      {
+        "calcul": "520 × 100 =",
+        "options": [
+          {
+            "text": "(500 × 100) + (20 × 0)",
+            "isCorrect": false
+          },
+          {
+            "text": "(52 × 100) + (10 × 100)",
+            "isCorrect": false
+          },
+          {
+            "text": "(500 × 100) + (20 × 100)",
+            "isCorrect": true
+          }
+        ],
+        "bonneReponse": "(500 × 100) + (20 × 100)"
+      },
+      {
+        "calcul": "440 × 45 =",
+        "options": [
+          {
+            "text": "(44 × 45) + (10 × 45)",
+            "isCorrect": false
+          },
+          {
+            "text": "(400 × 45) + (40 × 45)",
+            "isCorrect": true
+          },
+          {
+            "text": "(400 × 40) + (40 × 5)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(400 × 45) + (40 × 45)"
+      },
+      {
+        "calcul": "730 : 30 =",
+        "options": [
+          {
+            "text": "(700 : 30) + (30 : 0)",
+            "isCorrect": false
+          },
+          {
+            "text": "(700 : 30) + (30 : 30)",
+            "isCorrect": true
+          },
+          {
+            "text": "(73 : 30) + (10 : 30)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(700 : 30) + (30 : 30)"
+      },
+      {
+        "calcul": "87 : 45 =",
+        "options": [
+          {
+            "text": "(80 : 40) + (7 : 5)",
+            "isCorrect": false
+          },
+          {
+            "text": "(29 : 45) + (3 : 45)",
+            "isCorrect": false
+          },
+          {
+            "text": "(80 : 45) + (7 : 45)",
+            "isCorrect": true
+          }
+        ],
+        "bonneReponse": "(80 : 45) + (7 : 45)"
+      },
+      {
+        "calcul": "25 × 52 =",
+        "options": [
+          {
+            "text": "(20 × 52) + (5 × 52)",
+            "isCorrect": true
+          },
+          {
+            "text": "(20 × 50) + (5 × 2)",
+            "isCorrect": false
+          },
+          {
+            "text": "(5 ×52) + (5 × 52)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(20 × 52) + (5 × 52)"
+      },
+      {
+        "calcul": "48 × 12 =",
+        "options": [
+          {
+            "text": "(40 × 12) + (8 × 12)",
+            "isCorrect": true
+          },
+          {
+            "text": "(12 × 12) + (4 × 12)",
+            "isCorrect": false
+          },
+          {
+            "text": "(40 × 10) + (8 × 2)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(40 × 12) + (8 × 12)"
+      },
+      {
+        "calcul": "440 × 45 =",
+        "options": [
+          {
+            "text": "(400 × 45) + (40 × 45)",
+            "isCorrect": true
+          },
+          {
+            "text": "(400 × 40) + (40 × 5)",
+            "isCorrect": false
+          },
+          {
+            "text": "(44 × 45) + (10 × 45)",
+            "isCorrect": false
+          }
+        ],
+        "bonneReponse": "(400 × 45) + (40 × 45)"
+      },
+      {
+        "calcul": "34 : 30 =",
+        "options": [
+          {
+            "text": "(30 : 30) + (4 : 0)",
+            "isCorrect": false
+          },
+          {
+            "text": "(17 : 30) + (2 : 30)",
+            "isCorrect": false
+          },
+          {
+            "text": "(30 : 30) + (4 : 30)",
+            "isCorrect": true
+          }
+        ],
+        "bonneReponse": "(30 : 30) + (4 : 30)"
+      }
+    ];
+
+    // Variables globales
+    let currentExerciseType = '';
+    let currentExerciseIndex = 0;
+    let exercises = [];
+    let score = 0;
+    let exerciseHistory = [];
+    let exerciseResults = []; // Pour stocker les résultats de chaque exercice
+    
+    // Fonction pour afficher la page d'accueil
+    function showHomePage() {
+      document.getElementById('home-page').style.display = 'block';
+      document.getElementById('theory-page').style.display = 'none';
+      document.getElementById('exercise-page').style.display = 'none';
+      document.getElementById('recap-page').style.display = 'none';
+      document.getElementById('history-page').style.display = 'none';
+      
+      // Réinitialiser l'état des exercices
+      currentExerciseIndex = 0;
+      exercises = [];
+      score = 0;
+      exerciseResults = [];
+    }
+    
+    // Fonction pour confirmer le retour à l'accueil pendant un exercice
+    function confirmReturnHome() {
+      if (confirm('Voulez-vous vraiment quitter cet exercice ? Votre progression sera perdue.')) {
+        showHomePage();
+      }
+    }
+    
+    // Fonction pour afficher la page théorie
+    function showTheoryPage() {
+      document.getElementById('home-page').style.display = 'none';
+      document.getElementById('theory-page').style.display = 'block';
+      document.getElementById('exercise-page').style.display = 'none';
+      document.getElementById('recap-page').style.display = 'none';
+      document.getElementById('history-page').style.display = 'none';
+    }
+    
+    // Fonction pour afficher la page historique
+    function showHistoryPage() {
+      document.getElementById('home-page').style.display = 'none';
+      document.getElementById('theory-page').style.display = 'none';
+      document.getElementById('exercise-page').style.display = 'none';
+      document.getElementById('recap-page').style.display = 'none';
+      document.getElementById('history-page').style.display = 'block';
+      
+      // Charger l'historique depuis le stockage local
+      loadHistory();
+    }
+    
+    // Fonction pour charger l'historique
+    function loadHistory() {
+      const savedHistory = localStorage.getItem('decomposmath_history');
+      if (savedHistory) {
+        exerciseHistory = JSON.parse(savedHistory);
+        displayHistory();
+      }
+    }
+    
+    // Fonction pour afficher l'historique
+    function displayHistory() {
+      if (exerciseHistory.length === 0) {
+        document.getElementById('history-content').innerHTML = '<p>Aucun exercice n\'a encore été effectué.</p>';
+        return;
+      }
+      
+      let historyHTML = '<table><tr><th>Date</th><th>Type</th><th>Score</th></tr>';
+      
+      exerciseHistory.forEach(entry => {
+        historyHTML += `<tr>
+          <td>${entry.date}</td>
+          <td>${entry.type}</td>
+          <td>${entry.score}/${entry.total}</td>
+        </tr>`;
+      });
+      
+      historyHTML += '</table>';
+      document.getElementById('history-content').innerHTML = historyHTML;
+    }
+    
+    // Fonction pour sauvegarder l'historique
+    function saveHistory(type, score, total) {
+      const entry = {
+        date: new Date().toLocaleString(),
+        type: type,
+        score: score,
+        total: total
+      };
+      
+      exerciseHistory.unshift(entry);
+      if (exerciseHistory.length > 10) {
+        exerciseHistory.pop();
+      }
+      
+      localStorage.setItem('decomposmath_history', JSON.stringify(exerciseHistory));
+    }
+    
+    // Fonction pour démarrer une série d'exercices
+    function startExercises(type) {
+      currentExerciseType = type;
+      currentExerciseIndex = 0;
+      score = 0;
+      exerciseResults = [];
+      
+      // Filtrer les exercices selon le type
+      let filteredExercises = [];
+      if (type === 'multiplication') {
+        filteredExercises = allExercises.filter(ex => ex.calcul.includes('×'));
+      } else if (type === 'division') {
+        filteredExercises = allExercises.filter(ex => ex.calcul.includes(':'));
+      } else { // mixte
+        filteredExercises = [...allExercises];
+      }
+      
+      // Mélanger les exercices et prendre le nombre requis
+      const numExercises = (type === 'mixte') ? 10 : 5;
+      
+      // Mélanger et s'assurer qu'il n'y a pas de doublons de calculs
+      exercises = [];
+      const usedCalculs = new Set();
+      
+      // Mélanger d'abord tous les exercices disponibles
+      const shuffledExercises = shuffleArray([...filteredExercises]);
+      
+      // Sélectionner le nombre requis d'exercices uniques
+      for (const exercise of shuffledExercises) {
+        if (!usedCalculs.has(exercise.calcul)) {
+          usedCalculs.add(exercise.calcul);
+          exercises.push(exercise);
+          
+          if (exercises.length >= numExercises) {
+            break;
+          }
+        }
+      }
+      
+      // Si on n'a pas assez d'exercices uniques, compléter avec des exercices modifiés
+      if (exercises.length < numExercises) {
+        console.warn("Pas assez d'exercices uniques disponibles, certains calculs seront légèrement modifiés.");
+        
+        // Fonction pour modifier légèrement un calcul
+        const modifyCalcul = (calcul) => {
+          // Exemple simple: ajouter un petit nombre au premier opérande
+          const parts = calcul.split(/[×:]/);
+          const operator = calcul.includes('×') ? '×' : ':';
+          const firstNum = parseInt(parts[0].trim());
+          const secondNum = parseInt(parts[1].replace('=', '').trim());
+          
+          return `${firstNum + 1} ${operator} ${secondNum} =`;
+        };
+        
+        // Ajouter des exercices modifiés jusqu'à atteindre le nombre requis
+        let i = 0;
+        while (exercises.length < numExercises && i < filteredExercises.length) {
+          const baseExercise = JSON.parse(JSON.stringify(filteredExercises[i]));
+          const modifiedCalcul = modifyCalcul(baseExercise.calcul);
+          
+          if (!usedCalculs.has(modifiedCalcul)) {
+            baseExercise.calcul = modifiedCalcul;
+            usedCalculs.add(modifiedCalcul);
+            exercises.push(baseExercise);
+          }
+          
+          i++;
+        }
+      }
+      
+      // Mettre à jour le titre
+      document.getElementById('exercise-title').textContent = `Exercice - ${getExerciseTypeLabel(type)}`;
+      
+      // Afficher le premier exercice
+      displayCurrentExercise();
+      
+      // Afficher la page d'exercice
+      document.getElementById('home-page').style.display = 'none';
+      document.getElementById('theory-page').style.display = 'none';
+      document.getElementById('exercise-page').style.display = 'block';
+      document.getElementById('recap-page').style.display = 'none';
+      document.getElementById('history-page').style.display = 'none';
+    }
+    
+    // Fonction pour obtenir le libellé d'un type d'exercice
+    function getExerciseTypeLabel(type) {
+      switch (type) {
+        case 'multiplication': return 'multiplication';
+        case 'division': return 'division';
+        case 'mixte': return 'mixte';
+        default: return type;
+      }
+    }
+    
+    // Fonction pour mélanger un tableau (algorithme de Fisher-Yates)
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+    
+    // Fonction pour afficher l'exercice actuel
+    function displayCurrentExercise() {
+      if (currentExerciseIndex >= exercises.length) {
+        displayRecap();
+        return;
+      }
+      
+      const exercise = exercises[currentExerciseIndex];
+      
+      // Afficher la question
+      document.getElementById('exercise-question').textContent = exercise.calcul;
+      
+      // Afficher les choix
+      const choicesContainer = document.getElementById('choices-container');
+      choicesContainer.innerHTML = '';
+      
+      // Mélanger les options pour que la bonne réponse ne soit pas toujours à la même position
+      const shuffledOptions = shuffleArray([...exercise.options]);
+      
+      shuffledOptions.forEach((option, index) => {
+        const choiceBtn = document.createElement('button');
+        choiceBtn.className = 'choice-btn';
+        choiceBtn.textContent = option.text;
+        choiceBtn.onclick = () => selectChoice(option.text, option.isCorrect);
+        choicesContainer.appendChild(choiceBtn);
+      });
+      
+      // Effacer le feedback précédent
+      document.getElementById('feedback-container').innerHTML = '';
+      
+      // Mettre à jour la barre de progression
+      updateProgressBar();
+    }
+    
+    // Fonction pour mettre à jour la barre de progression
+    function updateProgressBar() {
+      const progressBar = document.getElementById('progress-bar');
+      const progress = ((currentExerciseIndex + 1) / exercises.length) * 100;
+      progressBar.style.width = `${progress}%`;
+      progressBar.textContent = `${currentExerciseIndex + 1}/${exercises.length}`;
+    }
+    
+    // Fonction pour sélectionner un choix
+    function selectChoice(choiceText, isCorrect) {
+      const exercise = exercises[currentExerciseIndex];
+      const feedbackContainer = document.getElementById('feedback-container');
+      
+      // Désactiver tous les boutons de choix
+      const choiceButtons = document.querySelectorAll('.choice-btn');
+      choiceButtons.forEach(btn => {
+        btn.disabled = true;
+      });
+      
+      // Enregistrer le résultat de cet exercice
+      exerciseResults.push({
+        calcul: exercise.calcul,
+        choix: choiceText,
+        bonneReponse: exercise.bonneReponse,
+        correct: isCorrect
+      });
+      
+      if (isCorrect) {
+        // Bonne réponse
+        feedbackContainer.innerHTML = `
+          <div class="feedback-success">
+            <h3>Correct !</h3>
+            <p>Vous avez bien identifié la bonne décomposition.</p>
+            <p>${exercise.calcul} = ${exercise.bonneReponse}</p>
+          </div>
+        `;
+        score++;
+        
+        // Passer à l'exercice suivant après 3 secondes
+        setTimeout(() => {
+          currentExerciseIndex++;
+          displayCurrentExercise();
+        }, 3000);
+      } else {
+        // Mauvaise réponse
+        feedbackContainer.innerHTML = `
+          <div class="feedback-error">
+            <h3>Incorrect !</h3>
+            <p>Ce n'est pas la bonne décomposition.</p>
+            <p>La décomposition correcte est : ${exercise.bonneReponse}</p>
+          </div>
+        `;
+        
+        // Passer à l'exercice suivant après 8 secondes
+        setTimeout(() => {
+          currentExerciseIndex++;
+          displayCurrentExercise();
+        }, 8000);
+      }
+    }
+    
+    // Fonction pour afficher le récapitulatif
+    function displayRecap() {
+      // Mettre à jour le titre du récapitulatif
+      document.getElementById('recap-title').textContent = `Récapitulatif des exercices de ${getExerciseTypeLabel(currentExerciseType)}`;
+      
+      // Créer le contenu du récapitulatif
+      let recapHTML = `<p><strong>Score final:</strong> ${score}/${exercises.length}</p>`;
+      
+      // Ajouter le détail de chaque exercice
+      recapHTML += '<h3>Détail des exercices :</h3>';
+      
+      exerciseResults.forEach((result, index) => {
+        const itemClass = result.correct ? 'recap-correct' : 'recap-incorrect';
+        recapHTML += `
+          <div class="recap-item ${itemClass}">
+            <p><strong>Exercice ${index + 1}:</strong> ${result.calcul}</p>
+            <p>Votre choix: ${result.choix}</p>
+            <p>Bonne réponse: ${result.bonneReponse}</p>
+            <p>${result.correct ? '✓ Correct' : '✗ Incorrect'}</p>
+          </div>
+        `;
+      });
+      
+      // Ajouter à l'historique
+      saveHistory(getExerciseTypeLabel(currentExerciseType), score, exercises.length);
+      
+      // Afficher le récapitulatif
+      document.getElementById('recap-content').innerHTML = recapHTML;
+      
+      // Afficher la page de récapitulatif
+      document.getElementById('home-page').style.display = 'none';
+      document.getElementById('theory-page').style.display = 'none';
+      document.getElementById('exercise-page').style.display = 'none';
+      document.getElementById('recap-page').style.display = 'block';
+      document.getElementById('history-page').style.display = 'none';
+    }
+    
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', function() {
+      // Charger l'historique
+      loadHistory();
+    });
+  </script>
+</body>
+</html>

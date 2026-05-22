@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Variamath</title>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600&family=Source+Sans+Pro&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --violet: #8f67ca;
+      --turquoise: #01b7c4;
+      --vert: #01b7c4;
+      --blanc: #ffffff;
+      --gris-clair: #f0f0f0;
+      --noir: #222;
+      --progress-bar-bg: #e0e0e0;
+      --progress-bar-fill: var(--violet);
+      --feedback-success: #28a745;
+      --feedback-error: #dc3545;
+    }
+    body {
+      margin: 0;
+      font-family: 'Source Sans Pro', sans-serif;
+      background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+      color: var(--noir);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      padding: 1rem 0;
+    }
+    main {
+      flex-grow: 1;
+      padding: 0 1rem;
+    }
+    h1 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--violet);
+      font-size: 2.5rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--noir);
+      font-size: 1.8rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    .app-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #dcdcdc;
+      border-radius: 12px;
+      background-color: var(--blanc);
+      font-size: 1.3rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    button {
+      border: none;
+      padding: 14px 22px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      color: var(--blanc);
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+    .theory-btn { background-color: var(--turquoise); }
+    .exercise-btn { background-color: var(--violet); }
+    .action-btn { background-color: var(--vert); margin-top: 10px; }
+    .home-btn { background-color: #f0ad4e; margin-top: 15px; } /* Bouton retour orange */
+    .hidden { display: none !important; }
+    .content-box {
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 2px solid var(--violet);
+      border-radius: 12px;
+      background-color: var(--blanc);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: left;
+      font-size: 1.3rem;
+      line-height: 1.8;
+    }
+    input[type="text"] {
+        font-size: 1.2rem; 
+        padding: 10px;
+        width: calc(100% - 22px); /* Ajusté pour padding */
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+    #progress-bar-container {
+        width: 100%;
+        background-color: var(--progress-bar-bg);
+        border-radius: 5px;
+        margin: 15px 0;
+        height: 20px;
+        overflow: hidden;
+    }
+    #progress-bar-fill {
+        height: 100%;
+        width: 0%;
+        background-color: var(--progress-bar-fill);
+        border-radius: 5px;
+        transition: width 0.3s ease-in-out;
+        text-align: center;
+        color: white;
+        font-size: 0.9rem;
+        line-height: 20px;
+    }
+    .exercise-expression {
+        font-size: 1.5rem;
+        margin: 15px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        border: 1px dashed #ccc;
+    }
+    .feedback-success {
+        background-color: var(--feedback-success);
+        color: white;
+        padding: 10px;
+        border-radius: 8px;
+        margin: 10px 0;
+    }
+    .feedback-error {
+        background-color: var(--feedback-error);
+        color: white;
+        padding: 10px;
+        border-radius: 8px;
+        margin: 10px 0;
+    }
+    .recap-item {
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 8px;
+    }
+    .recap-success {
+        border: 1px solid var(--feedback-success);
+        background-color: rgba(40, 167, 69, 0.1);
+    }
+    .recap-error {
+        border: 1px solid var(--feedback-error);
+        background-color: rgba(220, 53, 69, 0.1);
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+    th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    footer {
+      margin-top: 2rem;
+      padding: 1rem;
+      font-size: 1rem;
+      background-color: #ffffff;
+      border-top: 1px solid #eee;
+    }
+    footer a {
+      color: var(--violet);
+      text-decoration: none;
+      font-weight: bold;
+    }
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      button {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+        width: 100%;
+        max-width: 250px;
+        margin: 5px auto;
+      }
+      .content-box {
+        padding: 15px;
+        font-size: 1rem;
+        margin: 10px;
+        width: calc(100% - 20px);
+      }
+      .app-section {
+        padding: 10px;
+        margin-bottom: 15px;
+      }
+      table {
+        font-size: 0.9rem;
+      }
+      th, td {
+        padding: 5px;
+      }
+      .buttons-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+      .exercise-expression {
+        font-size: 1.2rem;
+      }
+      input[type="text"] {
+        font-size: 1rem;
+      }
+      .recap-item {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header><h1>Variamath</h1></header>
+  <main id="main-content">
+    <div id="home-view">
+        <section class="app-section" id="theory-section-main-container">
+          <h2>Théorie</h2>
+          <div class="buttons-container">
+            <button class="theory-btn" id="show-theory-btn">Comment faire ?</button>
+          </div>
+        </section>
+
+        <section class="app-section" id="exercise-section-main-container">
+          <h2>Exercices</h2>
+          <div class="buttons-container" id="exercise-type-buttons">
+            <button class="exercise-btn" data-type="multiplication">Multiplication</button>
+            <button class="exercise-btn" data-type="division">Division</button>
+            <button class="exercise-btn" data-type="mixte">Mixte</button>
+          </div>
+        </section>
+
+        <section class="app-section" id="history-section-main-container">
+          <h2>Historique</h2>
+          <button class="action-btn" id="show-history-btn">Afficher l'historique</button>
+        </section>
+    </div>
+
+    <div class="content-box hidden" id="theory-content-box">
+        <div id="theory-text-content"></div>
+        <button class="home-btn" id="theory-home-btn">Retour à l'accueil</button>
+    </div>
+
+    <div class="content-box hidden" id="exercise-box">
+        <button class="home-btn" id="exercise-in-progress-home-btn">Retour à l'accueil</button>
+        <div id="progress-bar-container" class="hidden">
+          <div id="progress-bar-fill">0 / 5</div>
+        </div>
+        <div id="exercise-question" class="exercise-expression"></div>
+        <input type="text" id="exercise-answer" placeholder="Votre réponse">
+        <button class="action-btn" id="validate-answer-btn">Valider</button>
+        <div id="exercise-feedback"></div>
+        <button class="home-btn hidden" id="exercise-results-home-btn">Retour à l'accueil</button>
+    </div>
+
+    <div class="content-box hidden" id="history-box">
+        <div id="history-list-content"></div>
+        <button class="home-btn" id="history-home-btn">Retour à l'accueil</button>
+    </div>
+
+  </main>
+
+  <footer>
+    Variamath par <a href="https://lesrochdur.com/" target="_blank">Les RochDur</a>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Contenu théorique
+        const THEORIE_VARIATIONS = `
+          <p><center><strong>🧠 COMPARER DES MULTIPLICATIONS ET DES DIVISIONS À UNE OPÉRATION DE RÉFÉRENCE</strong></center></p>
+          <p>Quand une multiplication ou une division est une variation d'une opération connue, il est possible de retrouver le nouveau résultat plus rapidement en observant les changements dans les nombres.</p>
+          
+          <p><strong><center>✖️ Multiplication : effet d'une variation sur un facteur</strong></center></p>
+          <p>Exemples :</p>
+          <p>6 × 8 = 48 (référence)</p>
+          <p>6 × 9 →  48 + 6 = 54 (le 8 est devenu 9 → +1)</p>
+          <p>6 × 7 →  48 − 6 = 42 (le 8 est devenu 7 → −1)</p>
+          <p>12 × 8 →  48 × 2 = 96 (le 6 est devenu 12 → ×2)</p>
+          <p>60 × 8 →  48 × 10 = 480 (le 6 est devenu 60 → ×10)</p>
+          
+
+          <p><strong><center>➗ Division : effet d'une variation sur le dividende ou le diviseur</strong></center></p>
+          <p>Exemples :</p>
+          <p>48 : 6 = 8 (référence)</p>
+          <p>96 : 6 → 8 × 2 = 16 (le dividende a été ×2)</p>
+          <p>48 : 3 → 8 × 2 = 16 (le diviseur a été : 2)</p>
+          <p>480 : 6 → 8 × 10 = 80 (le dividende a été ×10)</p>
+          <p>48 : 60 → 8 : 10 = 0,8 (le diviseur a été ×10)</p>
+          
+
+          <p><strong><center>✅ Résumé des effets (exemples à adapter selon les cas : ×10, :10, etc.)</strong></center></p>
+          <table>
+            <tr>
+              <th>Variation observée</th>
+              <th>Effet sur le résultat en multiplication</th>
+              <th>Effet sur le résultat en division</th>
+            </tr>
+            <tr>
+              <td>Facteur ×2</td>
+              <td>Produit ×2</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>Facteur ×10</td>
+              <td>Produit ×10</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>Facteur :2</td>
+              <td>Produit :2</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>Facteur +1</td>
+              <td>Produit + l'autre facteur</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>Facteur −1</td>
+              <td>Produit − l'autre facteur</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>Dividende ×2</td>
+              <td>—</td>
+              <td>Quotient ×2</td>
+            </tr>
+            <tr>
+              <td>Dividende ×10</td>
+              <td>—</td>
+              <td>Quotient ×10</td>
+            </tr>
+            <tr>
+              <td>Dividende :2</td>
+              <td>—</td>
+              <td>Quotient :2</td>
+            </tr>
+            <tr>
+              <td>Diviseur ×2</td>
+              <td>—</td>
+              <td>Quotient :2</td>
+            </tr>
+            <tr>
+              <td>Diviseur ×10</td>
+              <td>—</td>
+              <td>Quotient :10</td>
+            </tr>
+            <tr>
+              <td>Diviseur :2</td>
+              <td>—</td>
+              <td>Quotient ×2</td>
+            </tr>
+          </table>
+          
+          <p>Ces exemples servent de repères. L'adaptation reste nécessaire en fonction des valeurs concrètes rencontrées (×10, :10, ×100, etc.).</p>
+        `;
+
+        // Types d'exercices
+        const exerciseTypes = {
+          multiplication: {
+            label: "Multiplication",
+            generate: function() {
+              // Générer des exercices de multiplication
+              const types = [
+                'facteur_plus_un',
+                'facteur_moins_un',
+                'facteur_fois_deux',
+                'facteur_fois_dix',
+                'facteur_divise_deux'
+              ];
+              const type = types[Math.floor(Math.random() * types.length)];
+              
+              let reference, question, answer, explanation;
+              
+              switch(type) {
+                case 'facteur_plus_un':
+                  // Exemple: Si 7 × 8 = 56, alors 7 × 9 = ?
+                  const base1 = Math.floor(Math.random() * 9) + 2;
+                  const base2 = Math.floor(Math.random() * 9) + 2;
+                  reference = base1 * base2;
+                  answer = reference + base1;
+                  question = `Si ${base1} × ${base2} = ${reference}, alors ${base1} × ${base2 + 1} = [ ____ ]`;
+                  explanation = `Pour calculer ${base1} × ${base2 + 1}, on part de ${base1} × ${base2} = ${reference}. Comme le deuxième facteur augmente de 1, on ajoute ${base1} au résultat → ${reference} + ${base1} = ${answer}.`;
+                  break;
+                  
+                case 'facteur_moins_un':
+                  // Exemple: Si 7 × 8 = 56, alors 7 × 7 = ?
+                  const base3 = Math.floor(Math.random() * 9) + 2;
+                  const base4 = Math.floor(Math.random() * 9) + 3; // Au moins 3 pour pouvoir soustraire 1
+                  reference = base3 * base4;
+                  answer = reference - base3;
+                  question = `Si ${base3} × ${base4} = ${reference}, alors ${base3} × ${base4 - 1} = [ ____ ]`;
+                  explanation = `Pour calculer ${base3} × ${base4 - 1}, on part de ${base3} × ${base4} = ${reference}. Comme le deuxième facteur diminue de 1, on soustrait ${base3} au résultat → ${reference} - ${base3} = ${answer}.`;
+                  break;
+                  
+                case 'facteur_fois_deux':
+                  // Exemple: Si 7 × 8 = 56, alors 14 × 8 = ?
+                  const base5 = Math.floor(Math.random() * 9) + 2;
+                  const base6 = Math.floor(Math.random() * 9) + 2;
+                  reference = base5 * base6;
+                  answer = reference * 2;
+                  question = `Si ${base5} × ${base6} = ${reference}, alors ${base5 * 2} × ${base6} = [ ____ ]`;
+                  explanation = `Pour calculer ${base5 * 2} × ${base6}, on part de ${base5} × ${base6} = ${reference}. Comme le premier facteur est multiplié par 2, le résultat est aussi multiplié par 2 → ${reference} × 2 = ${answer}.`;
+                  break;
+                  
+                case 'facteur_fois_dix':
+                  // Exemple: Si 7 × 8 = 56, alors 70 × 8 = ?
+                  const base7 = Math.floor(Math.random() * 9) + 2;
+                  const base8 = Math.floor(Math.random() * 9) + 2;
+                  reference = base7 * base8;
+                  answer = reference * 10;
+                  question = `Si ${base7} × ${base8} = ${reference}, alors ${base7 * 10} × ${base8} = [ ____ ]`;
+                  explanation = `Pour calculer ${base7 * 10} × ${base8}, on part de ${base7} × ${base8} = ${reference}. Comme le premier facteur est multiplié par 10, le résultat est aussi multiplié par 10 → ${reference} × 10 = ${answer}.`;
+                  break;
+                  
+                case 'facteur_divise_deux':
+                  // Exemple: Si 8 × 6 = 48, alors 4 × 6 = ?
+                  const base9 = (Math.floor(Math.random() * 5) + 1) * 2; // Nombre pair pour pouvoir diviser par 2
+                  const base10 = Math.floor(Math.random() * 9) + 2;
+                  reference = base9 * base10;
+                  answer = reference / 2;
+                  question = `Si ${base9} × ${base10} = ${reference}, alors ${base9 / 2} × ${base10} = [ ____ ]`;
+                  explanation = `Pour calculer ${base9 / 2} × ${base10}, on part de ${base9} × ${base10} = ${reference}. Comme le premier facteur est divisé par 2, le résultat est aussi divisé par 2 → ${reference} : 2 = ${answer}.`;
+                  break;
+              }
+              
+              return { 
+                type: 'multiplication', 
+                questionText: question, 
+                answer: answer, 
+                explanation: explanation 
+              };
+            },
+            maxExercises: 5
+          },
+          division: {
+            label: "Division",
+            generate: function() {
+              // Générer des exercices de division
+              const types = [
+                'dividende_fois_deux',
+                'dividende_fois_dix',
+                'dividende_divise_deux',
+                'diviseur_fois_deux',
+                'diviseur_divise_deux'
+              ];
+              const type = types[Math.floor(Math.random() * types.length)];
+              
+              let reference, question, answer, explanation;
+              
+              switch(type) {
+                case 'dividende_fois_deux':
+                  // Exemple: Si 48 : 6 = 8, alors 96 : 6 = ?
+                  const diviseur1 = Math.floor(Math.random() * 8) + 2;
+                  const quotient1 = Math.floor(Math.random() * 9) + 2;
+                  const dividende1 = diviseur1 * quotient1;
+                  reference = quotient1;
+                  answer = quotient1 * 2;
+                  question = `Si ${dividende1} : ${diviseur1} = ${reference}, alors ${dividende1 * 2} : ${diviseur1} = [ ____ ]`;
+                  explanation = `Pour calculer ${dividende1 * 2} : ${diviseur1}, on part de ${dividende1} : ${diviseur1} = ${reference}. Comme le dividende est multiplié par 2, le résultat est aussi multiplié par 2 → ${reference} × 2 = ${answer}.`;
+                  break;
+                  
+                case 'dividende_fois_dix':
+                  // Exemple: Si 48 : 6 = 8, alors 480 : 6 = ?
+                  const diviseur2 = Math.floor(Math.random() * 8) + 2;
+                  const quotient2 = Math.floor(Math.random() * 9) + 2;
+                  const dividende2 = diviseur2 * quotient2;
+                  reference = quotient2;
+                  answer = quotient2 * 10;
+                  question = `Si ${dividende2} : ${diviseur2} = ${reference}, alors ${dividende2 * 10} : ${diviseur2} = [ ____ ]`;
+                  explanation = `Pour calculer ${dividende2 * 10} : ${diviseur2}, on part de ${dividende2} : ${diviseur2} = ${reference}. Comme le dividende est multiplié par 10, le résultat est aussi multiplié par 10 → ${reference} × 10 = ${answer}.`;
+                  break;
+                  
+                case 'dividende_divise_deux':
+                  // Exemple: Si 48 : 6 = 8, alors 24 : 6 = ?
+                  const diviseur3 = Math.floor(Math.random() * 8) + 2;
+                  const quotient3 = Math.floor(Math.random() * 9) + 2;
+                  const dividende3 = diviseur3 * quotient3;
+                  reference = quotient3;
+                  answer = quotient3 / 2;
+                  question = `Si ${dividende3} : ${diviseur3} = ${reference}, alors ${dividende3 / 2} : ${diviseur3} = [ ____ ]`;
+                  explanation = `Pour calculer ${dividende3 / 2} : ${diviseur3}, on part de ${dividende3} : ${diviseur3} = ${reference}. Comme le dividende est divisé par 2, le résultat est aussi divisé par 2 → ${reference} : 2 = ${answer}.`;
+                  break;
+                  
+                case 'diviseur_fois_deux':
+                  // Exemple: Si 48 : 6 = 8, alors 48 : 12 = ?
+                  const diviseur4 = Math.floor(Math.random() * 8) + 2;
+                  const quotient4 = Math.floor(Math.random() * 9) + 2;
+                  const dividende4 = diviseur4 * quotient4;
+                  reference = quotient4;
+                  answer = quotient4 / 2;
+                  question = `Si ${dividende4} : ${diviseur4} = ${reference}, alors ${dividende4} : ${diviseur4 * 2} = [ ____ ]`;
+                  explanation = `Pour calculer ${dividende4} : ${diviseur4 * 2}, on part de ${dividende4} : ${diviseur4} = ${reference}. Comme le diviseur est multiplié par 2, le résultat est divisé par 2 → ${reference} : 2 = ${answer}.`;
+                  break;
+                  
+                case 'diviseur_divise_deux':
+                  // Exemple: Si 48 : 6 = 8, alors 48 : 3 = ?
+                  const diviseur5 = (Math.floor(Math.random() * 4) + 1) * 2; // Nombre pair pour pouvoir diviser par 2
+                  const quotient5 = Math.floor(Math.random() * 9) + 2;
+                  const dividende5 = diviseur5 * quotient5;
+                  reference = quotient5;
+                  answer = quotient5 * 2;
+                  question = `Si ${dividende5} : ${diviseur5} = ${reference}, alors ${dividende5} : ${diviseur5 / 2} = [ ____ ]`;
+                  explanation = `Pour calculer ${dividende5} : ${diviseur5 / 2}, on part de ${dividende5} : ${diviseur5} = ${reference}. Comme le diviseur est divisé par 2, le résultat est multiplié par 2 → ${reference} × 2 = ${answer}.`;
+                  break;
+              }
+              
+              return { 
+                type: 'division', 
+                questionText: question, 
+                answer: answer, 
+                explanation: explanation 
+              };
+            },
+            maxExercises: 5
+          },
+          mixte: {
+            label: "Mixte",
+            generate: function() {
+              // Utiliser les générateurs existants pour créer un mélange
+              if (Math.random() < 0.5) {
+                return exerciseTypes.multiplication.generate();
+              } else {
+                return exerciseTypes.division.generate();
+              }
+            },
+            maxExercises: 10
+          }
+        };
+
+        // Variables globales pour suivre l'état de l'application
+        let currentExerciseType = null;
+        let currentExerciseIndex = 0;
+        let currentExercises = [];
+        let exerciseResults = [];
+        let sessionHistory = JSON.parse(localStorage.getItem('variamath_history') || '[]');
+
+        // Éléments DOM
+        const homeView = document.getElementById('home-view');
+        const theoryContentBox = document.getElementById('theory-content-box');
+        const theoryTextContent = document.getElementById('theory-text-content');
+        const exerciseBox = document.getElementById('exercise-box');
+        const exerciseQuestion = document.getElementById('exercise-question');
+        const exerciseAnswer = document.getElementById('exercise-answer');
+        const exerciseFeedback = document.getElementById('exercise-feedback');
+        const progressBarContainer = document.getElementById('progress-bar-container');
+        const progressBarFill = document.getElementById('progress-bar-fill');
+        const historyBox = document.getElementById('history-box');
+        const historyListContent = document.getElementById('history-list-content');
+
+        // Boutons
+        const showTheoryBtn = document.getElementById('show-theory-btn');
+        const theoryHomeBtn = document.getElementById('theory-home-btn');
+        const exerciseTypeButtons = document.querySelectorAll('#exercise-type-buttons .exercise-btn');
+        const validateAnswerBtn = document.getElementById('validate-answer-btn');
+        const exerciseInProgressHomeBtn = document.getElementById('exercise-in-progress-home-btn');
+        const exerciseResultsHomeBtn = document.getElementById('exercise-results-home-btn');
+        const showHistoryBtn = document.getElementById('show-history-btn');
+        const historyHomeBtn = document.getElementById('history-home-btn');
+
+        // Afficher la théorie
+        showTheoryBtn.addEventListener('click', function() {
+            theoryTextContent.innerHTML = THEORIE_VARIATIONS;
+            homeView.classList.add('hidden');
+            theoryContentBox.classList.remove('hidden');
+        });
+
+        // Retour à l'accueil depuis la théorie
+        theoryHomeBtn.addEventListener('click', function() {
+            theoryContentBox.classList.add('hidden');
+            homeView.classList.remove('hidden');
+        });
+
+        // Démarrer un exercice
+        exerciseTypeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const type = this.getAttribute('data-type');
+                startExerciseSession(type);
+            });
+        });
+
+        // Fonction pour démarrer une session d'exercices
+        function startExerciseSession(type) {
+            currentExerciseType = type;
+            currentExerciseIndex = 0;
+            exerciseResults = [];
+            currentExercises = [];
+            
+            // Générer les exercices
+            const maxExercises = exerciseTypes[type].maxExercises;
+            for (let i = 0; i < maxExercises; i++) {
+                currentExercises.push(exerciseTypes[type].generate());
+            }
+            
+            // Mettre à jour la barre de progression
+            progressBarContainer.classList.remove('hidden');
+            updateProgressBar();
+            
+            // Afficher le premier exercice
+            displayCurrentExercise();
+            
+            // Afficher la vue d'exercice
+            homeView.classList.add('hidden');
+            exerciseBox.classList.remove('hidden');
+            exerciseResultsHomeBtn.classList.add('hidden');
+            exerciseFeedback.innerHTML = '';
+            exerciseAnswer.value = '';
+            exerciseAnswer.focus();
+        }
+
+        // Fonction pour afficher l'exercice actuel
+        function displayCurrentExercise() {
+            if (currentExerciseIndex < currentExercises.length) {
+                const exercise = currentExercises[currentExerciseIndex];
+                exerciseQuestion.textContent = exercise.questionText;
+                exerciseAnswer.value = '';
+                exerciseFeedback.innerHTML = '';
+            }
+        }
+
+        // Fonction pour mettre à jour la barre de progression
+        function updateProgressBar() {
+            const maxExercises = exerciseTypes[currentExerciseType].maxExercises;
+            const progress = (currentExerciseIndex / maxExercises) * 100;
+            progressBarFill.style.width = progress + '%';
+            progressBarFill.textContent = currentExerciseIndex + ' / ' + maxExercises;
+        }
+
+        // Valider la réponse
+        validateAnswerBtn.addEventListener('click', validateAnswer);
+        exerciseAnswer.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                validateAnswer();
+            }
+        });
+
+        // Fonction pour valider la réponse
+        function validateAnswer() {
+            const userAnswer = parseFloat(exerciseAnswer.value.replace(',', '.'));
+            const currentExercise = currentExercises[currentExerciseIndex];
+            const isCorrect = !isNaN(userAnswer) && Math.abs(userAnswer - currentExercise.answer) < 0.001;
+            
+            // Enregistrer le résultat
+            exerciseResults.push({
+                question: currentExercise.questionText,
+                userAnswer: userAnswer,
+                correctAnswer: currentExercise.answer,
+                isCorrect: isCorrect,
+                explanation: currentExercise.explanation
+            });
+            
+            // Afficher le feedback
+            if (isCorrect) {
+                exerciseFeedback.innerHTML = `<div class="feedback-success">Bravo ! C'est la bonne réponse.<br>${currentExercise.explanation}</div>`;
+                setTimeout(() => {
+                    nextExercise();
+                }, 3000); // 3 secondes pour les bonnes réponses
+            } else {
+                exerciseFeedback.innerHTML = `<div class="feedback-error">Incorrect. La bonne réponse est ${currentExercise.answer}.<br>${currentExercise.explanation}</div>`;
+                setTimeout(() => {
+                    nextExercise();
+                }, 8000); // 8 secondes pour les mauvaises réponses
+            }
+            
+            // Désactiver le bouton et l'input pendant le feedback
+            validateAnswerBtn.disabled = true;
+            exerciseAnswer.disabled = true;
+        }
+
+        // Fonction pour passer à l'exercice suivant
+        function nextExercise() {
+            validateAnswerBtn.disabled = false;
+            exerciseAnswer.disabled = false;
+            
+            currentExerciseIndex++;
+            updateProgressBar();
+            
+            if (currentExerciseIndex < currentExercises.length) {
+                displayCurrentExercise();
+            } else {
+                showExerciseResults();
+            }
+        }
+
+        // Fonction pour afficher les résultats des exercices
+        function showExerciseResults() {
+            // Calculer le score
+            const correctCount = exerciseResults.filter(result => result.isCorrect).length;
+            const totalCount = exerciseResults.length;
+            const scorePercentage = Math.round((correctCount / totalCount) * 100);
+            
+            // Créer le récapitulatif HTML
+            let recapHTML = `
+                <h2>Résultats</h2>
+                <p>Vous avez obtenu ${correctCount} bonnes réponses sur ${totalCount} (${scorePercentage}%).</p>
+                <h3>Détails :</h3>
+            `;
+            
+            exerciseResults.forEach((result, index) => {
+                const resultClass = result.isCorrect ? 'recap-success' : 'recap-error';
+                recapHTML += `
+                    <div class="recap-item ${resultClass}">
+                        <p><strong>Question ${index + 1} :</strong> ${result.question}</p>
+                        <p>Votre réponse : ${isNaN(result.userAnswer) ? 'Non renseignée' : result.userAnswer}</p>
+                        <p>Réponse correcte : ${result.correctAnswer}</p>
+                        <p><em>${result.explanation}</em></p>
+                    </div>
+                `;
+            });
+            
+            // Afficher le récapitulatif
+            exerciseFeedback.innerHTML = recapHTML;
+            progressBarContainer.classList.add('hidden');
+            exerciseQuestion.textContent = '';
+            exerciseAnswer.classList.add('hidden');
+            validateAnswerBtn.classList.add('hidden');
+            exerciseResultsHomeBtn.classList.remove('hidden');
+            
+            // Ajouter à l'historique
+            const historyEntry = {
+                date: new Date().toLocaleString('fr-FR'),
+                type: exerciseTypes[currentExerciseType].label,
+                score: `${correctCount}/${totalCount} (${scorePercentage}%)`,
+                details: exerciseResults
+            };
+            
+            sessionHistory.unshift(historyEntry);
+            if (sessionHistory.length > 10) {
+                sessionHistory.pop();
+            }
+            localStorage.setItem('variamath_history', JSON.stringify(sessionHistory));
+        }
+
+        // Retour à l'accueil depuis les exercices
+        exerciseInProgressHomeBtn.addEventListener('click', function() {
+            if (confirm('Êtes-vous sûr de vouloir quitter cet exercice ? Votre progression sera perdue.')) {
+                exerciseBox.classList.add('hidden');
+                homeView.classList.remove('hidden');
+                // Réinitialiser l'état des éléments pour une future utilisation
+                exerciseAnswer.classList.remove('hidden');
+                validateAnswerBtn.classList.remove('hidden');
+                exerciseFeedback.innerHTML = '';
+            }
+        });
+
+        exerciseResultsHomeBtn.addEventListener('click', function() {
+            exerciseBox.classList.add('hidden');
+            homeView.classList.remove('hidden');
+            // Réinitialiser l'état des éléments pour une future utilisation
+            exerciseAnswer.classList.remove('hidden');
+            validateAnswerBtn.classList.remove('hidden');
+            exerciseFeedback.innerHTML = '';
+        });
+
+        // Afficher l'historique
+        showHistoryBtn.addEventListener('click', function() {
+            displayHistory();
+            homeView.classList.add('hidden');
+            historyBox.classList.remove('hidden');
+        });
+
+        // Fonction pour afficher l'historique
+        function displayHistory() {
+            if (sessionHistory.length === 0) {
+                historyListContent.innerHTML = '<p>Aucun historique disponible.</p>';
+                return;
+            }
+            
+            let historyHTML = '<h2>Historique des sessions</h2>';
+            
+            sessionHistory.forEach((entry, index) => {
+                historyHTML += `
+                    <div class="history-entry">
+                        <h3>Session ${index + 1} - ${entry.date}</h3>
+                        <p><strong>Type :</strong> ${entry.type}</p>
+                        <p><strong>Score :</strong> ${entry.score}</p>
+                    </div>
+                `;
+            });
+            
+            historyListContent.innerHTML = historyHTML;
+        }
+
+        // Retour à l'accueil depuis l'historique
+        historyHomeBtn.addEventListener('click', function() {
+            historyBox.classList.add('hidden');
+            homeView.classList.remove('hidden');
+        });
+    });
+  </script>
+</body>
+</html>

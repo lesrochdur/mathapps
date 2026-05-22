@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opéréciproque</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600&family=Source+Sans+Pro&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --violet: #8f67ca;
+      --turquoise: #01b7c4;
+      --vert: #01b7c4; 
+      --blanc: #ffffff;
+      --gris-clair: #f0f0f0;
+      --noir: #222;
+      --background-color: #ffffff; 
+      --text-color: var(--noir);
+      --light-text-color: var(--blanc);
+      --container-bg: var(--blanc);
+      --border-color: #dcdcdc;
+      --success-color: #28a745; 
+      --error-color: #dc3545;   
+      --neutral-color: #6c757d; 
+      --input-bg: var(--blanc);
+      --input-border: #ccc;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Source Sans Pro', sans-serif;
+      background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+      color: var(--text-color);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 1rem 0;
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 0 1rem;
+      max-width: 900px;
+      margin: 20px auto;
+      width: 100%;
+    }
+
+    h1 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--violet);
+      font-size: 2.5rem; 
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--noir); 
+      font-size: 1.8rem; 
+      margin-top: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .app-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      background-color: var(--container-bg);
+      font-size: 1.3rem; 
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px; 
+      margin-bottom: 20px;
+    }
+
+    button {
+      border: none;
+      padding: 14px 22px; 
+      font-size: 1.2rem; 
+      border-radius: 10px;
+      color: var(--light-text-color);
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+    
+    .operation-choice-btn {
+      background-color: var(--violet);
+      min-width: 220px;
+    }
+    .operation-choice-btn:hover {
+      background-color: #7a58b8; 
+    }
+
+    .mix-btn {
+        background-color: var(--turquoise); 
+        min-width: 220px;
+    }
+    .mix-btn:hover {
+        background-color: #019fa8; 
+    }
+
+    .action-btn {
+      background-color: var(--vert);
+      margin-top: 10px;
+    }
+    .action-btn:hover {
+      background-color: #019fa8; 
+    }
+
+    .retour-btn {
+        background-color: var(--neutral-color);
+    }
+    .retour-btn:hover {
+        background-color: #5a6268;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .content-box {
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 2px solid var(--violet);
+      border-radius: 12px;
+      background-color: var(--container-bg);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: left;
+      font-size: 1.3rem; 
+      line-height: 1.8;
+    }
+
+    .exercice-zone {
+      margin: 10px auto; 
+      padding: 20px;
+      border: 1px dashed var(--violet);
+      border-radius: 8px;
+      min-height: 150px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .feedback-zone {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 1.1rem; 
+      min-height: 40px;
+      font-weight: bold;
+    }
+
+    .feedback-zone.success {
+      background-color: #d4edda; 
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .feedback-zone.error {
+      background-color: #f8d7da; 
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    input[type="text"] {
+      font-size: 1.2rem; 
+      padding: 10px;
+      width: calc(100% - 22px);
+      max-width: 200px; 
+      border-radius: 8px;
+      border: 1px solid var(--input-border);
+      margin-bottom: 10px;
+      box-sizing: border-box;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+      text-align: center;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--violet);
+      box-shadow: 0 0 0 0.2rem rgba(143, 103, 202, 0.25);
+    }
+
+    footer {
+      padding: 1rem 0;
+      font-size: 0.9rem;
+      color: var(--neutral-color);
+      margin-top: auto;
+    }
+
+    .entrainement-visuel {
+      display: flex;
+      align-items: center;
+      justify-content: center; 
+      margin: 30px auto 20px auto;
+      width: 100%;
+      max-width: 600px; 
+      position: relative;
+    }
+
+    .nombre-boite {
+      background-color: var(--blanc);
+      border: 2px solid var(--violet);
+      color: var(--violet);
+      padding: 15px 20px;
+      border-radius: 8px;
+      font-size: 1.6rem;
+      font-weight: bold;
+      min-width: 70px; 
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .operation-boite {
+      background-color: var(--turquoise);
+      color: var(--light-text-color);
+      padding: 8px 15px;
+      border-radius: 20px; 
+      font-size: 1.3rem;
+      font-weight: bold;
+      position: absolute;
+      top: -35px; 
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      z-index: 1;
+    }
+
+    .fleche-operation {
+      width: 150px; 
+      height: 50px; 
+      position: relative;
+      margin: 0 5px; 
+    }
+
+    .fleche-operation svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: visible; 
+    }
+
+    .fleche-operation path {
+      stroke: var(--violet);
+      stroke-width: 3.5; 
+      fill: none;
+      marker-end: url(#arrowhead);
+    }
+    
+    #arrowhead polygon {
+        fill: var(--violet);
+    }
+
+    #entrainement-reponse-zone {
+        display: flex;
+        flex-direction: column; 
+        align-items: center;
+        gap: 15px; 
+        margin-top: 40px; 
+    }
+
+    #entrainement-reponse-zone .input-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap; 
+        justify-content: center;
+    }
+
+    #entrainement-reponse-zone select {
+        padding: 10px;
+        font-size: 1.2rem;
+        border: 1px solid var(--input-border);
+        border-radius: 8px;
+        background-color: var(--input-bg);
+        color: var(--text-color);
+        min-width: 70px;
+    }
+
+    #entrainement-reponse-zone .nombre-boite-reponse {
+        border: 2px solid var(--turquoise);
+        color: var(--turquoise);
+    }
+
+    .progress-bar-container {
+        width: 80%;
+        background-color: #e0e0e0;
+        border-radius: 10px;
+        margin: 10px auto 15px auto;
+        height: 25px;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        overflow: hidden; 
+    }
+
+    .progress-bar {
+        width: 0%; 
+        height: 100%;
+        background-color: var(--turquoise);
+        border-radius: 8px; 
+        transition: width 0.4s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.9rem;
+        font-weight: bold;
+    }
+
+    #serie-feedback-summary {
+        text-align: left;
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background-color: #fdfdfd;
+    }
+    #serie-feedback-summary h3 {
+        text-align: center;
+        color: var(--violet);
+        margin-top: 0;
+        margin-bottom: 15px;
+    }
+    #serie-feedback-summary ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    #serie-feedback-summary li {
+        margin-bottom: 12px;
+        padding: 12px;
+        border: 1px solid #eee;
+        border-radius: 6px;
+        background-color: var(--blanc);
+        font-size: 1rem;
+    }
+    #serie-feedback-summary .correct-answer-icon {
+        color: var(--success-color);
+        font-weight: bold;
+        margin-right: 8px;
+    }
+    #serie-feedback-summary .incorrect-answer-icon {
+        color: var(--error-color);
+        font-weight: bold;
+        margin-right: 8px;
+    }
+    #serie-feedback-summary .explanation {
+        font-size: 1em; 
+        color: #444; 
+        margin-top: 6px; 
+        padding-left: 20px; 
+    }
+    #serie-feedback-summary .explanation-note {
+        font-size: 1em; 
+        color: #444;
+        margin-top: 6px;
+        padding-left: 20px;
+        font-style: italic;
+    }
+    #serie-feedback-summary .user-answer {
+        font-style: italic;
+    }
+    #serie-feedback-summary .correct-solution-text {
+        font-weight: normal; 
+        font-size: 1em; 
+    }
+    #serie-feedback-summary .correct-solution {
+        font-weight: bold;
+    }
+    
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 2rem;
+        }
+        h2 {
+            font-size: 1.5rem;
+        }
+        .app-section, .content-box {
+            padding: 15px;
+            font-size: 1.1rem;
+        }
+        button {
+            padding: 12px 18px;
+            font-size: 1rem;
+        }
+        .operation-choice-btn, .mix-btn {
+            min-width: 180px;
+        }
+        .entrainement-visuel {
+            flex-direction: column;
+            gap: 45px; 
+            margin-bottom: 60px; 
+        }
+        .fleche-operation {
+            transform: rotate(90deg);
+            margin: 10px 0;
+        }
+        .operation-boite {
+            top: 50%;
+            left: -35px; 
+            transform: translateY(-50%) translateX(0%);
+        }
+        #entrainement-reponse-zone .input-group {
+            flex-direction: column;
+            gap: 10px;
+        }
+        #entrainement-reponse-zone input[type="text"] {
+            max-width: 150px;
+        }
+        .progress-bar-container {
+            height: 20px;
+        }
+        .progress-bar {
+            font-size: 0.8rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        h1 {
+            font-size: 1.8rem;
+        }
+        .buttons-container {
+            flex-direction: column;
+            align-items: center;
+        }
+        .operation-choice-btn, .mix-btn, .action-btn {
+            width: 100%;
+            max-width: 300px; 
+        }
+        .nombre-boite {
+            font-size: 1.3rem;
+            padding: 10px 15px;
+        }
+        .operation-boite {
+            font-size: 1rem;
+            padding: 6px 10px;
+        }
+        .fleche-operation {
+            width: 100px;
+            height: 40px;
+        }
+         #entrainement-reponse-zone input[type="text"], #entrainement-reponse-zone select {
+            font-size: 1rem;
+            padding: 8px;
+        }
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Opéréciproque</h1>
+  </header>
+  <main>
+    <section id="accueil-section" class="app-section">
+      <h2>Choisis ton type d'entraînement</h2>
+      <div class="buttons-container">
+        <button id="btn-entrainement-add-sub" class="operation-choice-btn">Additions / Soustractions</button>
+        <button id="btn-entrainement-mul-div" class="operation-choice-btn">Multiplications / Divisions</button>
+        <button id="btn-entrainement-mix" class="mix-btn">Mélange des Opérations</button>
+      </div>
+    </section>
+
+    <section id="entrainement-section" class="app-section hidden">
+      <h2 id="entrainement-titre">Entraînement</h2> 
+      <div id="progress-bar-container" class="progress-bar-container hidden">
+        <div id="progress-bar" class="progress-bar">Exercice 1 / 5</div>
+      </div>
+      <div id="entrainement-exercice-zone" class="exercice-zone">
+      </div>
+      <div id="entrainement-feedback" class="feedback-zone"></div>
+      <div id="serie-feedback-summary" class="hidden">
+      </div>
+      <button id="btn-retour-accueil" class="action-btn retour-btn">Retour à l'accueil</button>
+    </section>
+
+    <section id="historique-section" class="app-section">
+      <h2>Historique des Séries</h2>
+      <button id="btn-afficher-historique" class="action-btn">Afficher l'historique</button>
+      <div id="historique-box" class="content-box hidden">
+      </div>
+    </section>
+  </main>
+  <footer style="margin-top: auto; padding: 2rem 1rem; background-color: #ffffff; border-top: 1px solid #eee;">
+    Opéréciproque par <a href="https://lesrochdur.com/" target="_blank" style="color: #8f67ca; font-weight: bold;">Les RochDur</a>
+  </footer>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const accueilSection = document.getElementById("accueil-section");
+        const entrainementSection = document.getElementById("entrainement-section");
+        const historiqueSection = document.getElementById("historique-section");
+
+        const btnEntrainementAddSub = document.getElementById("btn-entrainement-add-sub");
+        const btnEntrainementMulDiv = document.getElementById("btn-entrainement-mul-div");
+        const btnEntrainementMix = document.getElementById("btn-entrainement-mix");
+        
+        const entrainementTitre = document.getElementById("entrainement-titre");
+        const entrainementExerciceZone = document.getElementById("entrainement-exercice-zone");
+        const entrainementFeedback = document.getElementById("entrainement-feedback");
+        const btnRetourAccueil = document.getElementById("btn-retour-accueil");
+
+        const progressBarContainer = document.getElementById("progress-bar-container");
+        const progressBar = document.getElementById("progress-bar");
+        const serieFeedbackSummary = document.getElementById("serie-feedback-summary");
+
+        const btnAfficherHistorique = document.getElementById("btn-afficher-historique");
+        const historiqueBox = document.getElementById("historique-box");
+
+        let typeOperationEntrainement = null; 
+        let currentSerieEntrainement = [];
+        let serieDetailsPourFeedback = []; 
+        let currentExerciceIndex = 0; 
+        let scoreSerie = 0;
+        const SERIE_LENGTH = 5; 
+
+        let historique = JSON.parse(localStorage.getItem("opereciproque_historique_entrainement")) || [];
+
+        function formatNombre(nombre) {
+            if (typeof nombre !== 'number' || isNaN(nombre)) return "?"; 
+            return nombre.toString().replace('.', ',');
+        }
+
+        function parseNombreInput(inputStr) {
+            return parseFloat(inputStr.replace(',', '.'));
+        }
+
+        function afficherSection(sectionAffichee) {
+            accueilSection.classList.add("hidden");
+            entrainementSection.classList.add("hidden");
+            if (sectionAffichee) {
+                sectionAffichee.classList.remove("hidden");
+            }
+        }
+
+        function updateProgressBar() {
+            // La largeur de la barre représente l'exercice EN COURS
+            // Donc pour l'exercice 1/5, la barre est à 20%
+            // Pour l'exercice 5/5, la barre est à 100%
+            const progressPercentage = ((currentExerciceIndex + 1) / SERIE_LENGTH) * 100;
+            progressBar.style.width = progressPercentage + "%";
+            progressBar.textContent = `Exercice ${currentExerciceIndex + 1} / ${SERIE_LENGTH}`;
+            
+            if (currentExerciceIndex < SERIE_LENGTH) { 
+                progressBarContainer.classList.remove("hidden");
+            } else {
+                progressBarContainer.classList.add("hidden");
+            }
+        }
+
+        btnEntrainementAddSub.addEventListener("click", () => {
+            typeOperationEntrainement = "add-sub";
+            entrainementTitre.textContent = "Entraînement : Additions / Soustractions";
+            demarrerSerieEntrainement();
+        });
+
+        btnEntrainementMulDiv.addEventListener("click", () => {
+            typeOperationEntrainement = "mul-div";
+            entrainementTitre.textContent = "Entraînement : Multiplications / Divisions";
+            demarrerSerieEntrainement();
+        });
+
+        btnEntrainementMix.addEventListener("click", () => {
+            typeOperationEntrainement = "mix";
+            entrainementTitre.textContent = "Entraînement : Mélange des Opérations";
+            demarrerSerieEntrainement();
+        });
+        
+        btnRetourAccueil.addEventListener("click", () => {
+            afficherSection(accueilSection);
+            historiqueBox.classList.add("hidden"); 
+            serieFeedbackSummary.classList.add("hidden"); 
+            progressBarContainer.classList.add("hidden"); 
+        });
+
+        function demarrerSerieEntrainement() {
+            currentSerieEntrainement = [];
+            serieDetailsPourFeedback = []; 
+            for (let i = 0; i < SERIE_LENGTH; i++) {
+                currentSerieEntrainement.push(genererDetailsExercice());
+            }
+            currentExerciceIndex = 0;
+            scoreSerie = 0;
+            serieFeedbackSummary.classList.add("hidden"); 
+            serieFeedbackSummary.innerHTML = ''; 
+            afficherSection(entrainementSection);
+            afficherExerciceEntrainement();
+        }
+
+        function genererNombreDecimal(maxDigitsAvantVirgule = 2, maxDigitsApresVirgule = 2, peutEtreZero = false, minVal = null, nonNul = false) {
+            let nombre;
+            do {
+                const entier = Math.floor(Math.random() * (10 ** maxDigitsAvantVirgule));
+                if (maxDigitsApresVirgule === 0) {
+                    nombre = entier;
+                } else {
+                    const nbDecimalesReelles = Math.floor(Math.random() * (maxDigitsApresVirgule + 1));
+                    const decimalPart = Math.floor(Math.random() * (10 ** nbDecimalesReelles));
+                    nombre = parseFloat(`${entier}.${decimalPart}`);
+                }
+                nombre = parseFloat(nombre.toFixed(maxDigitsApresVirgule)); 
+            } while ((!peutEtreZero && nombre === 0 && nonNul) || (minVal !== null && nombre < minVal) || (nonNul && nombre === 0) );
+            return nombre;
+        }
+
+        function genererDetailsExercice() {
+            let num1, num2, operation, resultat, opReciproque;
+            let currentTypePourExercice = typeOperationEntrainement; 
+            if (typeOperationEntrainement === "mix") {
+                currentTypePourExercice = Math.random() < 0.5 ? "add-sub" : "mul-div";
+            }
+
+            if (currentTypePourExercice === "add-sub") {
+                num1 = genererNombreDecimal(2, 2);
+                num2 = genererNombreDecimal(2, 2, false, 0.01, true); 
+                if (Math.random() < 0.5) { 
+                    operation = "+";
+                    resultat = parseFloat((num1 + num2).toFixed(2));
+                    opReciproque = "-";
+                } else { 
+                    if (num1 < num2) [num1, num2] = [num2, num1];
+                    if (num1 === 0 && num2 === 0) num1 = genererNombreDecimal(1,1,false,0.1, true);
+                    operation = "-";
+                    resultat = parseFloat((num1 - num2).toFixed(2));
+                    opReciproque = "+";
+                }
+            } else { 
+                num1 = genererNombreDecimal(2, 1, false, 0.1, true);
+                num2 = genererNombreDecimal(1, 1, false, 0.1, true); 
+                if (Math.random() < 0.5) { 
+                    operation = "x";
+                    resultat = parseFloat((num1 * num2).toFixed(2));
+                    opReciproque = ":";
+                } else { 
+                    const resultatEntier = Math.floor(Math.random() * 9) + 1; 
+                    num1 = parseFloat((resultatEntier * num2).toFixed(2));
+                     if (num2 === 0) num2 = 0.1; 
+                     if (num1 === 0 && num2 !== 0) num1 = resultatEntier * num2; 
+                     else if (num1 === 0 && num2 === 0) {num2 = 0.1; num1 = resultatEntier * num2; } 
+                    resultat = resultatEntier;
+                    operation = ":";
+                    opReciproque = "x";
+                }
+            }
+            return { num1, num2, operation, resultat, opReciproque };
+        }
+        
+        function afficherExerciceEntrainement() {
+            entrainementExerciceZone.innerHTML = "";
+            entrainementFeedback.innerHTML = "";
+            entrainementFeedback.className = "feedback-zone";
+            serieFeedbackSummary.classList.add("hidden"); 
+            updateProgressBar(); // Appelée ici, currentExerciceIndex est l'index de l'exercice à afficher (0 à 4)
+
+            if (currentExerciceIndex >= SERIE_LENGTH) {
+                afficherResultatSerie();
+                return;
+            }
+
+            const ex = currentSerieEntrainement[currentExerciceIndex];
+            
+            const selectOptionsHTML = `
+                <option value="" disabled selected>?</option>
+                <option value="+">+</option>
+                <option value="-">-</option>
+                <option value="x">x</option>
+                <option value=":">:</option>
+            `;
+
+            const exerciceHTML = `
+                <p>Observe l'opération et complète avec l'opération réciproque :</p>
+                <div class="entrainement-visuel">
+                    <div class="nombre-boite">${formatNombre(ex.num1)}</div>
+                    <div class="fleche-operation">
+                        <svg viewBox="0 0 100 50">
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto" fill="var(--violet)">
+                                    <polygon points="0 0, 10 3.5, 0 7" />
+                                </marker>
+                            </defs>
+                            <path d="M5,25 Q50,-5 95,25" marker-end="url(#arrowhead)"></path>
+                        </svg>
+                        <div class="operation-boite">${ex.operation} ${formatNombre(ex.num2)}</div>
+                    </div>
+                    <div class="nombre-boite">${formatNombre(ex.resultat)}</div>
+                </div>
+                <div id="entrainement-reponse-zone">
+                    <p>Opération réciproque :</p>
+                    <div class="input-group">
+                        <div class="nombre-boite nombre-boite-reponse">${formatNombre(ex.resultat)}</div>
+                        <select id="reponse-operateur">${selectOptionsHTML}</select>
+                        <div class="nombre-boite nombre-boite-reponse">${formatNombre(ex.num2)}</div>
+                        <span>=</span>
+                        <input type="text" id="reponse-resultat" placeholder="Résultat">
+                    </div>
+                    <button id="entrainement-valider-btn" class="action-btn">Valider</button>
+                </div>
+            `;
+            entrainementExerciceZone.innerHTML = exerciceHTML;
+            
+            const reponseResultatInput = document.getElementById("reponse-resultat");
+            reponseResultatInput.focus();
+
+            document.getElementById("entrainement-valider-btn").addEventListener("click", () => {
+                validerReponseEntrainement(ex);
+            });
+            reponseResultatInput.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    validerReponseEntrainement(ex);
+                }
+            });
+        }
+
+        function validerReponseEntrainement(exerciceActuel) {
+            const opChoisi = document.getElementById("reponse-operateur").value;
+            const resChoisiStr = document.getElementById("reponse-resultat").value;
+            const resChoisi = parseNombreInput(resChoisiStr);
+            let isCorrect = false;
+            let explicationDetailleePourFeedback = "";
+
+            if (opChoisi === "") { 
+                 entrainementFeedback.innerHTML = "❌ Veuillez choisir un opérateur.";
+                 entrainementFeedback.className = "feedback-zone error";
+                 explicationDetailleePourFeedback = "Aucun opérateur n'a été sélectionné.";
+                 serieDetailsPourFeedback.push({ ...exerciceActuel, opUser: opChoisi, resUser: resChoisiStr, correct: false, explication: explicationDetailleePourFeedback });
+                 currentExerciceIndex++; 
+                 setTimeout(afficherExerciceEntrainement, 3500);
+                 return; 
+            }
+
+            if (opChoisi === exerciceActuel.opReciproque && Math.abs(resChoisi - exerciceActuel.num1) < 0.01) {
+                entrainementFeedback.textContent = "✅ Bravo ! C'est la bonne opération réciproque !";
+                entrainementFeedback.className = "feedback-zone success";
+                scoreSerie++;
+                isCorrect = true;
+            } else {
+                let messageErreur = "❌ Incorrect.";
+                if (opChoisi !== exerciceActuel.opReciproque) {
+                    explicationDetailleePourFeedback = `L'opérateur réciproque de '${exerciceActuel.operation}' est '${exerciceActuel.opReciproque}'. Tu as choisi '${opChoisi}'.`;
+                } else if (isNaN(resChoisi)){
+                    explicationDetailleePourFeedback = "Tu n'as pas entré de résultat ou le format est incorrect (utilise une virgule pour les décimaux).";
+                } else {
+                    explicationDetailleePourFeedback = `Vérifie ton calcul pour ${formatNombre(exerciceActuel.resultat)} ${exerciceActuel.opReciproque} ${formatNombre(exerciceActuel.num2)}. La réponse attendue est ${formatNombre(exerciceActuel.num1)}.`;
+                }
+                entrainementFeedback.innerHTML = `${messageErreur}<br><i>Indice : ${explicationDetailleePourFeedback}</i><br><span class="correct-solution-text">L'opération correcte était : </span><span class="correct-solution">${formatNombre(exerciceActuel.resultat)} ${exerciceActuel.opReciproque} ${formatNombre(exerciceActuel.num2)} = ${formatNombre(exerciceActuel.num1)}</span>`;
+                entrainementFeedback.className = "feedback-zone error";
+            }
+            serieDetailsPourFeedback.push({ ...exerciceActuel, opUser: opChoisi, resUser: resChoisiStr, correct: isCorrect, explication: isCorrect ? "" : explicationDetailleePourFeedback });
+            currentExerciceIndex++;
+            
+            setTimeout(afficherExerciceEntrainement, isCorrect ? 1500 : 4500); 
+        }
+        
+        function afficherResultatSerie(){
+            entrainementExerciceZone.innerHTML = `
+                <h2>Série Terminée !</h2>
+                <p>Ton score pour cette série : <strong>${scoreSerie} / ${SERIE_LENGTH}</strong></p>
+            `;
+            progressBarContainer.classList.add("hidden"); 
+            afficherResumeDetailleSerie();
+            entrainementExerciceZone.innerHTML += `<button id="btn-nouvelle-serie" class="action-btn">Nouvelle Série (${typeOperationEntrainement === 'add-sub' ? 'Add/Sous' : typeOperationEntrainement === 'mul-div' ? 'Mult/Div' : 'Mix'})</button>`;
+            enregistrerHistoriqueSerie(typeOperationEntrainement, scoreSerie, SERIE_LENGTH);
+            document.getElementById("btn-nouvelle-serie").addEventListener("click", demarrerSerieEntrainement);
+        }
+
+        function afficherResumeDetailleSerie() {
+            let summaryHTML = '<h3>Résumé de la Série</h3><ul>';
+            serieDetailsPourFeedback.forEach((detail, index) => {
+                summaryHTML += `<li><strong>Exercice ${index + 1}:</strong> ${formatNombre(detail.num1)} ${detail.operation} ${formatNombre(detail.num2)} = ${formatNombre(detail.resultat)}<br>`;
+                summaryHTML += `Votre réponse pour la réciproque: ${formatNombre(detail.resultat)} <span class="user-answer">${detail.opUser || '?'}</span> ${formatNombre(detail.num2)} = <span class="user-answer">${formatNombre(parseNombreInput(detail.resUser))}</span><br>`;
+                if (detail.correct) {
+                    summaryHTML += `<span class="correct-answer-icon">✅ Correct</span>`;
+                } else {
+                    summaryHTML += `<span class="incorrect-answer-icon">❌ Incorrect.</span> <span class="correct-solution-text">La bonne réponse était : </span><span class="correct-solution">${formatNombre(detail.resultat)} ${detail.opReciproque} ${formatNombre(detail.num2)} = ${formatNombre(detail.num1)}.</span>`;
+                    if (detail.explication) {
+                         summaryHTML += `<br><span class="explanation-note">Note: ${detail.explication}</span>`;
+                    }
+                }
+                summaryHTML += `</li>`;
+            });
+            summaryHTML += '</ul>';
+            serieFeedbackSummary.innerHTML = summaryHTML;
+            serieFeedbackSummary.classList.remove("hidden");
+        }
+
+        function enregistrerHistoriqueSerie(type, score, total) {
+            const date = new Date().toLocaleString("fr-FR");
+            let nomMode = "";
+            if (type === "add-sub") nomMode = "Additions/Soustractions";
+            else if (type === "mul-div") nomMode = "Multiplications/Divisions";
+            else if (type === "mix") nomMode = "Mélange";
+
+            historique.unshift({ date, mode: nomMode, score: `${score} / ${total}` }); 
+            if (historique.length > 15) historique.pop(); 
+            localStorage.setItem("opereciproque_historique_entrainement", JSON.stringify(historique));
+        }
+
+        function afficherHistorique() {
+            if (historique.length === 0) {
+                historiqueBox.innerHTML = "<p>Aucun historique pour le moment.</p>";
+            } else {
+                let html = "<ul>";
+                historique.forEach(item => {
+                    html += `<li>${item.date} - <strong>${item.mode}</strong> - Score : ${item.score}</li>`;
+                });
+                html += "</ul>";
+                historiqueBox.innerHTML = html;
+            }
+            historiqueBox.classList.toggle("hidden");
+        }
+
+        btnAfficherHistorique.addEventListener("click", afficherHistorique);
+
+        afficherSection(accueilSection);
+    });
+  </script>
+</body>
+</html>
+

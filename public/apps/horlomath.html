@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Horlomath</title>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600&family=Source+Sans+Pro&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --violet: #8f67ca;
+      --turquoise: #01b7c4;
+      --vert: #01b7c4;
+      --blanc: #ffffff;
+      --gris-clair: #f0f0f0;
+      --noir: #222;
+      --progress-bar-bg: #e0e0e0;
+      --progress-bar-fill: var(--violet);
+      --feedback-success: #28a745;
+      --feedback-error: #dc3545;
+    }
+    body {
+      margin: 0;
+      font-family: 'Source Sans Pro', sans-serif;
+      background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+      color: var(--noir);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      padding: 1rem 0;
+    }
+    main {
+      flex-grow: 1;
+      padding: 0 1rem;
+    }
+    h1 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--violet);
+      font-size: 2.5rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--noir);
+      font-size: 1.8rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    h3 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--noir);
+      font-size: 1.5rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+    .app-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #dcdcdc;
+      border-radius: 12px;
+      background-color: var(--blanc);
+      font-size: 1.3rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    button {
+      border: none;
+      padding: 14px 22px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      color: var(--blanc);
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+    .theory-btn { background-color: var(--turquoise); }
+    .exercise-btn { background-color: var(--violet); }
+    .action-btn { background-color: var(--vert); margin-top: 10px; }
+    .home-btn { background-color: #f0ad4e; margin-top: 15px; } /* Bouton retour orange */
+    .hidden { display: none !important; }
+    .content-box {
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 2px solid var(--violet);
+      border-radius: 12px;
+      background-color: var(--blanc);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: left;
+      font-size: 1.3rem;
+      line-height: 1.8;
+    }
+    .progress-bar-container {
+      width: 100%;
+      background-color: var(--progress-bar-bg);
+      border-radius: 5px;
+      margin: 15px 0;
+      height: 20px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background-color: var(--progress-bar-fill);
+      border-radius: 5px;
+      transition: width 0.3s ease-in-out;
+      text-align: center;
+      color: white;
+      font-size: 0.9rem;
+      line-height: 20px;
+    }
+    .exercise-instruction {
+      font-size: 1.5rem;
+      margin: 15px 0;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      border: 1px dashed #ccc;
+      text-align: center;
+    }
+    .feedback-success {
+      background-color: var(--feedback-success);
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    .feedback-error {
+      background-color: var(--feedback-error);
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    .recap-item {
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 8px;
+    }
+    .recap-success {
+      border: 1px solid var(--feedback-success);
+      background-color: rgba(40, 167, 69, 0.1);
+    }
+    .recap-error {
+      border: 1px solid var(--feedback-error);
+      background-color: rgba(220, 53, 69, 0.1);
+    }
+    .clock-container {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .controls-container, .answer-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .control-group, .select-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .slider {
+      flex-grow: 1;
+      height: 10px;
+      border-radius: 5px;
+      background: var(--gris-clair);
+      outline: none;
+      -webkit-appearance: none;
+    }
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--violet);
+      cursor: pointer;
+    }
+    .slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--violet);
+      cursor: pointer;
+    }
+    .time-select {
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      min-width: 80px;
+    }
+    .moment-indicator {
+      background-color: var(--gris-clair);
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px 0;
+      font-weight: bold;
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    footer {
+      margin-top: 2rem;
+      padding: 1rem;
+      font-size: 1rem;
+      background-color: #ffffff;
+      border-top: 1px solid #eee;
+    }
+    footer a {
+      color: var(--violet);
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .feedback-clock-container {
+      display: flex;
+      justify-content: center;
+      margin: 10px 0;
+      gap: 20px;
+    }
+    .clock-label {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 5px;
+      font-size: 0.9rem;
+    }
+    .clock-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      h3 {
+        font-size: 1.3rem;
+      }
+      button {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+        width: 100%;
+        max-width: 250px;
+        margin: 5px auto;
+      }
+      .content-box {
+        padding: 15px;
+        font-size: 1rem;
+        margin: 10px;
+        width: calc(100% - 20px);
+      }
+      .app-section {
+        padding: 10px;
+        margin-bottom: 15px;
+      }
+      table {
+        font-size: 0.9rem;
+      }
+      th, td {
+        padding: 5px;
+      }
+      .buttons-container {
+        flex-direction: column;
+        align-items: center;
+      }
+      .clock-container svg {
+        width: 180px;
+        height: 180px;
+      }
+    }
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+      .exercise-instruction {
+        font-size: 1.2rem;
+      }
+      .clock-container svg {
+        width: 150px;
+        height: 150px;
+      }
+      .control-group, .select-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header><h1>Horlomath</h1></header>
+  <main id="main-content">
+    <div id="home-view">
+        <section class="app-section" id="theory-section-main-container">
+          <h2>Théorie</h2>
+          <div class="buttons-container">
+            <button class="theory-btn" id="show-theory-btn">Lire l'heure</button>
+          </div>
+        </section>
+
+        <section class="app-section" id="exercise-section-main-container">
+          <h2>Exercices</h2>
+          <div class="buttons-container" id="exercise-type-buttons">
+            <button class="exercise-btn" data-type="reproduire">Reproduire une heure</button>
+            <button class="exercise-btn" data-type="lire">Lire l'heure</button>
+          </div>
+        </section>
+
+        <section class="app-section" id="history-section-main-container">
+          <h2>Historique</h2>
+          <button class="action-btn" id="show-history-btn">Afficher l'historique</button>
+        </section>
+    </div>
+
+    <div class="content-box hidden" id="theory-content-box">
+        <div id="theory-text-content"></div>
+        <button class="home-btn" id="theory-home-btn">Retour à l'accueil</button>
+    </div>
+
+    <!-- Exercice "Reproduire une heure" -->
+    <div class="content-box hidden" id="reproduire-box">
+        <button class="home-btn" id="reproduire-home-btn">Retour à l'accueil</button>
+        <div id="reproduire-progress-bar-container" class="progress-bar-container">
+          <div id="reproduire-progress-bar-fill" class="progress-bar-fill">0 / 5</div>
+        </div>
+        <h3 id="reproduire-question" class="exercise-instruction"></h3>
+        
+        <div class="clock-container">
+          <svg id="reproduire-clock" width="200" height="200" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="95" stroke="black" strokeWidth="4" fill="white" />
+            <!-- Les chiffres de l'horloge seront ajoutés par JavaScript -->
+            <!-- Les aiguilles seront ajoutées par JavaScript -->
+            <circle cx="100" cy="100" r="3" fill="black" />
+          </svg>
+        </div>
+        
+        <div class="controls-container">
+          <div class="control-group">
+            <label for="hour-range">Heure :</label>
+            <input type="range" id="hour-range" min="0" max="12" value="0" class="slider">
+            <span id="hour-value"></span>
+          </div>
+          <div class="control-group">
+            <label for="minute-range">Minute :</label>
+            <input type="range" id="minute-range" min="0" max="59" value="0" class="slider">
+            <span id="minute-value"></span>
+          </div>
+        </div>
+        
+        <button class="action-btn" id="reproduire-validate-btn">Vérifier</button>
+        <div id="reproduire-feedback"></div>
+    </div>
+
+    <!-- Exercice "Lire l'heure" -->
+    <div class="content-box hidden" id="lire-box">
+        <button class="home-btn" id="lire-home-btn">Retour à l'accueil</button>
+        <div id="lire-progress-bar-container" class="progress-bar-container">
+          <div id="lire-progress-bar-fill" class="progress-bar-fill">0 / 5</div>
+        </div>
+        
+        <div id="lire-moment" class="moment-indicator"></div>
+        
+        <div class="clock-container">
+          <svg id="lire-clock" width="200" height="200" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="95" stroke="black" strokeWidth="4" fill="white" />
+            <!-- Les chiffres de l'horloge seront ajoutés par JavaScript -->
+            <!-- Les aiguilles seront ajoutées par JavaScript -->
+            <circle cx="100" cy="100" r="3" fill="black" />
+          </svg>
+        </div>
+        
+        <div class="answer-container">
+          <div class="select-group">
+            <label for="hour-select">Heure :</label>
+            <select id="hour-select" class="time-select">
+              <!-- Options ajoutées par JavaScript -->
+            </select>
+          </div>
+          <div class="select-group">
+            <label for="minute-select">Minute :</label>
+            <select id="minute-select" class="time-select">
+              <!-- Options ajoutées par JavaScript -->
+            </select>
+          </div>
+        </div>
+        
+        <button class="action-btn" id="lire-validate-btn">Vérifier</button>
+        <div id="lire-feedback"></div>
+    </div>
+
+    <div class="content-box hidden" id="history-box">
+        <div id="history-list-content"></div>
+        <button class="home-btn" id="history-home-btn">Retour à l'accueil</button>
+    </div>
+
+  </main>
+
+  <footer>
+    Horlomath par <a href="https://lesrochdur.com/" target="_blank">Les RochDur</a>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Contenu théorique
+        const THEORIE_HORLOGE = `
+          <p><center><strong>🧠 Lire une Horloge à Aiguilles</strong></center></p>
+          
+          <p><strong>1. Les trois aiguilles</strong></p>
+          <p>Une horloge analogique comporte généralement trois aiguilles :</p>
+          <ul>
+            <li>La petite aiguille indique les heures.</li>
+            <li>La grande aiguille indique les minutes.</li>
+            <li>La troisième aiguille, appelée trotteuse, indique les secondes. Elle effectue un tour complet en une minute, avançant par petits sauts réguliers.</li>
+          </ul>
+          <p>🔎 Dans cette application, seules les aiguilles des heures et des minutes seront utilisées.</p>
+          
+          <hr>
+          
+          <p><strong>2. Lecture des heures</strong></p>
+          <p>L'horloge est divisée en 12 parties égales, numérotées de 1 à 12. La petite aiguille se déplace lentement entre ces chiffres pour indiquer l'heure.</p>
+          <ul>
+            <li>Lorsqu'elle pointe directement sur un chiffre et que la grande aiguille est sur le 12, cela correspond à l'heure exacte.</li>
+            <li>Lorsqu'elle est entre deux chiffres, cela signifie qu'une partie de l'heure suivante est déjà entamée.</li>
+          </ul>
+          
+          <p>Exemples :</p>
+          <ul>
+            <li>Petite aiguille sur le 4 et grande aiguille sur le 12 → 4 heures.</li>
+            <li>Petite aiguille entre le 7 et le 8, grande aiguille sur le 6 → 7 heures 30.</li>
+          </ul>
+          
+          <hr>
+          
+          <p><strong>3. Lecture des minutes</strong></p>
+          <p>Chaque chiffre représente 5 minutes :</p>
+          <ul>
+            <li>1 = 5 minutes,</li>
+            <li>2 = 10 minutes,</li>
+            <li>3 = 15 minutes,</li>
+            <li>… jusqu'au 12 = 60 minutes (= retour au début).</li>
+          </ul>
+          
+          <p>Lorsqu'elle pointe sur un chiffre, la grande aiguille indique un multiple de 5. Entre deux chiffres, les petits traits marquent les minutes supplémentaires (chaque trait vaut 1 minute).</p>
+          
+          <hr>
+          
+          <p><strong>4. Matin ou après-midi ?</strong></p>
+          <p>Les horloges à aiguilles ne précisent pas si l'heure affichée se situe le matin ou l'après-midi. Le contexte de la situation permet de le déterminer.</p>
+          
+          <p>Exemples :</p>
+          <ul>
+            <li>8 heures pendant les cours = matin.</li>
+            <li>8 heures pendant un film du soir = après-midi (20h).</li>
+          </ul>
+        `;
+
+        // Variables globales pour suivre l'état de l'application
+        let currentExerciseType = null;
+        let currentExerciseIndex = 0;
+        let currentExercises = [];
+        let exerciseResults = [];
+        let sessionHistory = JSON.parse(localStorage.getItem('horlomath_history') || '[]');
+
+        // Éléments DOM
+        const homeView = document.getElementById('home-view');
+        const theoryContentBox = document.getElementById('theory-content-box');
+        const theoryTextContent = document.getElementById('theory-text-content');
+        const reproduireBox = document.getElementById('reproduire-box');
+        const lireBox = document.getElementById('lire-box');
+        const historyBox = document.getElementById('history-box');
+        const historyListContent = document.getElementById('history-list-content');
+
+        // Éléments DOM pour l'exercice "Reproduire une heure"
+        const reproduireQuestion = document.getElementById('reproduire-question');
+        const reproduireProgressBarContainer = document.getElementById('reproduire-progress-bar-container');
+        const reproduireProgressBarFill = document.getElementById('reproduire-progress-bar-fill');
+        const reproduireFeedback = document.getElementById('reproduire-feedback');
+        const hourRange = document.getElementById('hour-range');
+        const minuteRange = document.getElementById('minute-range');
+        const hourValue = document.getElementById('hour-value');
+        const minuteValue = document.getElementById('minute-value');
+        const reproduireClock = document.getElementById('reproduire-clock');
+
+        // Éléments DOM pour l'exercice "Lire l'heure"
+        const lireMoment = document.getElementById('lire-moment');
+        const lireProgressBarContainer = document.getElementById('lire-progress-bar-container');
+        const lireProgressBarFill = document.getElementById('lire-progress-bar-fill');
+        const lireFeedback = document.getElementById('lire-feedback');
+        const hourSelect = document.getElementById('hour-select');
+        const minuteSelect = document.getElementById('minute-select');
+        const lireClock = document.getElementById('lire-clock');
+
+        // Boutons
+        const showTheoryBtn = document.getElementById('show-theory-btn');
+        const theoryHomeBtn = document.getElementById('theory-home-btn');
+        const exerciseTypeButtons = document.querySelectorAll('#exercise-type-buttons .exercise-btn');
+        const reproduireValidateBtn = document.getElementById('reproduire-validate-btn');
+        const reproduireHomeBtn = document.getElementById('reproduire-home-btn');
+        const lireValidateBtn = document.getElementById('lire-validate-btn');
+        const lireHomeBtn = document.getElementById('lire-home-btn');
+        const showHistoryBtn = document.getElementById('show-history-btn');
+        const historyHomeBtn = document.getElementById('history-home-btn');
+
+        // Initialisation des horloges
+        initializeClocks();
+        initializeTimeSelects();
+
+        // Afficher la théorie
+        showTheoryBtn.addEventListener('click', function() {
+            theoryTextContent.innerHTML = THEORIE_HORLOGE;
+            homeView.classList.add('hidden');
+            theoryContentBox.classList.remove('hidden');
+        });
+
+        // Retour à l'accueil depuis la théorie
+        theoryHomeBtn.addEventListener('click', function() {
+            theoryContentBox.classList.add('hidden');
+            homeView.classList.remove('hidden');
+        });
+
+        // Démarrer un exercice
+        exerciseTypeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const type = this.getAttribute('data-type');
+                startExerciseSession(type);
+            });
+        });
+
+        // Initialisation des horloges
+        function initializeClocks() {
+            // Ajouter les chiffres aux horloges
+            [reproduireClock, lireClock].forEach(clock => {
+                for (let i = 1; i <= 12; i++) {
+                    const angle = (i * 30 * Math.PI) / 180;
+                    const x = 100 + 80 * Math.sin(angle);
+                    const y = 100 - 80 * Math.cos(angle);
+                    
+                    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text.setAttribute("x", x);
+                    text.setAttribute("y", y + 5); // +5 pour centrer verticalement
+                    text.setAttribute("text-anchor", "middle");
+                    text.setAttribute("font-size", "12");
+                    text.textContent = i;
+                    
+                    clock.appendChild(text);
+                }
+                
+                // Ajouter les marques des minutes
+                for (let i = 0; i < 60; i++) {
+                    if (i % 5 !== 0) { // Éviter les positions des chiffres
+                        const angle = (i * 6 * Math.PI) / 180;
+                        const innerRadius = 88;
+                        const outerRadius = 95;
+                        
+                        const x1 = 100 + innerRadius * Math.sin(angle);
+                        const y1 = 100 - innerRadius * Math.cos(angle);
+                        const x2 = 100 + outerRadius * Math.sin(angle);
+                        const y2 = 100 - outerRadius * Math.cos(angle);
+                        
+                        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                        line.setAttribute("x1", x1);
+                        line.setAttribute("y1", y1);
+                        line.setAttribute("x2", x2);
+                        line.setAttribute("y2", y2);
+                        line.setAttribute("stroke", "#999");
+                        line.setAttribute("stroke-width", "1");
+                        
+                        clock.appendChild(line);
+                    }
+                }
+                
+                // Ajouter les aiguilles
+                const hourHand = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                hourHand.setAttribute("id", clock.id + "-hour-hand");
+                hourHand.setAttribute("x1", "100");
+                hourHand.setAttribute("y1", "100");
+                hourHand.setAttribute("x2", "100");
+                hourHand.setAttribute("y2", "60");
+                hourHand.setAttribute("stroke", "black");
+                hourHand.setAttribute("stroke-width", "4");
+                hourHand.setAttribute("stroke-linecap", "round");
+                
+                const minuteHand = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                minuteHand.setAttribute("id", clock.id + "-minute-hand");
+                minuteHand.setAttribute("x1", "100");
+                minuteHand.setAttribute("y1", "100");
+                minuteHand.setAttribute("x2", "100");
+                minuteHand.setAttribute("y2", "23"); // Allongée à 77 unités (100-23=77)
+                minuteHand.setAttribute("stroke", "black");
+                minuteHand.setAttribute("stroke-width", "2");
+                minuteHand.setAttribute("stroke-linecap", "round");
+                
+                clock.appendChild(hourHand);
+                clock.appendChild(minuteHand);
+            });
+        }
+
+        // Initialisation des sélecteurs d'heure et de minute
+        function initializeTimeSelects() {
+            // Heures (00-23)
+            hourSelect.innerHTML = ''; // Vider le sélecteur avant d'ajouter les options
+            for (let i = 0; i <= 23; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i.toString().padStart(2, '0');
+                hourSelect.appendChild(option);
+            }
+            
+            // Minutes (00-59)
+            minuteSelect.innerHTML = ''; // Vider le sélecteur avant d'ajouter les options
+            for (let i = 0; i < 60; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i.toString().padStart(2, '0');
+                minuteSelect.appendChild(option);
+            }
+        }
+
+        // Mise à jour de l'horloge
+        function updateClock(clockId, hour, minute) {
+            const hourHand = document.getElementById(clockId + "-hour-hand");
+            const minuteHand = document.getElementById(clockId + "-minute-hand");
+            
+            // Calculer les angles des aiguilles
+            const hourAngle = ((hour % 12) + minute / 60) * 30;
+            const minuteAngle = minute * 6;
+            
+            // Mettre à jour les positions des aiguilles
+            hourHand.setAttribute("x2", 100 + 40 * Math.sin((hourAngle * Math.PI) / 180));
+            hourHand.setAttribute("y2", 100 - 40 * Math.cos((hourAngle * Math.PI) / 180));
+            
+            minuteHand.setAttribute("x2", 100 + 77 * Math.sin((minuteAngle * Math.PI) / 180));
+            minuteHand.setAttribute("y2", 100 - 77 * Math.cos((minuteAngle * Math.PI) / 180));
+        }
+
+        // Créer une nouvelle horloge pour le feedback
+        function createFeedbackClock(containerId, hour, minute, label) {
+            const container = document.getElementById(containerId);
+            
+            // Créer un wrapper pour l'horloge et son label
+            const clockWrapper = document.createElement('div');
+            clockWrapper.className = 'clock-wrapper';
+            
+            // Créer l'élément SVG
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("width", "150");
+            svg.setAttribute("height", "150");
+            svg.setAttribute("viewBox", "0 0 200 200");
+            
+            // Ajouter le cercle extérieur
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttribute("cx", "100");
+            circle.setAttribute("cy", "100");
+            circle.setAttribute("r", "95");
+            circle.setAttribute("stroke", "black");
+            circle.setAttribute("stroke-width", "4");
+            circle.setAttribute("fill", "white");
+            svg.appendChild(circle);
+            
+            // Ajouter les chiffres
+            for (let i = 1; i <= 12; i++) {
+                const angle = (i * 30 * Math.PI) / 180;
+                const x = 100 + 80 * Math.sin(angle);
+                const y = 100 - 80 * Math.cos(angle);
+                
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", x);
+                text.setAttribute("y", y + 5);
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("font-size", "12");
+                text.textContent = i;
+                
+                svg.appendChild(text);
+            }
+            
+            // Ajouter les marques des minutes
+            for (let i = 0; i < 60; i++) {
+                if (i % 5 !== 0) {
+                    const angle = (i * 6 * Math.PI) / 180;
+                    const innerRadius = 88;
+                    const outerRadius = 95;
+                    
+                    const x1 = 100 + innerRadius * Math.sin(angle);
+                    const y1 = 100 - innerRadius * Math.cos(angle);
+                    const x2 = 100 + outerRadius * Math.sin(angle);
+                    const y2 = 100 - outerRadius * Math.cos(angle);
+                    
+                    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    line.setAttribute("x1", x1);
+                    line.setAttribute("y1", y1);
+                    line.setAttribute("x2", x2);
+                    line.setAttribute("y2", y2);
+                    line.setAttribute("stroke", "#999");
+                    line.setAttribute("stroke-width", "1");
+                    
+                    svg.appendChild(line);
+                }
+            }
+            
+            // Ajouter les aiguilles
+            const hourHand = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            hourHand.setAttribute("x1", "100");
+            hourHand.setAttribute("y1", "100");
+            
+            const minuteHand = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            minuteHand.setAttribute("x1", "100");
+            minuteHand.setAttribute("y1", "100");
+            
+            // Calculer les angles des aiguilles
+            const hourAngle = ((hour % 12) + minute / 60) * 30;
+            const minuteAngle = minute * 6;
+            
+            // Positionner les aiguilles
+            hourHand.setAttribute("x2", 100 + 40 * Math.sin((hourAngle * Math.PI) / 180));
+            hourHand.setAttribute("y2", 100 - 40 * Math.cos((hourAngle * Math.PI) / 180));
+            hourHand.setAttribute("stroke", "black");
+            hourHand.setAttribute("stroke-width", "4");
+            hourHand.setAttribute("stroke-linecap", "round");
+            
+            minuteHand.setAttribute("x2", 100 + 77 * Math.sin((minuteAngle * Math.PI) / 180));
+            minuteHand.setAttribute("y2", 100 - 77 * Math.cos((minuteAngle * Math.PI) / 180));
+            minuteHand.setAttribute("stroke", "black");
+            minuteHand.setAttribute("stroke-width", "2");
+            minuteHand.setAttribute("stroke-linecap", "round");
+            
+            // Ajouter le point central
+            const centerPoint = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            centerPoint.setAttribute("cx", "100");
+            centerPoint.setAttribute("cy", "100");
+            centerPoint.setAttribute("r", "3");
+            centerPoint.setAttribute("fill", "black");
+            
+            // Ajouter tous les éléments au SVG
+            svg.appendChild(hourHand);
+            svg.appendChild(minuteHand);
+            svg.appendChild(centerPoint);
+            
+            // Ajouter le SVG au wrapper
+            clockWrapper.appendChild(svg);
+            
+            // Ajouter le label si fourni
+            if (label) {
+                const labelElement = document.createElement('div');
+                labelElement.className = 'clock-label';
+                labelElement.textContent = label;
+                clockWrapper.appendChild(labelElement);
+            }
+            
+            // Ajouter le wrapper au conteneur
+            container.appendChild(clockWrapper);
+            
+            return clockWrapper;
+        }
+
+        // Fonction pour démarrer une session d'exercices
+        function startExerciseSession(type) {
+            currentExerciseType = type;
+            currentExerciseIndex = 0;
+            exerciseResults = [];
+            currentExercises = [];
+            
+            // Générer les exercices
+            const maxExercises = 5; // 5 exercices par série
+            for (let i = 0; i < maxExercises; i++) {
+                if (type === 'reproduire') {
+                    currentExercises.push(generateReproduireExercise());
+                } else if (type === 'lire') {
+                    currentExercises.push(generateLireExercise());
+                }
+            }
+            
+            // Afficher le premier exercice
+            displayCurrentExercise();
+            
+            // Afficher la vue d'exercice appropriée
+            homeView.classList.add('hidden');
+            if (type === 'reproduire') {
+                reproduireBox.classList.remove('hidden');
+                reproduireFeedback.innerHTML = '';
+                updateProgressBar('reproduire');
+            } else if (type === 'lire') {
+                lireBox.classList.remove('hidden');
+                lireFeedback.innerHTML = '';
+                updateProgressBar('lire');
+            }
+        }
+
+        // Générer un exercice "Reproduire une heure"
+        function generateReproduireExercise() {
+            const hour = Math.floor(Math.random() * 12);
+            const minute = Math.floor(Math.random() * 12) * 5; // Multiple de 5 pour simplifier
+            
+            return {
+                targetHour: hour,
+                targetMinute: minute,
+                question: `Reproduis l'heure suivante : ${hour}h${minute.toString().padStart(2, '0')}`
+            };
+        }
+
+        // Générer un exercice "Lire l'heure"
+        function generateLireExercise() {
+            const hour = Math.floor(Math.random() * 12);
+            const minute = Math.floor(Math.random() * 60); // Toutes les minutes possibles (0-59)
+            
+            // Déterminer le moment de la journée (avant ou après 12h)
+            let momentJournee;
+            let hourDisplay;
+            
+            // 50% de chance d'être avant 12h, 50% d'être après 12h
+            if (Math.random() < 0.5) {
+                momentJournee = "Avant 12h";
+                hourDisplay = hour; // Format 12h pour avant midi
+            } else {
+                momentJournee = "Après 12h";
+                hourDisplay = hour + 12; // Format 24h pour après midi
+                if (hourDisplay === 24) hourDisplay = 0; // 12h du matin = 00h en format 24h
+            }
+            
+            return {
+                targetHour: hour,
+                targetMinute: minute,
+                hour: hourDisplay, // L'heure à afficher (format 24h si après-midi)
+                minute: minute,
+                moment: momentJournee
+            };
+        }
+
+        // Afficher l'exercice courant
+        function displayCurrentExercise() {
+            if (currentExerciseIndex >= currentExercises.length) return;
+            
+            const exercise = currentExercises[currentExerciseIndex];
+            
+            if (currentExerciseType === 'reproduire') {
+                reproduireQuestion.textContent = exercise.question;
+                hourRange.value = 0;
+                minuteRange.value = 0;
+                updateHourMinuteValues();
+                updateClock('reproduire-clock', 0, 0);
+            } else if (currentExerciseType === 'lire') {
+                lireMoment.textContent = `${exercise.moment}`;
+                hourSelect.value = 0;
+                minuteSelect.value = 0;
+                updateClock('lire-clock', exercise.targetHour, exercise.targetMinute);
+            }
+        }
+
+        // Mettre à jour la barre de progression
+        function updateProgressBar(type) {
+            const progressBarFill = type === 'reproduire' ? reproduireProgressBarFill : lireProgressBarFill;
+            const width = ((currentExerciseIndex) / currentExercises.length) * 100;
+            progressBarFill.style.width = width + '%';
+            progressBarFill.textContent = `${currentExerciseIndex} / ${currentExercises.length}`;
+        }
+
+        // Mettre à jour les valeurs d'heure et de minute affichées
+        function updateHourMinuteValues() {
+            hourValue.textContent = '';
+            minuteValue.textContent = '';
+            updateClock('reproduire-clock', parseInt(hourRange.value), parseInt(minuteRange.value));
+        }
+
+        // Événements pour les contrôles de l'exercice "Reproduire une heure"
+        hourRange.addEventListener('input', updateHourMinuteValues);
+        minuteRange.addEventListener('input', updateHourMinuteValues);
+
+        // Valider la réponse pour l'exercice "Reproduire une heure"
+        reproduireValidateBtn.addEventListener('click', function() {
+            if (currentExerciseIndex >= currentExercises.length) return;
+            
+            const exercise = currentExercises[currentExerciseIndex];
+            const userHour = parseInt(hourRange.value);
+            const userMinute = parseInt(minuteRange.value);
+            
+            const isCorrect = userHour === exercise.targetHour && userMinute === exercise.targetMinute;
+            
+            // Ajouter le résultat
+            exerciseResults.push({
+                question: exercise.question,
+                userHour: userHour,
+                userMinute: userMinute,
+                targetHour: exercise.targetHour,
+                targetMinute: exercise.targetMinute,
+                userAnswer: `${userHour}h${userMinute.toString().padStart(2, '0')}`,
+                correctAnswer: `${exercise.targetHour}h${exercise.targetMinute.toString().padStart(2, '0')}`,
+                isCorrect: isCorrect,
+                explanation: isCorrect ? 'Correct !' : 'Incorrect.'
+            });
+            
+            // Afficher le feedback
+            if (isCorrect) {
+                reproduireFeedback.innerHTML = '<div class="feedback-success">Correct !</div>';
+                setTimeout(() => {
+                    nextExercise('reproduire');
+                }, 2000); // 2 secondes pour les bonnes réponses
+            } else {
+                reproduireFeedback.innerHTML = `<div class="feedback-error">Incorrect. La bonne réponse est ${exercise.targetHour}h${exercise.targetMinute.toString().padStart(2, '0')}.</div>`;
+                setTimeout(() => {
+                    nextExercise('reproduire');
+                }, 2000); // 2 secondes pour les mauvaises réponses
+            }
+            
+            // Désactiver le bouton et les contrôles pendant le feedback
+            reproduireValidateBtn.disabled = true;
+            hourRange.disabled = true;
+            minuteRange.disabled = true;
+        });
+
+        // Valider la réponse pour l'exercice "Lire l'heure"
+        lireValidateBtn.addEventListener('click', function() {
+            if (currentExerciseIndex >= currentExercises.length) return;
+            
+            const exercise = currentExercises[currentExerciseIndex];
+            const userHour = parseInt(hourSelect.value);
+            const userMinute = parseInt(minuteSelect.value);
+            
+            // Vérifier si la réponse est correcte en tenant compte du moment de la journée
+            // et avec une marge d'erreur de 1 minute avant ou après
+            let isCorrect = false;
+            
+            // L'heure doit correspondre exactement
+            if (userHour === exercise.hour) {
+                // Pour les minutes, on accepte une marge d'erreur de 1 minute avant ou après
+                const minuteDifference = Math.abs(userMinute - exercise.minute);
+                
+                // Cas particulier pour 0 et 59 (boucle)
+                if (exercise.minute === 0 && userMinute === 59) {
+                    isCorrect = true;
+                } else if (exercise.minute === 59 && userMinute === 0) {
+                    isCorrect = true;
+                } else {
+                    // Cas général: différence de 0 ou 1 minute
+                    isCorrect = minuteDifference <= 1;
+                }
+            }
+            
+            // Ajouter le résultat
+            exerciseResults.push({
+                question: `Quelle heure est-il ? (${exercise.moment})`,
+                userHour: userHour,
+                userMinute: userMinute,
+                targetHour: exercise.targetHour,
+                targetMinute: exercise.targetMinute,
+                userAnswer: `${userHour}h${userMinute.toString().padStart(2, '0')}`,
+                correctAnswer: `${exercise.hour}h${exercise.minute.toString().padStart(2, '0')}`,
+                isCorrect: isCorrect,
+                explanation: isCorrect ? 'Correct !' : 'Incorrect.'
+            });
+            
+            // Afficher le feedback
+            if (isCorrect) {
+                lireFeedback.innerHTML = '<div class="feedback-success">Correct !</div>';
+                setTimeout(() => {
+                    nextExercise('lire');
+                }, 2000); // 2 secondes pour les bonnes réponses
+            } else {
+                lireFeedback.innerHTML = `<div class="feedback-error">Incorrect. La bonne réponse est ${exercise.hour}h${exercise.minute.toString().padStart(2, '0')}.</div>`;
+                setTimeout(() => {
+                    nextExercise('lire');
+                }, 5000); // 5 secondes pour les mauvaises réponses
+            }
+            
+            // Désactiver le bouton et les sélecteurs pendant le feedback
+            lireValidateBtn.disabled = true;
+            hourSelect.disabled = true;
+            minuteSelect.disabled = true;
+        });
+
+        // Passer à l'exercice suivant
+        function nextExercise(type) {
+            currentExerciseIndex++;
+            
+            // Réactiver les contrôles
+            if (type === 'reproduire') {
+                reproduireValidateBtn.disabled = false;
+                hourRange.disabled = false;
+                minuteRange.disabled = false;
+                reproduireFeedback.innerHTML = '';
+            } else if (type === 'lire') {
+                lireValidateBtn.disabled = false;
+                hourSelect.disabled = false;
+                minuteSelect.disabled = false;
+                lireFeedback.innerHTML = '';
+            }
+            
+            // Vérifier si tous les exercices sont terminés
+            if (currentExerciseIndex >= currentExercises.length) {
+                showResults(type);
+            } else {
+                displayCurrentExercise();
+                updateProgressBar(type);
+            }
+        }
+
+        // Afficher les résultats
+        function showResults(type) {
+            const totalCount = exerciseResults.length;
+            const correctCount = exerciseResults.filter(result => result.isCorrect).length;
+            const scorePercentage = Math.round((correctCount / totalCount) * 100);
+            
+            let recapHTML = `
+                <h3>Résultats</h3>
+                <p>Score : ${correctCount}/${totalCount} (${scorePercentage}%)</p>
+            `;
+            
+            // Ajouter les détails de chaque exercice
+            exerciseResults.forEach((result, index) => {
+                const resultClass = result.isCorrect ? 'recap-success' : 'recap-error';
+                
+                recapHTML += `
+                    <div class="recap-item ${resultClass}">
+                        <p><strong>Question ${index + 1} :</strong> ${result.question}</p>
+                        <p>Votre réponse : ${result.userAnswer}</p>
+                        <p>Réponse correcte : ${result.correctAnswer}</p>
+                        <p><em>${result.explanation}</em></p>
+                        <div id="recap-clock-container-${index}" class="feedback-clock-container"></div>
+                    </div>
+                `;
+            });
+            
+            // Afficher le récapitulatif
+            if (type === 'reproduire') {
+                reproduireFeedback.innerHTML = recapHTML;
+                reproduireProgressBarContainer.classList.add('hidden');
+                reproduireQuestion.textContent = '';
+                hourRange.classList.add('hidden');
+                minuteRange.classList.add('hidden');
+                document.querySelectorAll('.control-group').forEach(el => el.classList.add('hidden'));
+                reproduireValidateBtn.classList.add('hidden');
+                
+                // Masquer l'horloge principale au-dessus des feedbacks
+                document.getElementById('reproduire-clock').classList.add('hidden');
+                
+                // Masquer le bouton "Retour à l'accueil" en haut
+                reproduireHomeBtn.classList.add('hidden');
+                
+                // Ajouter un bouton "Retour à l'accueil" en bas du feedback
+                const homeButton = document.createElement('button');
+                homeButton.className = 'home-btn';
+                homeButton.textContent = 'Retour à l\'accueil';
+                homeButton.addEventListener('click', goToHome);
+                reproduireFeedback.appendChild(homeButton);
+                
+                // Ajouter les horloges au récapitulatif
+                exerciseResults.forEach((result, index) => {
+                    const container = document.getElementById(`recap-clock-container-${index}`);
+                    container.innerHTML = ''; // Vider le conteneur avant d'ajouter les horloges
+                    
+                    // Si la réponse était incorrecte, ajouter l'horloge avec la réponse de l'utilisateur à gauche
+                    if (!result.isCorrect) {
+                        createFeedbackClock(`recap-clock-container-${index}`, result.userHour, result.userMinute, "Votre réponse");
+                    }
+                    
+                    // Créer une horloge montrant la réponse correcte à droite
+                    createFeedbackClock(`recap-clock-container-${index}`, result.targetHour, result.targetMinute, "Bonne réponse");
+                });
+                
+            } else if (type === 'lire') {
+                lireFeedback.innerHTML = recapHTML;
+                lireProgressBarContainer.classList.add('hidden');
+                lireMoment.classList.add('hidden');
+                document.querySelectorAll('.select-group').forEach(el => el.classList.add('hidden'));
+                lireValidateBtn.classList.add('hidden');
+                
+                // Masquer l'horloge principale au-dessus des feedbacks
+                document.getElementById('lire-clock').classList.add('hidden');
+                
+                // Masquer le bouton "Retour à l'accueil" en haut
+                lireHomeBtn.classList.add('hidden');
+                
+                // Ajouter un bouton "Retour à l'accueil" en bas du feedback
+                const homeButton = document.createElement('button');
+                homeButton.className = 'home-btn';
+                homeButton.textContent = 'Retour à l\'accueil';
+                homeButton.addEventListener('click', goToHome);
+                lireFeedback.appendChild(homeButton);
+                
+                // Ajouter les horloges au récapitulatif
+                exerciseResults.forEach((result, index) => {
+                    const container = document.getElementById(`recap-clock-container-${index}`);
+                    container.innerHTML = ''; // Vider le conteneur avant d'ajouter les horloges
+                    
+                    // Si la réponse était incorrecte, ajouter l'horloge avec la réponse de l'utilisateur à gauche
+                    if (!result.isCorrect) {
+                        createFeedbackClock(`recap-clock-container-${index}`, result.userHour, result.userMinute, "Votre réponse");
+                    }
+                    
+                    // Créer une horloge montrant la réponse correcte à droite
+                    createFeedbackClock(`recap-clock-container-${index}`, result.targetHour, result.targetMinute, "Bonne réponse");
+                });
+            }
+            
+            // Ajouter à l'historique
+            const historyEntry = {
+                date: new Date().toLocaleString('fr-FR'),
+                type: type === 'reproduire' ? 'Reproduire une heure' : 'Lire l\'heure',
+                score: `${correctCount}/${totalCount} (${scorePercentage}%)`,
+                details: exerciseResults
+            };
+            
+            sessionHistory.unshift(historyEntry);
+            if (sessionHistory.length > 10) {
+                sessionHistory.pop();
+            }
+            localStorage.setItem('horlomath_history', JSON.stringify(sessionHistory));
+        }
+
+        // Retour à l'accueil depuis les exercices
+        reproduireHomeBtn.addEventListener('click', function() {
+            if (confirm('Êtes-vous sûr de vouloir quitter cet exercice ? Votre progression sera perdue.')) {
+                goToHome();
+            }
+        });
+
+        lireHomeBtn.addEventListener('click', function() {
+            if (confirm('Êtes-vous sûr de vouloir quitter cet exercice ? Votre progression sera perdue.')) {
+                goToHome();
+            }
+        });
+
+        // Fonction centralisée pour retourner à l'accueil
+        function goToHome() {
+            // Masquer toutes les vues d'exercice
+            reproduireBox.classList.add('hidden');
+            lireBox.classList.add('hidden');
+            
+            // Réinitialiser tous les états
+            resetReproduireExercise();
+            resetLireExercise();
+            
+            // Afficher la vue d'accueil
+            homeView.classList.remove('hidden');
+            
+            // Réinitialiser les variables globales
+            currentExerciseType = null;
+            currentExerciseIndex = 0;
+            currentExercises = [];
+            exerciseResults = [];
+        }
+
+        // Réinitialiser l'exercice "Reproduire une heure"
+        function resetReproduireExercise() {
+            reproduireProgressBarContainer.classList.remove('hidden');
+            reproduireQuestion.textContent = '';
+            hourRange.classList.remove('hidden');
+            minuteRange.classList.remove('hidden');
+            document.querySelectorAll('.control-group').forEach(el => el.classList.remove('hidden'));
+            reproduireValidateBtn.classList.remove('hidden');
+            reproduireFeedback.innerHTML = '';
+            
+            // Réinitialiser les contrôles
+            hourRange.value = 0;
+            minuteRange.value = 0;
+            hourValue.textContent = '';
+            minuteValue.textContent = '';
+            
+            // Réinitialiser l'horloge
+            updateClock('reproduire-clock', 0, 0);
+        }
+
+        // Réinitialiser l'exercice "Lire l'heure"
+        function resetLireExercise() {
+            lireProgressBarContainer.classList.remove('hidden');
+            lireMoment.classList.remove('hidden');
+            document.querySelectorAll('.select-group').forEach(el => el.classList.remove('hidden'));
+            lireValidateBtn.classList.remove('hidden');
+            lireFeedback.innerHTML = '';
+            
+            // Réinitialiser les sélecteurs
+            hourSelect.value = 0;
+            minuteSelect.value = 0;
+            
+            // Réinitialiser l'horloge
+            updateClock('lire-clock', 0, 0);
+        }
+
+        // Afficher l'historique
+        showHistoryBtn.addEventListener('click', function() {
+            displayHistory();
+            homeView.classList.add('hidden');
+            historyBox.classList.remove('hidden');
+        });
+
+        // Fonction pour afficher l'historique
+        function displayHistory() {
+            if (sessionHistory.length === 0) {
+                historyListContent.innerHTML = '<p>Aucun historique disponible.</p>';
+                return;
+            }
+            
+            let historyHTML = '<h2>Historique des sessions</h2>';
+            
+            sessionHistory.forEach((entry, index) => {
+                historyHTML += `
+                    <div class="history-entry">
+                        <h3>Session ${index + 1} - ${entry.date}</h3>
+                        <p><strong>Type :</strong> ${entry.type}</p>
+                        <p><strong>Score :</strong> ${entry.score}</p>
+                    </div>
+                `;
+            });
+            
+            historyListContent.innerHTML = historyHTML;
+        }
+
+        // Retour à l'accueil depuis l'historique
+        historyHomeBtn.addEventListener('click', function() {
+            historyBox.classList.add('hidden');
+            homeView.classList.remove('hidden');
+        });
+    });
+  </script>
+</body>
+</html>

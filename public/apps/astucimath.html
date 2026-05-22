@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Astucimath V6 - Sans Timer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600&family=Source+Sans+Pro&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --violet: #8f67ca;
+      --turquoise: #01b7c4;
+      --vert: #01b7c4;
+      --blanc: #ffffff;
+      --gris-clair: #ffffff; 
+      --noir: #222;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Source Sans Pro', sans-serif;
+      background: linear-gradient(to bottom, var(--gris-clair), var(--blanc));
+      color: var(--noir);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh; 
+    }
+
+    header {
+        padding: 1rem 0;
+    }
+
+    main {
+        flex-grow: 1; 
+        padding: 0 1rem; 
+    }
+
+    h1 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--violet);
+      font-size: 2.5rem; 
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+        font-family: 'Epilogue', sans-serif;
+        color: var(--noir);
+        font-size: 1.8rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    h4 {
+        font-family: 'Epilogue', sans-serif;
+        color: var(--noir);
+        font-size: 1.2rem;
+        margin-top: 1.5rem;
+        margin-bottom: 0.8rem;
+        text-align: left;
+        padding-left: 10px;
+    }
+
+    .app-section {
+        margin-bottom: 30px;
+        padding: 15px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        background-color: #fdfdfd;
+    }
+
+    .buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      border: none;
+      padding: 12px 20px; 
+      font-size: 1rem; 
+      border-radius: 10px; 
+      color: var(--blanc);
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    .theory-btn {
+      background-color: var(--turquoise);
+    }
+
+    .exercise-btn {
+      background-color: var(--violet);
+    }
+
+    .action-btn {
+      background-color: var(--vert);
+      margin-top: 10px; 
+    }
+
+    /* .timer class removed as the timer functionality is deleted */
+
+    .content-box {
+      max-width: 700px;
+      margin: 20px auto; 
+      padding: 20px;
+      border: 2px solid var(--violet);
+      border-radius: 12px;
+      background-color: var(--blanc);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: left;
+      font-size: 1.1rem; 
+    }
+
+    .hidden {
+      display: none !important; 
+    }
+
+    .content-box ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .content-box li {
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .feedback-item {
+      padding: 8px;
+      background: #f9f9f9;
+      border-left: 4px solid var(--violet);
+      margin-bottom: 10px;
+    }
+    
+    .exercise-input {
+        display: block; 
+        width: calc(100% - 22px); 
+        padding: 10px;
+        margin: 15px 0;
+        font-size: 1.2rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-sizing: border-box; 
+    }
+
+    #exercise-feedback {
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+    footer {
+      margin-top: 2rem;
+      padding: 1rem;
+      font-size: 1rem;
+      background-color: var(--gris-clair);
+      border-top: 1px solid #eee;
+    }
+
+    footer a {
+      color: var(--violet);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      h4 {
+        font-size: 1.1rem;
+      }
+      button {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+      }
+      .content-box {
+        padding: 15px;
+        font-size: 1rem;
+      }
+      /* .timer class removed from media query as well */
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Astucimath</h1>
+  </header>
+
+  <main>
+    <section id="section-theorie" class="app-section">
+      <h2>Théorie des Astuces</h2>
+      <div id="theorie-div-buttons" class="buttons-container"></div>
+      <div id="theorie-mul-buttons" class="buttons-container"></div>
+      <div id="theorie-content-box" class="content-box hidden"></div>
+    </section>
+
+    <section id="section-exercices-par-astuce" class="app-section">
+      <h2>Exercices par Astuce</h2>
+      <div id="exercices-div-buttons" class="buttons-container"></div>
+      <div id="exercices-mul-buttons" class="buttons-container"></div>
+    </section>
+
+    <section id="section-exercices-melanges" class="app-section">
+      <h2>Exercices Mélangés</h2>
+      <div id="exercices-melanges-buttons" class="buttons-container"></div>
+    </section>
+
+    <section id="section-historique" class="app-section">
+      <h2>Historique des Scores</h2>
+      <button id="show-history-btn" class="action-btn">Afficher l'historique</button>
+      <div id="history-box" class="content-box hidden"></div>
+    </section>
+
+    <!-- La div timerDisplay a été supprimée -->
+    
+    <div id="exercise-box" class="content-box hidden global-exercise-box">
+        <div id="exercise-header"></div>
+        <div id="exercise-question"></div>
+        <input type="text" id="exercise-input" class="exercise-input">
+        <button id="exercise-submit" class="action-btn">Valider</button>
+        <div id="exercise-feedback"></div>
+    </div>
+    <div id="results-box" class="content-box hidden global-results-box"></div>
+    <!-- timerDisplay a été supprimé d'ici aussi -->
+
+  </main>
+
+  <footer>
+    Astucimath par <a href="https://lesrochdur.com/" target="_blank">Les RochDur</a>
+  </footer>
+
+  <script>
+    /**** Données des astuces ****/
+    const astucesData = {
+      divisions: [
+        { id: "div0001", operation: "division", display: ": 0,001", value: 0.001, aEquivalent: "× 1000", explanation: "Diviser par 0,001 revient à multiplier par 1000." },
+        { id: "div001", operation: "division", display: ": 0,01", value: 0.01, aEquivalent: "× 100", explanation: "Diviser par 0,01 revient à multiplier par 100." },
+        { id: "div01", operation: "division", display: ": 0,1", value: 0.1, aEquivalent: "× 10", explanation: "Diviser par 0,1 revient à multiplier par 10." },
+        { id: "div02", operation: "division", display: ": 0,2", value: 0.2, aEquivalent: "× 5", explanation: "Diviser par 0,2 revient à multiplier par 5 (car 1/0,2 = 5)." },
+        { id: "div025", operation: "division", display: ": 0,25", value: 0.25, aEquivalent: "× 4", explanation: "Diviser par 0,25 revient à multiplier par 4 (car 1/0,25 = 4)." },
+        { id: "div05", operation: "division", display: ": 0,5", value: 0.5, aEquivalent: "× 2", explanation: "Diviser par 0,5 revient à multiplier par 2 (car 1/0,5 = 2)." },
+        { id: "div125", operation: "division", display: ": 1,25", value: 1.25, aEquivalent: ": 10 × 8", explanation: "Diviser par 1,25 revient à diviser par 10 puis multiplier par 8. On peut aussi voir 1,25 comme 5/4, donc diviser par 1,25 c'est multiplier par 4/5." },
+        { id: "div25_dec", operation: "division", display: ": 2,5", value: 2.5, aEquivalent: ": 10 × 4", explanation: "Diviser par 2,5 revient à diviser par 10 puis multiplier par 4. On peut aussi voir 2,5 comme 5/2, donc diviser par 2,5 c'est multiplier par 2/5." },
+        { id: "div4", operation: "division", display: ": 4", value: 4, aEquivalent: ": 2 : 2", explanation: "Diviser par 4 revient à diviser par 2, puis encore diviser par 2." },
+        { id: "div5", operation: "division", display: ": 5", value: 5, aEquivalent: ": 10 × 2", explanation: "Diviser par 5 revient à diviser par 10 puis multiplier par 2." },
+        { id: "div8", operation: "division", display: ": 8", value: 8, aEquivalent: ": 2 : 2 : 2", explanation: "Diviser par 8 revient à diviser par 2, puis par 2, puis encore par 2." },
+        { id: "div10", operation: "division", display: ": 10", value: 10, aEquivalent: "décaler la virgule d'un rang à gauche", explanation: "Diviser par 10 revient à décaler la virgule d'un rang vers la gauche." },
+        { id: "div20", operation: "division", display: ": 20", value: 20, aEquivalent: ": 10 : 2", explanation: "Diviser par 20 revient à diviser par 10, puis par 2." },
+        { id: "div25", operation: "division", display: ": 25", value: 25, aEquivalent: ": 100 × 4", explanation: "Diviser par 25 revient à diviser par 100 puis multiplier par 4." },
+        { id: "div50", operation: "division", display: ": 50", value: 50, aEquivalent: ": 100 × 2", explanation: "Diviser par 50 revient à diviser par 100 puis multiplier par 2." },
+        { id: "div100", operation: "division", display: ": 100", value: 100, aEquivalent: "décaler la virgule de deux rangs à gauche", explanation: "Diviser par 100 revient à décaler la virgule de deux rangs vers la gauche." },
+        { id: "div1000", operation: "division", display: ": 1000", value: 1000, aEquivalent: "décaler la virgule de trois rangs à gauche", explanation: "Diviser par 1000 revient à décaler la virgule de trois rangs vers la gauche." }
+      ],
+      multiplications: [
+        { id: "mul0001", operation: "multiplication", display: "× 0,001", value: 0.001, aEquivalent: ": 1000", explanation: "Multiplier par 0,001 revient à diviser par 1000." },
+        { id: "mul001", operation: "multiplication", display: "× 0,01", value: 0.01, aEquivalent: ": 100", explanation: "Multiplier par 0,01 revient à diviser par 100." },
+        { id: "mul01", operation: "multiplication", display: "× 0,1", value: 0.1, aEquivalent: ": 10", explanation: "Multiplier par 0,1 revient à diviser par 10." },
+        { id: "mul02", operation: "multiplication", display: "× 0,2", value: 0.2, aEquivalent: ": 5", explanation: "Multiplier par 0,2 revient à diviser par 5 (car 0,2 = 1/5)." },
+        { id: "mul025", operation: "multiplication", display: "× 0,25", value: 0.25, aEquivalent: ": 4", explanation: "Multiplier par 0,25 revient à diviser par 4 (car 0,25 = 1/4)." },
+        { id: "mul05", operation: "multiplication", display: "× 0,5", value: 0.5, aEquivalent: ": 2", explanation: "Multiplier par 0,5 revient à diviser par 2 (car 0,5 = 1/2)." },
+        { id: "mul4", operation: "multiplication", display: "× 4", value: 4, aEquivalent: "× 2 × 2", explanation: "Multiplier par 4 revient à multiplier par 2, puis encore par 2." },
+        { id: "mul5", operation: "multiplication", display: "× 5", value: 5, aEquivalent: "× 10 : 2", explanation: "Multiplier par 5 revient à multiplier par 10, puis diviser par 2." },
+        { id: "mul8", operation: "multiplication", display: "× 8", value: 8, aEquivalent: "× 2 × 2 × 2", explanation: "Multiplier par 8 revient à multiplier par 2, puis par 2, puis encore par 2." },
+        { id: "mul9", operation: "multiplication", display: "× 9", value: 9, aEquivalent: "× 10 - nombre", explanation: "Multiplier par 9 revient à multiplier par 10, puis soustraire le nombre initial. Exemple: 7 × 9 = (7 × 10) - 7 = 70 - 7 = 63." },
+        { id: "mul10", operation: "multiplication", display: "× 10", value: 10, aEquivalent: "ajouter un zéro", explanation: "Multiplier un nombre entier par 10 revient à ajouter un zéro à sa droite. Pour un nombre décimal, on décale la virgule d'un rang vers la droite." },
+        { id: "mul11", operation: "multiplication", display: "× 11", value: 11, aEquivalent: "× 10 + nombre", explanation: "Multiplier par 11 revient à multiplier par 10, puis ajouter le nombre initial. Exemple: 7 × 11 = (7 × 10) + 7 = 70 + 7 = 77." },
+        { id: "mul20", operation: "multiplication", display: "× 20", value: 20, aEquivalent: "× 10 × 2", explanation: "Multiplier par 20 revient à multiplier par 10, puis par 2." },
+        { id: "mul25", operation: "multiplication", display: "× 25", value: 25, aEquivalent: "× 100 : 4", explanation: "Multiplier par 25 revient à multiplier par 100, puis diviser par 4." },
+        { id: "mul50", operation: "multiplication", display: "× 50", value: 50, aEquivalent: "× 100 : 2", explanation: "Multiplier par 50 revient à multiplier par 100, puis diviser par 2." },
+        { id: "mul99", operation: "multiplication", display: "× 99", value: 99, aEquivalent: "× 100 - nombre", explanation: "Multiplier par 99 revient à multiplier par 100, puis soustraire le nombre initial. Exemple: 7 × 99 = (7 × 100) - 7 = 700 - 7 = 693." },
+        { id: "mul100", operation: "multiplication", display: "× 100", value: 100, aEquivalent: "ajouter deux zéros", explanation: "Multiplier un nombre entier par 100 revient à ajouter deux zéros à sa droite. Pour un nombre décimal, on décale la virgule de deux rangs vers la droite." },
+        { id: "mul101", operation: "multiplication", display: "× 101", value: 101, aEquivalent: "× 100 + nombre", explanation: "Multiplier par 101 revient à multiplier par 100, puis ajouter le nombre initial. Exemple: 7 × 101 = (7 × 100) + 7 = 700 + 7 = 707." },
+        { id: "mul1000", operation: "multiplication", display: "× 1000", value: 1000, aEquivalent: "ajouter trois zéros", explanation: "Multiplier un nombre entier par 1000 revient à ajouter trois zéros à sa droite. Pour un nombre décimal, on décale la virgule de trois rangs vers la droite." }
+      ]
+    };
+
+    /**** Éléments du DOM ****/
+    const sectionTheorie = document.getElementById("section-theorie");
+    const theorieDivButtons = document.getElementById("theorie-div-buttons");
+    const theorieMulButtons = document.getElementById("theorie-mul-buttons");
+    const theorieContentBox = document.getElementById("theorie-content-box");
+    const exercicesDivButtons = document.getElementById("exercices-div-buttons");
+    const exercicesMulButtons = document.getElementById("exercices-mul-buttons");
+    const exercicesMelangesButtons = document.getElementById("exercices-melanges-buttons");
+    const showHistoryBtn = document.getElementById("show-history-btn");
+    const historyBox = document.getElementById("history-box");
+    const exerciseBox = document.getElementById("exercise-box");
+    const exerciseHeader = document.getElementById("exercise-header");
+    const exerciseQuestion = document.getElementById("exercise-question");
+    const exerciseInput = document.getElementById("exercise-input");
+    const exerciseSubmit = document.getElementById("exercise-submit");
+    const exerciseFeedback = document.getElementById("exercise-feedback");
+    const resultsBox = document.getElementById("results-box");
+
+    let currentExercises = [];
+    let currentExerciseIndex = 0;
+    let score = 0;
+    let currentAstuceForExercise = null;
+    let feedbackItems = [];
+    let exerciseHistory = JSON.parse(localStorage.getItem("astucimath_history_v6")) || []; 
+    const EXERCISES_PER_SERIES = 10;
+
+    /**** Fonctions utilitaires ****/
+    function formatNumberWithComma(number) {
+        if (typeof number !== 'number') return String(number);
+        return String(number).replace('.', ',');
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function hideAllGlobalBoxes() {
+        [theorieContentBox, exerciseBox, resultsBox, historyBox].forEach(el => el.classList.add("hidden"));
+    }
+
+    function showGlobalBox(boxToShow) {
+        hideAllGlobalBoxes();
+        if (boxToShow) {
+            boxToShow.classList.remove("hidden");
+        }
+    }
+
+    function formatDivisionSymbol(text) {
+        return String(text).replace(/\/|÷/g, ":");
+    }
+
+    /**** Théorie ****/
+    function displayTheory(astuce) {
+        let title = astuce.operation === "division" ? "Diviser" : "Multiplier";
+        let astuceValueDisplay = astuce.display.substring(astuce.display.indexOf(" ") + 1);
+        title += ` par ${formatNumberWithComma(astuceValueDisplay)}`;
+        theorieContentBox.innerHTML = `
+            <h3>Astuce : ${formatDivisionSymbol(title)}</h3>
+            <p><strong>Astuce équivalente :</strong> ${formatDivisionSymbol(astuce.aEquivalent)}</p>
+            <p><strong>Explication :</strong> ${formatDivisionSymbol(astuce.explanation)}</p>
+            <div class="button-container">
+                <button class="action-btn" onclick="showGlobalBox(null); placeBoxInMain(theorieContentBox);">Fermer</button>
+            </div>
+        `;
+        if (theorieContentBox.parentNode !== sectionTheorie) {
+             sectionTheorie.appendChild(theorieContentBox);
+        }
+        if (theorieMulButtons.nextSibling) {
+            sectionTheorie.insertBefore(theorieContentBox, theorieMulButtons.nextSibling);
+        } else {
+            sectionTheorie.appendChild(theorieContentBox);
+        }
+        showGlobalBox(theorieContentBox);
+        theorieContentBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    /**** Système d'Exercices ****/
+    function generateExercise(astuce) {
+        let num1, expectedResult;
+        let questionText = "";
+        const operand = astuce.value;
+        if (astuce.operation === "division") {
+            let simpleResult = Math.floor(Math.random() * 20) + 1;
+            if (operand < 1 && operand > 0) simpleResult = Math.floor(Math.random() * 200) + 10;
+            num1 = simpleResult * operand;
+            if (Math.random() < 0.5 && num1 > 10) num1 += (Math.random() * 2 - 1) * operand / 2;
+            num1 = parseFloat(num1.toFixed(3));
+            expectedResult = num1 / operand;
+            questionText = `Calculez : ${formatNumberWithComma(num1)} ${formatDivisionSymbol(astuce.display)} ?`;
+        } else {
+            num1 = Math.floor(Math.random() * (operand > 1 ? 50 : 200)) + 1;
+            if (operand < 1) num1 = Math.floor(Math.random() * 2000) + 100;
+            expectedResult = num1 * operand;
+            questionText = `Calculez : ${formatNumberWithComma(num1)} ${astuce.display} ?`;
+        }
+        expectedResult = parseFloat(expectedResult.toFixed(3));
+        return { questionText, expectedResult, num1, astuce };
+    }
+
+    function startExerciseSeries(astuceOuType, callingSectionId) {
+        currentExercises = [];
+        currentExerciseIndex = 0;
+        score = 0;
+        feedbackItems = [];
+        let seriesDisplayName = "";
+        if (typeof astuceOuType === "string") {
+            seriesDisplayName = `${astuceOuType.charAt(0).toUpperCase() + astuceOuType.slice(1)} (mélange)`;
+            currentAstuceForExercise = { type: astuceOuType, display: seriesDisplayName };
+            let astucesPool = [];
+            if (astuceOuType === "divisions") astucesPool = [...astucesData.divisions];
+            else if (astuceOuType === "multiplications") astucesPool = [...astucesData.multiplications];
+            else astucesPool = [...astucesData.divisions, ...astucesData.multiplications];
+            shuffleArray(astucesPool);
+            for (let i = 0; i < EXERCISES_PER_SERIES; i++) currentExercises.push(generateExercise(astucesPool[i % astucesPool.length]));
+        } else {
+            currentAstuceForExercise = astuceOuType;
+            seriesDisplayName = `${formatDivisionSymbol(astuceOuType.display)}`;
+            for (let i = 0; i < EXERCISES_PER_SERIES; i++) currentExercises.push(generateExercise(astuceOuType));
+        }
+        displayNextExercise(callingSectionId);
+    }
+
+    function displayNextExercise(callingSectionId) {
+        if (currentExerciseIndex < EXERCISES_PER_SERIES) {
+            const exercise = currentExercises[currentExerciseIndex];
+            exerciseHeader.textContent = `Question ${currentExerciseIndex + 1} / ${EXERCISES_PER_SERIES}`;
+            exerciseQuestion.textContent = formatDivisionSymbol(exercise.questionText);
+            exerciseInput.value = "";
+            exerciseInput.focus();
+            exerciseFeedback.textContent = "";
+            showGlobalBox(exerciseBox);
+            const targetSection = document.getElementById(callingSectionId || 'section-exercices-melanges');
+            targetSection.appendChild(exerciseBox);
+            exerciseBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+            showResults(callingSectionId);
+        }
+    }
+
+    exerciseSubmit.onclick = () => {
+        const userAnswer = parseFloat(exerciseInput.value.replace(",", "."));
+        const currentExercise = currentExercises[currentExerciseIndex];
+        let isCorrect = false;
+        if (!isNaN(userAnswer) && Math.abs(userAnswer - currentExercise.expectedResult) < 0.001) {
+            isCorrect = true;
+        }
+        const formattedExpectedResult = formatNumberWithComma(currentExercise.expectedResult);
+        const formattedUserAnswer = formatNumberWithComma(userAnswer);
+        if (isCorrect) {
+            score++;
+            exerciseFeedback.textContent = "Bonne réponse !";
+            exerciseFeedback.style.color = "green";
+            feedbackItems.push(`<li class="feedback-item">${formatDivisionSymbol(currentExercise.questionText)} Réponse: ${formattedUserAnswer}. ✔️ Bravo ! (Attendu: ${formattedExpectedResult})</li>`);
+        } else {
+            exerciseFeedback.textContent = `Faux. La bonne réponse était ${formattedExpectedResult}.`;
+            exerciseFeedback.style.color = "red";
+            feedbackItems.push(`<li class="feedback-item">${formatDivisionSymbol(currentExercise.questionText)} Réponse: ${isNaN(userAnswer) ? "invalide" : formattedUserAnswer}. ❌ Faux. Attendu: ${formattedExpectedResult}. Astuce: ${formatDivisionSymbol(currentExercise.astuce.explanation)}</li>`);
+        }
+        currentExerciseIndex++;
+        const callingSectionId = exerciseBox.parentElement.id === 'main' ? null : exerciseBox.parentElement.id;
+        setTimeout(() => { displayNextExercise(callingSectionId); }, 1500);
+    };
+
+    function showResults(callingSectionId) {
+        saveScore();
+        resultsBox.innerHTML = `
+            <h3>Résultats pour ${formatDivisionSymbol(currentAstuceForExercise.display)}</h3>
+            <p>Votre score : ${score} / ${EXERCISES_PER_SERIES}</p>
+            <h4>Détail des réponses :</h4>
+            <ul>${feedbackItems.join("")}</ul>
+            <div class="button-container">
+                <button class="action-btn" onclick="showGlobalBox(null); placeBoxInMain(resultsBox);">Fermer</button>
+            </div>
+        `;
+        showGlobalBox(resultsBox);
+        const targetSection = document.getElementById(callingSectionId || 'section-exercices-melanges');
+        targetSection.appendChild(resultsBox);
+        resultsBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    
+    function placeBoxInMain(boxElement) {
+        if (boxElement !== theorieContentBox) {
+            document.querySelector('main').appendChild(boxElement);
+        }
+    }
+
+    /**** Historique des Scores ****/
+    function saveScore() {
+        const date = new Date().toLocaleString("fr-FR");
+        const record = {
+            date,
+            type: formatDivisionSymbol(currentAstuceForExercise.display),
+            score,
+            total: EXERCISES_PER_SERIES
+        };
+        exerciseHistory.push(record);
+        localStorage.setItem("astucimath_history_v6", JSON.stringify(exerciseHistory));
+    }
+
+    function displayHistory() {
+        let historyHTML = "<ul>";
+        if (exerciseHistory.length === 0) {
+            historyHTML += "<li>Aucun score enregistré pour le moment.</li>";
+        } else {
+            for (let i = exerciseHistory.length - 1; i >= 0; i--) {
+                const record = exerciseHistory[i];
+                historyHTML += `<li class="feedback-item">${record.date} - ${formatDivisionSymbol(record.type)} : ${record.score}/${record.total}</li>`;
+            }
+        }
+        historyHTML += "</ul>";
+        historyBox.innerHTML = `
+            <h3>Historique</h3>
+            ${historyHTML}
+            <div class="button-container">
+                 <button class="action-btn" onclick="showGlobalBox(null); placeBoxInMain(historyBox);">Fermer</button>
+            </div>
+        `;
+        showGlobalBox(historyBox);
+        document.getElementById('section-historique').appendChild(historyBox);
+        historyBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    /**** Génération des boutons initiaux ****/
+    function createAllButtons() {
+        [theorieDivButtons, theorieMulButtons, exercicesDivButtons, exercicesMulButtons, exercicesMelangesButtons].forEach(container => container.innerHTML = "");
+        const thDivTitle = document.createElement("h4"); thDivTitle.textContent = "Divisions"; theorieDivButtons.appendChild(thDivTitle);
+        const thMulTitle = document.createElement("h4"); thMulTitle.textContent = "Multiplications"; theorieMulButtons.appendChild(thMulTitle);
+        const exDivTitle = document.createElement("h4"); exDivTitle.textContent = "Divisions"; exercicesDivButtons.appendChild(exDivTitle);
+        const exMulTitle = document.createElement("h4"); exMulTitle.textContent = "Multiplications"; exercicesMulButtons.appendChild(exMulTitle);
+
+        astucesData.divisions.forEach(astuce => {
+            const btnTh = document.createElement("button");
+            btnTh.textContent = `${formatDivisionSymbol(astuce.display)}`;
+            btnTh.className = "theory-btn";
+            btnTh.onclick = () => displayTheory(astuce);
+            theorieDivButtons.appendChild(btnTh);
+            const btnEx = document.createElement("button");
+            btnEx.textContent = `${formatDivisionSymbol(astuce.display)}`;
+            btnEx.className = "exercise-btn";
+            btnEx.onclick = () => startExerciseSeries(astuce, 'section-exercices-par-astuce');
+            exercicesDivButtons.appendChild(btnEx);
+        });
+        astucesData.multiplications.forEach(astuce => {
+            const btnTh = document.createElement("button");
+            btnTh.textContent = `${astuce.display}`;
+            btnTh.className = "theory-btn";
+            btnTh.onclick = () => displayTheory(astuce);
+            theorieMulButtons.appendChild(btnTh);
+            const btnEx = document.createElement("button");
+            btnEx.textContent = `${astuce.display}`;
+            btnEx.className = "exercise-btn";
+            btnEx.onclick = () => startExerciseSeries(astuce, 'section-exercices-par-astuce');
+            exercicesMulButtons.appendChild(btnEx);
+        });
+        const btnMixedDiv = document.createElement("button");
+        btnMixedDiv.textContent = "Divisions (mélange)";
+        btnMixedDiv.className = "exercise-btn";
+        btnMixedDiv.onclick = () => startExerciseSeries("divisions", 'section-exercices-melanges');
+        exercicesMelangesButtons.appendChild(btnMixedDiv);
+        const btnMixedMul = document.createElement("button");
+        btnMixedMul.textContent = "Multiplications (mélange)";
+        btnMixedMul.className = "exercise-btn";
+        btnMixedMul.onclick = () => startExerciseSeries("multiplications", 'section-exercices-melanges');
+        exercicesMelangesButtons.appendChild(btnMixedMul);
+        const btnMixedAll = document.createElement("button");
+        btnMixedAll.textContent = "Tout (mélange)";
+        btnMixedAll.className = "exercise-btn";
+        btnMixedAll.onclick = () => startExerciseSeries("all", 'section-exercices-melanges');
+        exercicesMelangesButtons.appendChild(btnMixedAll);
+    }
+
+    /**** Initialisation ****/
+    document.addEventListener("DOMContentLoaded", () => {
+        createAllButtons();
+        [exerciseBox, resultsBox, historyBox, theorieContentBox].forEach(box => { 
+            placeBoxInMain(box);
+            box.classList.add("hidden");
+        });
+        showHistoryBtn.onclick = displayHistory;
+    });
+  </script>
+</body>
+</html>
+

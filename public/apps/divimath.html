@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Divisimath</title>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600&family=Source+Sans+Pro&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --violet: #8f67ca;
+      --turquoise: #01b7c4;
+      --vert: #01b7c4;
+      --blanc: #ffffff;
+      --gris-clair: #ffffff;
+      --noir: #222;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Source Sans Pro', sans-serif;
+      background: linear-gradient(to bottom, var(--gris-clair), var(--blanc));
+      color: var(--noir);
+      text-align: center;
+    }
+
+    h1 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--violet);
+      font-size: 3rem;
+      margin-top: 1rem;
+    }
+
+    .button-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px;
+    }
+
+    button {
+      border: none;
+      padding: 14px 24px;
+      font-size: 1.2rem;
+      border-radius: 12px;
+      color: var(--blanc);
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    .theory-btn {
+      background-color: var(--turquoise);
+    }
+
+    .exercise-btn {
+      background-color: var(--violet);
+    }
+
+    .action-btn {
+      background-color: var(--vert);
+    }
+
+    .danger-btn {
+      background-color: #e74c3c;
+    }
+
+    .section {
+      margin: 2rem 0;
+    }
+
+    .content-box {
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 25px;
+      border: 3px solid var(--violet);
+      border-radius: 15px;
+      background-color: #ffffff;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      text-align: left;
+      font-size: 1.2rem;
+    }
+
+    .hidden { display: none; }
+
+    .content-box ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .content-box li {
+      margin-bottom: 15px;
+      line-height: 1.5; /* Interligne de base pour les listes dans content-box */
+    }
+
+    .recap-list li {
+      line-height: 1.8; /* Interligne augmenté pour le récapitulatif */
+      margin-bottom: 18px; /* Marge inférieure augmentée pour le récapitulatif */
+    }
+
+    .feedback-item {
+      padding: 10px;
+      background: #f9f9f9;
+      border-left: 5px solid var(--violet);
+      margin-bottom: 12px;
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding: 1rem;
+      font-size: 1.2rem;
+      background-color: var(--gris-clair);
+    }
+
+    footer a {
+      color: var(--violet);
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Divisimath</h1>
+
+  <div class="section">
+    <h2>Fiches de Théorie</h2>
+    <div class="button-container" id="theory-buttons"></div>
+    <div id="theory-content-box" class="content-box hidden"></div> <!-- Boîte de contenu déplacée ici -->
+  </div>
+
+  <div class="section">
+    <h2>Exercices</h2>
+    <div class="button-container" id="exercise-buttons"></div>
+    <div id="exercise-content-box" class="content-box hidden"></div> <!-- Boîte de contenu pour les exercices -->
+  </div>
+
+  <footer>
+    Divisimath par <a href="https://lesrochdur.com/" target="_blank">Les RochDur</a>
+  </footer>
+
+  <script>
+    const theoryChars = [2,3,4,5,6,8,9,10,25,100,125,1000];
+    const theoryData = {
+      2: "Un nombre est divisible par 2 s'il se termine par 0, 2, 4, 6 ou 8. Exemples : 12, 46, 88.",
+      3: "Un nombre est divisible par 3 si la somme de ses chiffres est un multiple de 3. Exemple : 123 → 1+2+3 = 6 → divisible.",
+      4: "Un nombre est divisible par 4 si les deux derniers chiffres forment un multiple de 4. Exemple : 316 → 16 → divisible.",
+      5: "Un nombre est divisible par 5 s'il se termine par 0 ou 5. Exemple : 75, 40.",
+      6: "Un nombre est divisible par 6 s'il est divisible à la fois par 2 et par 3.",
+      8: "Un nombre est divisible par 8 si les trois derniers chiffres forment un multiple de 8. Exemple : 3120 → 120.",
+      9: "Un nombre est divisible par 9 si la somme de ses chiffres est un multiple de 9.",
+      10: "Un nombre est divisible par 10 s'il se termine par 0.",
+      25: "Un nombre est divisible par 25 s'il se termine par 00, 25, 50 ou 75.",
+      100: "Un nombre est divisible par 100 s'il se termine par deux zéros.",
+      125: "Un nombre est divisible par 125 s'il se termine par 000, 125, 250, 375, 500, 625, 750 ou 875.",
+      1000: "Un nombre est divisible par 1000 s'il se termine par trois zéros."
+    };
+
+    const theoryButtonsContainer = document.getElementById('theory-buttons');
+    const exerciseButtonsContainer = document.getElementById('exercise-buttons');
+    const theoryContentBox = document.getElementById('theory-content-box');
+    const exerciseContentBox = document.getElementById('exercise-content-box');
+
+    theoryChars.forEach(char => {
+      const btnTh = document.createElement('button');
+      btnTh.textContent = `Théorie : ${char}`;
+      btnTh.className = 'theory-btn';
+      btnTh.onclick = () => showTheoryContent(`<h3>Divisibilité par ${char}</h3><p>${theoryData[char]}</p><div style='margin-top:20px'><button class='action-btn' onclick='hideTheoryContent()'>Retour</button></div>`);
+      theoryButtonsContainer.appendChild(btnTh);
+
+      const btnEx = document.createElement('button');
+      btnEx.textContent = `Exercices : ${char}`;
+      btnEx.className = 'exercise-btn';
+      btnEx.onclick = () => {
+        showExercises(char);
+      };
+      exerciseButtonsContainer.appendChild(btnEx);
+    });
+
+    const recapBtn = document.createElement('button');
+    recapBtn.textContent = '🧠 Récapitulatif des Astuces';
+    recapBtn.className = 'theory-btn';
+    recapBtn.onclick = () => {
+      let recapHtml = '<h3>Récapitulatif des Astuces de Divisibilité</h3><ul class="recap-list">'; // Ajout de la classe recap-list
+      theoryChars.forEach(char => {
+        recapHtml += `<li><strong>Divisibilité par ${char}:</strong> ${theoryData[char]}</li>`;
+      });
+      recapHtml += '</ul><div style="margin-top:20px"><button class="action-btn" onclick="hideTheoryContent()">Retour</button></div>';
+      showTheoryContent(recapHtml);
+    };
+    theoryButtonsContainer.appendChild(recapBtn);
+
+    const btnMix = document.createElement('button');
+    btnMix.textContent = 'Exercices Mélangés';
+    btnMix.className = 'exercise-btn';
+    btnMix.onclick = () => {
+      const mixed = [...theoryChars].sort(() => 0.5 - Math.random()).slice(0, 5);
+      showExercises(mixed, true);
+    };
+    exerciseButtonsContainer.appendChild(btnMix);
+
+    // Ajout d'un bouton pour voir l'historique directement depuis la page principale
+    const btnHistory = document.createElement('button');
+    btnHistory.textContent = '📊 Voir ma progression';
+    btnHistory.className = 'exercise-btn';
+    btnHistory.onclick = () => {
+      showHistory();
+    };
+    exerciseButtonsContainer.appendChild(btnHistory);
+
+    function showTheoryContent(html) {
+      theoryContentBox.innerHTML = html;
+      theoryContentBox.classList.remove('hidden');
+      exerciseContentBox.classList.add('hidden'); // Cacher la box des exercices si elle est visible
+    }
+
+    function hideTheoryContent() {
+      theoryContentBox.classList.add('hidden');
+    }
+
+    function showExerciseContent(html) {
+      exerciseContentBox.innerHTML = html;
+      exerciseContentBox.classList.remove('hidden');
+      theoryContentBox.classList.add('hidden'); // Cacher la box de théorie si elle est visible
+    }
+    
+    function hideExerciseContent() {
+        exerciseContentBox.classList.add('hidden');
+    }
+
+    function showExercises(chars, isMixed = false) {
+      let current = 0;
+      let score = 0;
+      const total = 10;
+      const feedback = [];
+      const questions = Array.from({length: total}, () => {
+        const number = Math.floor(Math.random() * 9000 + 1000);
+        const char = Array.isArray(chars) ? chars[Math.floor(Math.random()*chars.length)] : chars;
+        return { number, char };
+      });
+
+      // Déterminer le type d'exercice pour l'historique
+      const exerciseType = isMixed ? "Exercices Mélangés" : `Divisibilité par ${chars}`;
+
+      function renderQ() {
+        const q = questions[current];
+        showExerciseContent(`
+          <h3>Exercice ${current+1} / ${total}</h3>
+          <p>Le nombre <strong>${q.number}</strong> est-il divisible par <strong>${q.char}</strong> ?</p>
+          <div class='button-container'>
+            <button class='action-btn' onclick='answer(true)'>Oui</button>
+            <button class='action-btn' onclick='answer(false)'>Non</button>
+          </div>
+        `);
+      }
+
+      window.answer = function(rep) {
+        const q = questions[current];
+        const correct = q.number % q.char === 0;
+        if (rep === correct) {
+          score++;
+          feedback.push(`<li class='feedback-item'>${q.number} / ${q.char} : ✔️ Bravo !</li>`);
+        } else {
+          feedback.push(`<li class='feedback-item'>${q.number} / ${q.char} : ❌ Faux — ${theoryData[q.char]}</li>`);
+        }
+        current++;
+        if (current < total) renderQ();
+        else showResults();
+      };
+
+      function showResults() {
+        const list = feedback.join('');
+        showExerciseContent(`
+          <h3>Résultat : ${score} / ${total}</h3>
+          <ul>${list}</ul>
+          <div class='button-container'>
+            <button class='action-btn' onclick='hideExerciseContent()'>Retour</button>
+            <button class='action-btn' onclick='showHistory()'>Voir ma progression</button>
+          </div>
+        `);
+
+        // Enregistrer le score dans l'historique
+        saveScore(exerciseType, score, total);
+      }
+
+      renderQ();
+    }
+
+    // Fonction pour enregistrer un score dans l'historique
+    function saveScore(type, score, total) {
+      // Récupérer l'historique existant ou créer un tableau vide
+      const history = JSON.parse(localStorage.getItem('divisimath_scores') || '[]');
+      
+      // Créer une nouvelle entrée avec la date actuelle
+      const now = new Date();
+      const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+      
+      // Ajouter la nouvelle entrée à l'historique
+      history.push({
+        date: dateStr,
+        type: type,
+        score: score,
+        total: total
+      });
+      
+      // Sauvegarder l'historique mis à jour
+      localStorage.setItem('divisimath_scores', JSON.stringify(history));
+    }
+
+    // Fonction pour afficher l'historique
+    function showHistory() {
+      const history = JSON.parse(localStorage.getItem('divisimath_scores') || '[]');
+      
+      // Créer le contenu HTML pour l'historique
+      let historyHtml = '<h3>Historique des scores</h3>';
+      
+      if (history.length === 0) {
+        historyHtml += '<p>Aucun score enregistré.</p>';
+      } else {
+        historyHtml += '<ul>';
+        // Parcourir l'historique dans l'ordre chronologique inverse (du plus récent au plus ancien)
+        for (let i = history.length - 1; i >= 0; i--) {
+          const entry = history[i];
+          historyHtml += `<li class='feedback-item'>${entry.date} — ${entry.type} : ${entry.score}/${entry.total}</li>`;
+        }
+        historyHtml += '</ul>';
+      }
+      
+      // Ajouter les boutons de retour et de réinitialisation
+      historyHtml += `
+        <div class='button-container'>
+          <button class='action-btn' onclick='hideExerciseContent()'>Retour</button>
+          <button class='danger-btn' onclick='resetHistory()'>Réinitialiser l'historique</button>
+        </div>
+      `;
+      
+      // Afficher l'historique
+      showExerciseContent(historyHtml);
+    }
+
+    // Fonction pour réinitialiser l'historique
+    function resetHistory() {
+      if (confirm('Êtes-vous sûr de vouloir effacer tout l\'historique des scores ?')) {
+        localStorage.removeItem('divisimath_scores');
+        showHistory(); // Rafraîchir l'affichage
+      }
+    }
+  </script>
+</body>
+</html>

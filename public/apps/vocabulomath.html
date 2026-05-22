@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VocabuloMath</title>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600&family=Source+Sans+Pro&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --violet: #8f67ca;
+      --turquoise: #01b7c4;
+      --vert: #01b7c4;
+      --blanc: #ffffff;
+      --gris-clair: #f0f0f0;
+      --noir: #222;
+      --progress-bar-bg: #e0e0e0;
+      --progress-bar-fill: var(--violet);
+      --correct-color: #4caf50;
+      --incorrect-color: #f44336;
+    }
+    body {
+      margin: 0;
+      font-family: 'Source Sans Pro', sans-serif;
+      background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+      color: var(--noir);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      padding: 1rem 0;
+    }
+    main {
+      flex-grow: 1;
+      padding: 0 1rem;
+    }
+    h1 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--violet);
+      font-size: 2.5rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--noir);
+      font-size: 1.8rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    .app-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #dcdcdc;
+      border-radius: 12px;
+      background-color: var(--blanc);
+      font-size: 1.3rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    button {
+      border: none;
+      padding: 14px 22px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      color: var(--blanc);
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+    .category-btn { background-color: var(--turquoise); }
+    .action-btn { background-color: var(--vert); margin-top: 10px; }
+    .home-btn { background-color: #f0ad4e; margin-top: 15px; }
+    .answer-btn { 
+      background-color: var(--violet); 
+      width: 100%;
+      text-align: left;
+      padding: 15px;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+    .hidden { display: none !important; }
+    .content-box {
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 2px solid var(--violet);
+      border-radius: 12px;
+      background-color: var(--blanc);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: left;
+      font-size: 1.3rem;
+      line-height: 1.8;
+    }
+    .term {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--violet);
+      margin: 0 auto 20px auto;
+      padding: 15px;
+      border: 2px dashed var(--violet);
+      border-radius: 10px;
+      display: block;
+      text-align: center;
+      width: fit-content;
+    }
+    .definitions {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .feedback {
+      margin-top: 20px;
+      font-size: 1.3rem;
+      padding: 15px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+    .correct {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .incorrect {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .example {
+      font-style: italic;
+      margin-top: 10px;
+    }
+    #progress-bar-container {
+      width: 100%;
+      background-color: var(--progress-bar-bg);
+      border-radius: 5px;
+      margin: 15px 0;
+      height: 20px;
+      overflow: hidden;
+    }
+    #progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background-color: var(--progress-bar-fill);
+      border-radius: 5px;
+      transition: width 0.3s ease-in-out;
+      text-align: center;
+      color: white;
+      font-size: 0.9rem;
+      line-height: 20px;
+    }
+    .history-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+    .history-item {
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .history-item.correct {
+      background-color: rgba(212, 237, 218, 0.5);
+    }
+    .history-item.incorrect {
+      background-color: rgba(248, 215, 218, 0.5);
+    }
+    .history-term {
+      font-weight: bold;
+    }
+    .history-result {
+      font-weight: bold;
+    }
+    .history-result.correct {
+      color: #155724;
+    }
+    .history-result.incorrect {
+      color: #721c24;
+    }
+    .final-results {
+      text-align: left;
+      margin-bottom: 20px;
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .final-score {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--violet);
+      margin-bottom: 20px;
+      text-align: center;
+      padding: 10px;
+      background-color: #e9ecef;
+      border-radius: 8px;
+    }
+    .results-section {
+      margin-bottom: 20px;
+    }
+    .results-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: var(--noir);
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+      border-bottom: 2px solid var(--violet);
+    }
+    .result-item {
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      background-color: #e8f4f8;
+      border-left: 5px solid var(--turquoise);
+    }
+    .result-item.correct {
+      background-color: rgba(212, 237, 218, 0.7);
+      border-left: 5px solid #4caf50;
+    }
+    .result-item.incorrect {
+      background-color: rgba(248, 215, 218, 0.7);
+      border-left: 5px solid #f44336;
+    }
+    .result-term {
+      font-weight: bold;
+      color: var(--violet);
+    }
+    .result-definition {
+      margin-top: 5px;
+      font-style: italic;
+    }
+    @media (max-width: 768px) {
+      .content-box {
+        padding: 15px;
+        font-size: 1.1rem;
+      }
+      .term {
+        font-size: 1.5rem;
+      }
+      button {
+        padding: 10px 15px;
+      }
+      .category-btn {
+        padding: 12px 20px;
+        font-size: 1rem;
+        margin: 5px;
+      }
+
+    footer {
+      margin-top: 2rem;
+      padding: 1rem;
+      font-size: 1rem;
+      background-color: var(--gris-clair);
+      border-top: 1px solid #eee;
+    }
+
+    footer a {
+      color: var(--violet);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      h4 {
+        font-size: 1.1rem;
+      }
+      button {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+      }
+      .content-box {
+        padding: 15px;
+        font-size: 1rem;
+      }
+      .timer {
+        font-size: 1.5rem;
+      }
+      .app-section {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>VocabuloMath</h1>
+  </header>
+  
+  <main id="main-content">
+    <div id="home-view">
+      <section class="app-section" id="categories-section">
+        <h2>Catégories de vocabulaire</h2>
+        <div class="buttons-container">
+          <button id="fractions-btn" class="category-btn">Fractions</button>
+          <button id="nombres-btn" class="category-btn">Types de nombres</button>
+          <button id="operations-btn" class="category-btn">Opérations</button>
+          <button id="mixte-btn" class="category-btn">Mixte</button>
+        </div>
+      </section>
+
+      <section class="app-section" id="history-section-main-container">
+        <h2>Historique</h2>
+        <button class="action-btn" id="show-history-btn">Afficher l'historique</button>
+      </section>
+    </div>
+    
+    <div class="content-box hidden" id="quiz-container">
+      <button id="home-btn" class="home-btn">Retour à l'accueil</button>
+      
+      <div id="progress-bar-container">
+        <div id="progress-bar-fill">0/0</div>
+      </div>
+      
+      <div class="quiz-container">
+        <div id="current-term" class="term"></div>
+        <div id="definitions" class="definitions"></div>
+        <div id="feedback" class="feedback hidden"></div>
+        <button id="next-btn" class="action-btn hidden">Question suivante</button>
+      </div>
+    </div>
+    
+    <div class="content-box hidden" id="history-box">
+      <div id="history-list-content"></div>
+      <button class="home-btn" id="history-home-btn">Retour à l'accueil</button>
+    </div>
+  </main>
+  
+<footer>
+    Vocabulomath par <a href="https://lesrochdur.com/" target="_blank">Les RochDur</a>
+  </footer>
+
+  <script>
+    // Données de vocabulaire
+    const vocabulaire = {
+      fractions: [
+        {
+          terme: "Fraction",
+          definition: "Nombre qui représente une ou plusieurs parts d'un tout",
+          exemple: "3/4",
+          faussesDefs: [
+            "Nombre qui représente uniquement des parts entières",
+            "Opération qui consiste à diviser un nombre par un autre"
+          ]
+        },
+        {
+          terme: "Numérateur",
+          definition: "Nombre du haut : combien de parts on prend",
+          exemple: "3 dans 3/4",
+          faussesDefs: [
+            "Nombre du bas d'une fraction",
+            "Résultat d'une division de fractions"
+          ]
+        },
+        {
+          terme: "Dénominateur",
+          definition: "Nombre du bas : en combien de parts le tout est divisé",
+          exemple: "4 dans 3/4",
+          faussesDefs: [
+            "Nombre du haut d'une fraction",
+            "Résultat d'une multiplication de fractions"
+          ]
+        },
+        {
+          terme: "Fraction équivalente",
+          definition: "Fraction qui a même valeur que d’autres fractions",
+          exemple: "1/2 = 2/4 = 3/6",
+          faussesDefs: [
+            "Fraction dont le numérateur est égal au dénominateur",
+            "Fraction qui donne un nombre entier"
+          ]
+        },
+        {
+          terme: "Fraction simplifiée",
+          definition: "Fraction dont le numérateur et le dénominateur ont été divisés par un même nombre",
+          exemple: "6/8 devient 3/4",
+          faussesDefs: [
+            "Fraction dont le dénominateur est un nombre premier",
+            "Fraction dont le numérateur est plus petit que le dénominateur"
+          ]
+        },
+        {
+          terme: "Fraction irréductible",
+          definition: "Fraction qui ne peut plus être simplifiée",
+          exemple: "3/4 est irréductible",
+          faussesDefs: [
+            "Fraction dont le résultat est un nombre entier",
+            "Fraction dont le numérateur et le dénominateur sont des nombres premiers"
+          ]
+        },
+        {
+          terme: "Fraction d'une quantité",
+          definition: "Utiliser une fraction pour calculer une part d'un nombre",
+          exemple: "3/4 de 20 = 15",
+          faussesDefs: [
+            "Diviser une fraction par un nombre entier",
+            "Transformer une fraction en pourcentage"
+          ]
+        },
+        {
+          terme: "Passer d'un décimal à une fraction",
+          definition: "Transformer un nombre à virgule en fraction",
+          exemple: "0,25 = 25/100 = 1/4",
+          faussesDefs: [
+            "Arrondir une fraction à un nombre décimal",
+            "Diviser un nombre décimal par une fraction"
+          ]
+        },
+        {
+          terme: "Mettre au même dénominateur",
+          definition: "Chercher un dénominateur commun pour additionner, soustraire ou comparer",
+          exemple: "1/2 + 1/3 = 3/6 + 2/6 = 5/6",
+          faussesDefs: [
+            "Transformer toutes les fractions en nombres décimaux",
+            "Simplifier plusieurs fractions en même temps"
+          ]
+        }
+      ],
+      nombres: [
+        {
+          terme: "Nombre entier",
+          definition: "Nombre sans virgule",
+          exemple: "0 ; 7 ; -3 ; 102",
+          faussesDefs: [
+            "Nombre qui n'est pas une fraction",
+            "Nombre toujours positif"
+          ]
+        },
+        {
+          terme: "Nombre décimal",
+          definition: "Nombre avec une virgule",
+          exemple: "3,5 ; 0,25 ; 1,75",
+          faussesDefs: [
+            "Nombre qui s'écrit uniquement avec les chiffres de 0 à 9",
+            "Nombre qui peut être divisé par 10"
+          ]
+        },
+        {
+          terme: "Nombre pair",
+          definition: "Nombre entier divisible par 2 sans reste",
+          exemple: "0 ; 2 ; 4 ; 6 ; 8",
+          faussesDefs: [
+            "Nombre qui se termine par 0",
+            "Nombre qui contient uniquement des chiffres pairs"
+          ]
+        },
+        {
+          terme: "Nombre impair",
+          definition: "Nombre entier non divisible par 2",
+          exemple: "1 ; 3 ; 5 ; 7 ; 9",
+          faussesDefs: [
+            "Nombre qui n'est pas un nombre entier",
+            "Nombre qui contient au moins un chiffre impair"
+          ]
+        },
+        {
+          terme: "Nombre premier",
+          definition: "Nombre entier qui a exactement deux diviseurs : 1 et lui-même",
+          exemple: "2 ; 3 ; 5 ; 7 ; 11",
+          faussesDefs: [
+            "Nombre qui ne peut être divisé que par 1",
+            "Premier nombre d'une suite"
+          ]
+        },
+        {
+          terme: "Diviseur de",
+          definition: "Un nombre est diviseur d'un autre s'il le divise sans reste",
+          exemple: "4 est un diviseur de 12, car 12 : 4 = 3",
+          faussesDefs: [
+            "Nombre qui divise un autre avec un reste",
+            "Résultat d'une division"
+          ]
+        },
+        {
+          terme: "Multiple de",
+          definition: "Un nombre est multiple d'un autre s'il est le résultat d'une multiplication",
+          exemple: "15 est un multiple de 3, car 3 × 5 = 15",
+          faussesDefs: [
+            "Nombre qui peut être divisé par un autre",
+            "Nombre qui contient plusieurs chiffres"
+          ]
+        }
+      ],
+      operations: [
+        {
+          terme: "Addition",
+          definition: "Opération qui permet de réunir plusieurs quantités",
+          exemple: "3 + 5 = 8",
+          faussesDefs: [
+            "Opération qui permet de retrancher une quantité d'une autre",
+            "Opération qui permet de répéter une quantité plusieurs fois"
+          ]
+        },
+        {
+          terme: "Terme (d'une addition)",
+          definition: "Chaque nombre qu'on additionne",
+          exemple: "3 et 5 sont les termes de l'addition 3 + 5 = 8",
+          faussesDefs: [
+            "Résultat d'une addition",
+            "Signe qui indique l'opération à effectuer"
+          ]
+        },
+        {
+          terme: "Somme",
+          definition: "Résultat d'une addition",
+          exemple: "3 + 5 = 8 → 8 est la somme",
+          faussesDefs: [
+            "Chaque nombre qu'on additionne",
+            "Opération qui permet de réunir plusieurs quantités"
+          ]
+        },
+        {
+          terme: "Soustraction",
+          definition: "Opération qui permet de retrancher une quantité d'une autre",
+          exemple: "9 - 4 = 5",
+          faussesDefs: [
+            "Opération qui permet de réunir plusieurs quantités",
+            "Opération qui permet de répéter une quantité plusieurs fois"
+          ]
+        },
+        {
+          terme: "Terme (d'une soustraction)",
+          definition: "Chaque nombre constituant la soustraction",
+          exemple: "9 et 4 sont les termes de la soustraction 9 - 4 = 5",
+          faussesDefs: [
+            "Résultat d'une soustraction",
+            "Signe qui indique l'opération à effectuer"
+          ]
+        },
+        {
+          terme: "Différence",
+          definition: "Résultat d'une soustraction",
+          exemple: "9 - 4 = 5 → 5 est la différence",
+          faussesDefs: [
+            "Résultat d'une addition",
+            "Nombre qu'on soustrait d'un autre"
+          ]
+        },
+        {
+          terme: "Multiplication",
+          definition: "Opération qui permet de répéter une quantité plusieurs fois",
+          exemple: "3 × 4 = 12",
+          faussesDefs: [
+            "Opération qui permet de réunir plusieurs quantités",
+            "Opération qui permet de répartir ou partager une quantité en parts égales"
+          ]
+        },
+        {
+          terme: "Facteurs",
+          definition: "Nombres que l'on multiplie entre eux",
+          exemple: "3 et 4 sont les facteurs de 3 × 4",
+          faussesDefs: [
+            "Résultat d'une multiplication",
+            "Nombres qu'on additionne"
+          ]
+        },
+        {
+          terme: "Produit",
+          definition: "Résultat d'une multiplication",
+          exemple: "3 × 4 = 12 → 12 est le produit",
+          faussesDefs: [
+            "Nombres que l'on multiplie entre eux",
+            "Résultat d'une addition"
+          ]
+        },
+        {
+          terme: "Division",
+          definition: "Opération qui permet de répartir ou partager une quantité en parts égales",
+          exemple: "12 : 3 = 4",
+          faussesDefs: [
+            "Opération qui permet de répéter une quantité plusieurs fois",
+            "Opération qui permet de réunir plusieurs quantités"
+          ]
+        },
+        {
+          terme: "Dividende",
+          definition: "Nombre que l'on veut diviser",
+          exemple: "12 dans 12 : 3",
+          faussesDefs: [
+            "Nombre par lequel on divise",
+            "Résultat entier obtenu quand on divise"
+          ]
+        },
+        {
+          terme: "Diviseur",
+          definition: "Nombre par lequel on divise",
+          exemple: "3 dans 12 : 3",
+          faussesDefs: [
+            "Nombre que l'on veut diviser",
+            "Résultat entier obtenu quand on divise"
+          ]
+        },
+        {
+          terme: "Quotient",
+          definition: "Résultat d’une division",
+          exemple: "4 dans 12 : 3 = 4",
+          faussesDefs: [
+            "Nombre que l'on veut diviser",
+            "Nombre par lequel on divise"
+          ]
+        },
+        {
+          terme: "Reste",
+          definition: "Ce qu'il reste après la division si elle n'est pas exacte",
+          exemple: "2 dans 14 : 3 = 4 reste 2",
+          faussesDefs: [
+            "Résultat entier obtenu quand on divise",
+            "Nombre par lequel on divise"
+          ]
+        }
+      ]
+    };
+    
+    // Créer la catégorie mixte en combinant toutes les autres
+    vocabulaire.mixte = [
+      ...vocabulaire.fractions,
+      ...vocabulaire.nombres,
+      ...vocabulaire.operations
+    ];
+
+    // Variables globales
+    let currentCategory = '';
+    let currentTerms = [];
+    let currentTermIndex = 0;
+    let currentTerm = null;
+    let correctAnswers = 0;
+    let totalQuestions = 0;
+    let currentQuizResults = [];
+    let quizHistory = [];
+
+    // Éléments DOM
+    const homeView = document.getElementById('home-view');
+    const quizContainer = document.getElementById('quiz-container');
+    const historyBox = document.getElementById('history-box');
+    const currentTermElement = document.getElementById('current-term');
+    const definitionsContainer = document.getElementById('definitions');
+    const feedbackContainer = document.getElementById('feedback');
+    const nextBtn = document.getElementById('next-btn');
+    const progressBarFill = document.getElementById('progress-bar-fill');
+    const historyListContent = document.getElementById('history-list-content');
+
+    // Fonction pour mélanger un tableau
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Initialiser le quiz
+    function initQuiz(category) {
+      currentCategory = category;
+      currentTerms = [...vocabulaire[category]];
+      shuffleArray(currentTerms);
+      currentTermIndex = 0;
+      correctAnswers = 0;
+      totalQuestions = currentTerms.length;
+      currentQuizResults = [];
+      
+      homeView.classList.add('hidden');
+      quizContainer.classList.remove('hidden');
+      historyBox.classList.add('hidden');
+      
+      showNextTerm();
+    }
+
+    // Afficher le terme suivant
+    function showNextTerm() {
+      if (currentTermIndex >= currentTerms.length) {
+        showFinalResults();
+        return;
+      }
+      
+      currentTerm = currentTerms[currentTermIndex];
+      currentTermElement.textContent = currentTerm.terme;
+      
+      feedbackContainer.classList.add('hidden');
+      nextBtn.classList.add('hidden');
+      
+      // Préparer les définitions
+      const definitions = [
+        { text: currentTerm.definition, correct: true },
+        { text: currentTerm.faussesDefs[0], correct: false },
+        { text: currentTerm.faussesDefs[1], correct: false }
+      ];
+      
+      // Mélanger les définitions
+      shuffleArray(definitions);
+      
+      // Vider et remplir le conteneur de définitions
+      definitionsContainer.innerHTML = '';
+      
+      definitions.forEach((def, index) => {
+        const button = document.createElement('button');
+        button.className = 'answer-btn';
+        button.textContent = def.text;
+        button.dataset.correct = def.correct;
+        
+        button.addEventListener('click', function() {
+          // Désactiver tous les boutons
+          document.querySelectorAll('.answer-btn').forEach(btn => {
+            btn.disabled = true;
+            
+            // Mettre en évidence la bonne réponse
+            if (btn.dataset.correct === 'true') {
+              btn.style.backgroundColor = '#4caf50'; // vert
+            }
+          });
+          
+          // Déterminer si la réponse est correcte
+          const isCorrect = (def.correct === 'true' || def.correct === true);
+          
+          // Mettre à jour le compteur de bonnes réponses
+          if (isCorrect) {
+            correctAnswers++;
+          }
+          
+          // Enregistrer le résultat pour l'historique
+          currentQuizResults.push({
+            terme: currentTerm.terme,
+            definition: currentTerm.definition,
+            exemple: currentTerm.exemple,
+            reponseCorrecte: isCorrect,
+            categorie: currentCategory
+          });
+          
+          // Mettre à jour la barre de progression
+          updateProgressBar();
+          
+          // Afficher le feedback
+          if (isCorrect) {
+            feedbackContainer.textContent = `Correct ! Exemple : ${currentTerm.exemple}`;
+            feedbackContainer.className = 'feedback correct';
+          } else {
+            feedbackContainer.innerHTML = `Incorrect. La bonne définition <strong>→</strong> ${currentTerm.definition}. Exemple : ${currentTerm.exemple}`;
+            feedbackContainer.className = 'feedback incorrect';
+          }
+          
+          feedbackContainer.classList.remove('hidden');
+          nextBtn.classList.remove('hidden');
+        });
+        
+        definitionsContainer.appendChild(button);
+      });
+    }
+
+    function updateProgressBar() {
+      const progress = ((currentTermIndex + 1) / totalQuestions) * 100;
+      progressBarFill.style.width = `${progress}%`;
+      progressBarFill.textContent = `${currentTermIndex + 1} / ${totalQuestions}`;
+    }
+    
+    function showFinalResults() {
+      // Sauvegarder le quiz dans l'historique
+      const quizResult = {
+        date: new Date().toLocaleString(),
+        categorie: currentCategory,
+        score: correctAnswers,
+        total: totalQuestions,
+        resultats: currentQuizResults
+      };
+      
+      quizHistory.unshift(quizResult); // Ajouter au début de l'historique
+      
+      // Limiter l'historique à 10 quiz
+      if (quizHistory.length > 10) {
+        quizHistory = quizHistory.slice(0, 10);
+      }
+      
+      // Sauvegarder dans le localStorage
+      localStorage.setItem('vocabuloMathHistory', JSON.stringify(quizHistory));
+      
+      // Afficher les résultats finaux
+      currentTermElement.textContent = "Quiz terminé !";
+      definitionsContainer.innerHTML = '';
+      
+      // Calculer le pourcentage
+      const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+      
+      // Créer le contenu du feedback final
+      let finalContent = `
+        <div class="final-results">
+          <div class="final-score">Score : ${correctAnswers} / ${totalQuestions} (${percentage}%)</div>
+      `;
+      
+      // Section des bonnes réponses
+      if (currentQuizResults.filter(r => r.reponseCorrecte).length > 0) {
+        finalContent += `
+          <div class="results-section">
+            <div class="results-title">✓ Bonnes réponses</div>
+        `;
+        
+        currentQuizResults.forEach(result => {
+          if (result.reponseCorrecte) {
+            finalContent += `
+              <div class="result-item correct">
+                <div class="result-term">${result.terme}</div>
+                <div class="result-definition">${result.definition}</div>
+                <div class="example">Exemple : ${result.exemple}</div>
+              </div>
+            `;
+          }
+        });
+        
+        finalContent += `</div>`;
+      }
+      
+      // Section des mauvaises réponses
+      if (currentQuizResults.filter(r => !r.reponseCorrecte).length > 0) {
+        finalContent += `
+          <div class="results-section">
+            <div class="results-title">✗ Réponses incorrectes</div>
+        `;
+        
+        currentQuizResults.forEach(result => {
+          if (!result.reponseCorrecte) {
+            finalContent += `
+              <div class="result-item incorrect">
+                <div class="result-term">${result.terme}</div>
+                <div class="result-definition">${result.definition}</div>
+                <div class="example">Exemple : ${result.exemple}</div>
+              </div>
+            `;
+          }
+        });
+        
+        finalContent += `</div>`;
+      }
+      
+      finalContent += `</div>`;
+      
+      feedbackContainer.innerHTML = finalContent;
+      feedbackContainer.className = 'feedback';
+      feedbackContainer.classList.remove('hidden');
+      
+      nextBtn.textContent = 'Retour à l\'accueil';
+      nextBtn.classList.remove('hidden');
+      nextBtn.removeEventListener('click', handleNextButtonClick);
+      nextBtn.addEventListener('click', goToHome);
+    }
+
+    function updateHistoryList() {
+      historyListContent.innerHTML = '';
+      
+      if (quizHistory.length === 0) {
+        historyListContent.innerHTML = '<p>Aucun historique disponible.</p>';
+        return;
+      }
+      
+      quizHistory.forEach((quiz, index) => {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        
+        const percentage = Math.round((quiz.score / quiz.total) * 100);
+        
+        historyItem.innerHTML = `
+          <div>
+            <div><strong>Date:</strong> ${quiz.date}</div>
+            <div><strong>Catégorie:</strong> ${quiz.categorie}</div>
+          </div>
+          <div class="history-result ${quiz.score > quiz.total / 2 ? 'correct' : 'incorrect'}">
+            ${quiz.score}/${quiz.total} (${percentage}%)
+          </div>
+        `;
+        
+        historyListContent.appendChild(historyItem);
+      });
+    }
+
+    function goToHome() {
+      homeView.classList.remove('hidden');
+      quizContainer.classList.add('hidden');
+      historyBox.classList.add('hidden');
+      nextBtn.textContent = 'Question suivante';
+      nextBtn.removeEventListener('click', goToHome);
+      nextBtn.addEventListener('click', handleNextButtonClick);
+    }
+
+    function handleNextButtonClick() {
+      currentTermIndex++;
+      showNextTerm();
+    }
+
+    // Charger l'historique depuis le localStorage
+    if (localStorage.getItem('vocabuloMathHistory')) {
+      try {
+        quizHistory = JSON.parse(localStorage.getItem('vocabuloMathHistory'));
+      } catch (e) {
+        quizHistory = [];
+      }
+    }
+
+    // Événements
+    document.getElementById('fractions-btn').addEventListener('click', function() {
+      initQuiz('fractions');
+    });
+
+    document.getElementById('nombres-btn').addEventListener('click', function() {
+      initQuiz('nombres');
+    });
+
+    document.getElementById('operations-btn').addEventListener('click', function() {
+      initQuiz('operations');
+    });
+
+    document.getElementById('mixte-btn').addEventListener('click', function() {
+      initQuiz('mixte');
+    });
+
+    document.getElementById('home-btn').addEventListener('click', goToHome);
+
+    document.getElementById('show-history-btn').addEventListener('click', function() {
+      updateHistoryList();
+      homeView.classList.add('hidden');
+      quizContainer.classList.add('hidden');
+      historyBox.classList.remove('hidden');
+    });
+
+    document.getElementById('history-home-btn').addEventListener('click', goToHome);
+
+    nextBtn.addEventListener('click', handleNextButtonClick);
+
+    // Initialiser la barre de progression
+    updateProgressBar();
+  </script>
+</body>
+</html>

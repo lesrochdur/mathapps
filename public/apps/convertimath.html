@@ -1,0 +1,1239 @@
+	<!DOCTYPE html>
+	<html lang="fr">
+	<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Convertimath</title>
+	<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600&family=Source+Sans+Pro&display=swap" rel="stylesheet">
+	<style>
+	:root {
+	--violet: #8f67ca;
+	--turquoise: #01b7c4;
+	--vert: #01b7c4;
+	--blanc: #ffffff;
+	--gris-clair: #f0f0f0;
+	--noir: #222;
+	--progress-bar-bg: #e0e0e0;
+	--progress-bar-fill: var(--violet);
+	--feedback-success: #28a745;
+	--feedback-error: #dc3545;
+	}
+	body {
+	margin: 0;
+	font-family: 'Source Sans Pro', sans-serif;
+	background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+	color: var(--noir);
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	}
+	header {
+	padding: 1rem 0;
+	}
+	main {
+	flex-grow: 1;
+	padding: 0 1rem;
+	}
+	h1 {
+	font-family: 'Epilogue', sans-serif;
+	color: var(--violet);
+	font-size: 2.5rem;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	}
+	h2 {
+	font-family: 'Epilogue', sans-serif;
+	color: var(--noir);
+	font-size: 1.8rem;
+	margin-top: 2rem;
+	margin-bottom: 1rem;
+	}
+	.app-section {
+	margin-bottom: 30px;
+	padding: 20px;
+	border: 1px solid #dcdcdc;
+	border-radius: 12px;
+	background-color: var(--blanc);
+	font-size: 1.3rem;
+	box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+	}
+	.buttons-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 12px;
+	margin-bottom: 20px;
+	}
+	button {
+	border: none;
+	padding: 14px 22px;
+	font-size: 1.2rem;
+	border-radius: 10px;
+	color: var(--blanc);
+	cursor: pointer;
+	transition: background-color 0.3s, transform 0.2s;
+	box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+	}
+	button:hover {
+	transform: scale(1.05);
+	}
+	.theory-btn { background-color: var(--turquoise); }
+	.exercise-btn { background-color: var(--violet); }
+	.action-btn { background-color: var(--vert); margin-top: 10px; }
+	.home-btn { background-color: #f0ad4e; margin-top: 15px; } /* Bouton retour orange */
+	.hidden { display: none !important; }
+	.content-box {
+	max-width: 700px;
+	margin: 20px auto;
+	padding: 20px;
+	border: 2px solid var(--violet);
+	border-radius: 12px;
+	background-color: var(--blanc);
+	box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+	text-align: left;
+	font-size: 1.3rem;
+	line-height: 1.8;
+	}
+	input[type="text"] {
+	font-size: 1.2rem; 
+	padding: 10px;
+	border-radius: 8px;
+	border: 1px solid #ccc;
+	width: 80%;
+	margin: 10px auto;
+	display: block;
+	}
+	.exercise-expression {
+	font-size: 1.5rem;
+	margin: 20px 0;
+	font-weight: bold;
+	}
+	.feedback {
+	padding: 15px;
+	border-radius: 8px;
+	margin: 15px 0;
+	}
+	.feedback.correct {
+	background-color: var(--feedback-success);
+	color: white;
+	}
+	.feedback.incorrect {
+	background-color: var(--feedback-error);
+	color: white;
+	}
+	.explanation {
+	background-color: #e8f4f8;
+	padding: 15px;
+	border-radius: 8px;
+	margin-top: 15px;
+	color: var(--noir); /* Ensure text is readable */
+	}
+	.abaque-container {
+	margin: 20px 0;
+	overflow-x: auto;
+	}
+	.abaque {
+	border-collapse: collapse;
+	margin: 0 auto;
+	}
+	.abaque-row {
+	display: flex;
+	}
+	.abaque-cell {
+	border: 1px solid #000;
+	padding: 10px;
+	text-align: center;
+	min-width: 50px;
+	}
+	.abaque-cell.highlight {
+	background-color: #e0f7fa;
+	}
+	.abaque-cell.empty {
+	height: 40px;
+	}
+	.attention-text {
+	color: red;
+	font-weight: bold;
+	margin: 10px 0;
+	}
+	footer {
+	margin-top: 30px;
+	padding: 20px;
+	text-align: center;
+	font-size: 1rem;
+	}
+	footer a {
+	color: var(--violet);
+	text-decoration: none;
+	}
+	footer a:hover {
+	text-decoration: underline;
+	}
+	/* Styles spécifiques pour les grands abaques */
+	.abaque-surface, .abaque-volume {
+	width: 100%;
+	max-width: 900px;
+	margin: 0 auto;
+	font-size: 1.2rem;
+	}
+	.abaque-surface td, .abaque-volume td {
+	padding: 15px;
+	height: 50px;
+	font-size: 1.3rem;
+	}
+	/* Style pour le tableau des préfixes */
+	.prefixes-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 20px 0;
+	}
+	.prefixes-table th, .prefixes-table td {
+	border: 1px solid #000;
+	padding: 10px;
+	text-align: center;
+	}
+	.prefixes-table th {
+	background-color: #e0f7fa;
+	font-weight: bold;
+	}
+	/* Barre de progression */
+	.progress-container {
+	width: 100%;
+	margin: 20px 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	}
+	.progress-bar {
+	width: 100%;
+	height: 15px;
+	background-color: var(--progress-bar-bg);
+	border-radius: 10px;
+	overflow: hidden;
+	margin-bottom: 5px;
+	}
+	.progress-fill {
+	height: 100%;
+	background-color: var(--progress-bar-fill);
+	border-radius: 10px;
+	transition: width 0.3s ease;
+	}
+	.progress-text {
+	font-size: 0.9rem;
+	color: var(--noir);
+	}
+	/* Style pour les séries d'exercices */
+	.series-feedback {
+	margin-top: 20px;
+	padding: 15px;
+	border-radius: 8px;
+	background-color: #f8f9fa;
+	border: 1px solid #dee2e6;
+	}
+	.series-item {
+	margin-bottom: 10px;
+	padding: 10px;
+	border-radius: 8px;
+	background-color: #f1f1f1;
+	}
+	.correct-answer {
+	color: var(--feedback-success);
+	font-weight: bold;
+	}
+	.incorrect-answer {
+	color: var(--feedback-error);
+	font-weight: bold;
+	}
+	/* Style pour l'historique (inspiré de Variamath) */
+	.history-entry {
+	margin-bottom: 20px;
+	padding: 15px;
+	border-radius: 8px;
+	background-color: #f8f9fa;
+	border: 1px solid #dee2e6;
+	}
+	.history-entry h3 {
+	margin-top: 0;
+	margin-bottom: 10px;
+	font-size: 1.2rem;
+	color: var(--violet);
+	}
+	.history-entry p {
+	margin: 5px 0;
+	font-size: 1.1rem;
+	}
+	</style>
+	</head>
+	<body>
+	<header>
+	<h1>Convertimath</h1>
+	</header>
+	
+	<main>
+	<div class="app-section" id="home-section">
+	<h2>Théorie</h2>
+	<div class="buttons-container">
+	<button class="theory-btn" id="conversions-btn">Conversions</button>
+	</div>
+	
+	<h2>Exercices</h2>
+	<div class="buttons-container">
+	<button class="exercise-btn" id="length-btn">Longueur</button>
+	<button class="exercise-btn" id="mass-btn">Masse</button>
+	<button class="exercise-btn" id="capacity-btn">Capacité</button>
+	<button class="exercise-btn" id="area-btn">Surface</button>
+	<button class="exercise-btn" id="volume-btn">Volume</button>
+	<button class="exercise-btn" id="time-btn">Temps</button>
+	<button class="exercise-btn" id="mixed-btn">Mixte</button>
+	</div>
+	
+	<h2>Historique</h2>
+	<div class="buttons-container">
+	<button class="theory-btn" id="history-btn">Afficher l'historique</button>
+	</div>
+	</div>
+	
+	<div class="content-box hidden" id="theory-box">
+	<div id="theory-content"></div>
+	<button class="home-btn" id="theory-home-btn">Retour à l'accueil</button>
+	</div>
+	
+	<div class="content-box hidden" id="exercise-box">
+	<h2 id="exercise-title"></h2>
+	
+	<div class="progress-container">
+	<div class="progress-bar">
+	<div class="progress-fill" id="progress-fill"></div>
+	</div>
+	<div class="progress-text" id="progress-text">Exercice 1/5</div>
+	</div>
+	
+	<div id="exercise-question" class="exercise-expression"></div>
+	<input type="text" id="exercise-answer" placeholder="Votre réponse">
+	<button class="action-btn" id="validate-answer-btn">Valider</button>
+	<div id="exercise-feedback"></div>
+	<div id="series-feedback" class="series-feedback hidden"></div>
+	<button class="home-btn" id="exercise-home-btn">Retour à l'accueil</button>
+	</div>
+	
+	<div class="content-box hidden" id="history-box">
+	<div id="history-list"></div>
+	<button class="home-btn" id="history-home-btn">Retour à l'accueil</button>
+	</div>
+	</main>
+	
+	<footer>
+	Convertimath par <a href="https://lesrochdur.com/" target="_blank">Les RochDur</a>
+	</footer>
+	
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+	// Éléments DOM
+	const homeSection = document.getElementById('home-section');
+	const theoryBox = document.getElementById('theory-box');
+	const exerciseBox = document.getElementById('exercise-box');
+	const historyBox = document.getElementById('history-box');
+	const theoryContent = document.getElementById('theory-content');
+	const exerciseTitle = document.getElementById('exercise-title');
+	const exerciseQuestion = document.getElementById('exercise-question');
+	const exerciseAnswer = document.getElementById('exercise-answer');
+	const exerciseFeedback = document.getElementById('exercise-feedback');
+	const seriesFeedback = document.getElementById('series-feedback');
+	const validateAnswerBtn = document.getElementById('validate-answer-btn');
+	const exerciseHomeBtn = document.getElementById('exercise-home-btn');
+	const historyList = document.getElementById('history-list');
+	const progressFill = document.getElementById('progress-fill');
+	const progressText = document.getElementById('progress-text');
+	
+	// Boutons
+	const conversionsBtn = document.getElementById('conversions-btn');
+	const lengthBtn = document.getElementById('length-btn');
+	const massBtn = document.getElementById('mass-btn');
+	const capacityBtn = document.getElementById('capacity-btn');
+	const areaBtn = document.getElementById('area-btn');
+	const volumeBtn = document.getElementById('volume-btn');
+	const timeBtn = document.getElementById('time-btn');
+	const mixedBtn = document.getElementById('mixed-btn');
+	const historyBtn = document.getElementById('history-btn');
+	const theoryHomeBtn = document.getElementById('theory-home-btn');
+	const historyHomeBtn = document.getElementById('history-home-btn');
+	
+	// Variables pour les séries d'exercices
+	let currentExerciseType = '';
+	let currentExerciseIndex = 0;
+	let currentExerciseSeries = [];
+	let currentExerciseAnswers = [];
+	let exerciseHistory = JSON.parse(localStorage.getItem('convertimath_history') || '[]'); // Utiliser localStorage pour persister l'historique
+	
+	// --- BASE DE DONNÉES (Importée du CSV avec explications) ---
+	const exercisesDatabase = {
+	"Longueur": [
+	{ value: 176.8, unit1: "km", unit2: "mm", result: 176800000, explanation: "Pour passer de km à mm, on fait x 1000000" },
+	{ value: 986, unit1: "cm", unit2: "m", result: 9.86, explanation: "Pour passer de cm à m, on divise par 100" },
+	{ value: 276.51, unit1: "m", unit2: "mm", result: 276510, explanation: "Pour passer de m à mm, on fait x 1000" },
+	{ value: 942, unit1: "km", unit2: "hm", result: 9420, explanation: "Pour passer de km à hm, on fait x 10" },
+	{ value: 561, unit1: "hm", unit2: "dm", result: 561000, explanation: "Pour passer de hm à dm, on fait x 1000" },
+	{ value: 489.94, unit1: "km", unit2: "m", result: 489940, explanation: "Pour passer de km à m, on fait x 1000" },
+	{ value: 94.5, unit1: "km", unit2: "dm", result: 945000, explanation: "Pour passer de km à dm, on fait x 10000" },
+	{ value: 183, unit1: "mm", unit2: "cm", result: 18.3, explanation: "Pour passer de mm à cm, on divise par 10" },
+	{ value: 602.8, unit1: "cm", unit2: "mm", result: 6028, explanation: "Pour passer de cm à mm, on fait x 10" },
+	{ value: 669, unit1: "km", unit2: "mm", result: 669000000, explanation: "Pour passer de km à mm, on fait x 1000000" },
+	{ value: 213, unit1: "km", unit2: "mm", result: 213000000, explanation: "Pour passer de km à mm, on fait x 1000000" },
+	{ value: 441.91, unit1: "km", unit2: "mm", result: 441910000, explanation: "Pour passer de km à mm, on fait x 1000000" },
+	{ value: 165.3, unit1: "dam", unit2: "cm", result: 165300, explanation: "Pour passer de dam à cm, on fait x 1000" },
+	{ value: 16, unit1: "hm", unit2: "km", result: 1.6, explanation: "Pour passer de hm à km, on divise par 10" },
+	{ value: 985.7, unit1: "m", unit2: "mm", result: 985700, explanation: "Pour passer de m à mm, on fait x 1000" },
+	{ value: 530, unit1: "hm", unit2: "cm", result: 5300000, explanation: "Pour passer de hm à cm, on fait x 10000" },
+	{ value: 132, unit1: "cm", unit2: "m", result: 1.32, explanation: "Pour passer de cm à m, on divise par 100" },
+	{ value: 923.71, unit1: "cm", unit2: "mm", result: 9237.1, explanation: "Pour passer de cm à mm, on fait x 10" },
+	{ value: 619, unit1: "dam", unit2: "mm", result: 6190000, explanation: "Pour passer de dam à mm, on fait x 10000" },
+	{ value: 661.94, unit1: "m", unit2: "cm", result: 66194, explanation: "Pour passer de m à cm, on fait x 100" },
+	{ value: 391, unit1: "hm", unit2: "dam", result: 3910, explanation: "Pour passer de hm à dam, on fait x 10" },
+	{ value: 17, unit1: "hm", unit2: "cm", result: 170000, explanation: "Pour passer de hm à cm, on fait x 10000" },
+	{ value: 747, unit1: "hm", unit2: "m", result: 74700, explanation: "Pour passer de hm à m, on fait x 100" },
+	{ value: 645.3, unit1: "cm", unit2: "mm", result: 6453, explanation: "Pour passer de cm à mm, on fait x 10" },
+	{ value: 142, unit1: "dam", unit2: "km", result: 1.42, explanation: "Pour passer de dam à km, on divise par 100" },
+	{ value: 304, unit1: "km", unit2: "m", result: 304000, explanation: "Pour passer de km à m, on fait x 1000" },
+	{ value: 122, unit1: "cm", unit2: "m", result: 1.22, explanation: "Pour passer de cm à m, on divise par 100" },
+	{ value: 557, unit1: "hm", unit2: "m", result: 55700, explanation: "Pour passer de hm à m, on fait x 100" },
+	{ value: 231, unit1: "km", unit2: "dam", result: 23100, explanation: "Pour passer de km à dam, on fait x 100" },
+	{ value: 228, unit1: "km", unit2: "hm", result: 2280, explanation: "Pour passer de km à hm, on fait x 10" }
+	],
+	"Masse": [
+	{ value: 702.1, unit1: "t", unit2: "mg", result: 702100000000, explanation: "Pour passer de t à mg, on fait x 1000000000" },
+	{ value: 381.6, unit1: "t", unit2: "hg", result: 3816000, explanation: "Pour passer de t à hg, on fait x 10000" },
+	{ value: 68, unit1: "g", unit2: "mg", result: 68000, explanation: "Pour passer de g à mg, on fait x 1000" },
+	{ value: 200.72, unit1: "t", unit2: "q", result: 2007.2, explanation: "Pour passer de t à q, on fait x 10" },
+	{ value: 129, unit1: "q", unit2: "dag", result: 1290000, explanation: "Pour passer de q à dag, on fait x 10000" },
+	{ value: 769.17, unit1: "q", unit2: "mg", result: 76917000000, explanation: "Pour passer de q à mg, on fait x 100000000" },
+	{ value: 731, unit1: "hg", unit2: "mg", result: 73100000, explanation: "Pour passer de hg à mg, on fait x 100000" },
+	{ value: 188, unit1: "kg", unit2: "q", result: 1.88, explanation: "Pour passer de kg à q, on divise par 100" },
+	{ value: 933.61, unit1: "t", unit2: "cg", result: 93361000000, explanation: "Pour passer de t à cg, on fait x 100000000" },
+	{ value: 978, unit1: "q", unit2: "q", result: 978, explanation: "Pour passer de q à q, on fait x 1" },
+	{ value: 799.15, unit1: "dag", unit2: "g", result: 7991.5, explanation: "Pour passer de dag à g, on fait x 10" },
+	{ value: 327.73, unit1: "dg", unit2: "mg", result: 32773, explanation: "Pour passer de dg à mg, on fait x 100" },
+	{ value: 669, unit1: "kg", unit2: "g", result: 669000, explanation: "Pour passer de kg à g, on fait x 1000" },
+	{ value: 652.64, unit1: "q", unit2: "mg", result: 65264000000, explanation: "Pour passer de q à mg, on fait x 100000000" },
+	{ value: 111, unit1: "kg", unit2: "dag", result: 11100, explanation: "Pour passer de kg à dag, on fait x 100" },
+	{ value: 766, unit1: "kg", unit2: "dg", result: 7660000, explanation: "Pour passer de kg à dg, on fait x 10000" },
+	{ value: 461, unit1: "q", unit2: "hg", result: 461000, explanation: "Pour passer de q à hg, on fait x 1000" },
+	{ value: 534, unit1: "dag", unit2: "dg", result: 53400, explanation: "Pour passer de dag à dg, on fait x 100" },
+	{ value: 671, unit1: "q", unit2: "dag", result: 6710000, explanation: "Pour passer de q à dag, on fait x 10000" },
+	{ value: 902.9, unit1: "q", unit2: "kg", result: 90290, explanation: "Pour passer de q à kg, on fait x 100" },
+	{ value: 36, unit1: "q", unit2: "hg", result: 36000, explanation: "Pour passer de q à hg, on fait x 1000" },
+	{ value: 377.5, unit1: "kg", unit2: "cg", result: 37750000, explanation: "Pour passer de kg à cg, on fait x 100000" },
+	{ value: 673, unit1: "kg", unit2: "cg", result: 67300000, explanation: "Pour passer de kg à cg, on fait x 100000" },
+	{ value: 16, unit1: "q", unit2: "mg", result: 1600000000, explanation: "Pour passer de q à mg, on fait x 100000000" },
+	{ value: 40, unit1: "g", unit2: "dag", result: 4, explanation: "Pour passer de g à dag, on divise par 10" },
+	{ value: 377.88, unit1: "q", unit2: "g", result: 37788000, explanation: "Pour passer de q à g, on fait x 100000" },
+	{ value: 736.4, unit1: "q", unit2: "dg", result: 736400000, explanation: "Pour passer de q à dg, on fait x 1000000" },
+	{ value: 249.7, unit1: "q", unit2: "dg", result: 249700000, explanation: "Pour passer de q à dg, on fait x 1000000" },
+	{ value: 186, unit1: "kg", unit2: "mg", result: 186000000, explanation: "Pour passer de kg à mg, on fait x 1000000" },
+	{ value: 99.85, unit1: "hg", unit2: "dg", result: 99850, explanation: "Pour passer de hg à dg, on fait x 1000" }
+	],
+	"Capacité": [
+	{ value: 6, unit1: "daL", unit2: "L", result: 60, explanation: "Pour passer de daL à L, on fait x 10" },
+	{ value: 701, unit1: "kL", unit2: "cL", result: 70100000, explanation: "Pour passer de kL à cL, on fait x 100000" },
+	{ value: 177, unit1: "hL", unit2: "daL", result: 1770, explanation: "Pour passer de hL à daL, on fait x 10" },
+	{ value: 817.9, unit1: "hL", unit2: "L", result: 81790, explanation: "Pour passer de hL à L, on fait x 100" },
+	{ value: 104.7, unit1: "kL", unit2: "cL", result: 10470000, explanation: "Pour passer de kL à cL, on fait x 100000" },
+	{ value: 473.3, unit1: "hL", unit2: "mL", result: 47330000, explanation: "Pour passer de hL à mL, on fait x 100000" },
+	{ value: 875, unit1: "cL", unit2: "dL", result: 87.5, explanation: "Pour passer de cL à dL, on divise par 10" },
+	{ value: 747, unit1: "daL", unit2: "L", result: 7470, explanation: "Pour passer de daL à L, on fait x 10" },
+	{ value: 50, unit1: "daL", unit2: "dL", result: 5000, explanation: "Pour passer de daL à dL, on fait x 100" },
+	{ value: 544, unit1: "hL", unit2: "mL", result: 54400000, explanation: "Pour passer de hL à mL, on fait x 100000" },
+	{ value: 523, unit1: "dL", unit2: "daL", result: 5.23, explanation: "Pour passer de dL à daL, on divise par 100" },
+	{ value: 654.8, unit1: "mL", unit2: "cL", result: 65.48, explanation: "Pour passer de mL à cL, on divise par 10" },
+	{ value: 88.67, unit1: "kL", unit2: "cL", result: 8867000, explanation: "Pour passer de kL à cL, on fait x 100000" },
+	{ value: 596, unit1: "L", unit2: "mL", result: 596000, explanation: "Pour passer de L à mL, on fait x 1000" },
+	{ value: 820.55, unit1: "hL", unit2: "L", result: 82055, explanation: "Pour passer de hL à L, on fait x 100" },
+	{ value: 857, unit1: "L", unit2: "dL", result: 8570, explanation: "Pour passer de L à dL, on fait x 10" },
+	{ value: 928, unit1: "hL", unit2: "mL", result: 92800000, explanation: "Pour passer de hL à mL, on fait x 100000" },
+	{ value: 222.91, unit1: "L", unit2: "cL", result: 22291, explanation: "Pour passer de L à cL, on fait x 100" },
+	{ value: 228.2, unit1: "hL", unit2: "dL", result: 228200, explanation: "Pour passer de hL à dL, on fait x 1000" },
+	{ value: 684, unit1: "dL", unit2: "daL", result: 6.84, explanation: "Pour passer de dL à daL, on divise par 100" },
+	{ value: 290, unit1: "hL", unit2: "cL", result: 2900000, explanation: "Pour passer de hL à cL, on fait x 10000" },
+	{ value: 902.3, unit1: "kL", unit2: "cL", result: 90230000, explanation: "Pour passer de kL à cL, on fait x 100000" },
+	{ value: 399.9, unit1: "mL", unit2: "cL", result: 39.99, explanation: "Pour passer de mL à cL, on divise par 10" },
+	{ value: 473.4, unit1: "mL", unit2: "cL", result: 47.34, explanation: "Pour passer de mL à cL, on divise par 10" },
+	{ value: 826, unit1: "daL", unit2: "dL", result: 82600, explanation: "Pour passer de daL à dL, on fait x 100" },
+	{ value: 441.7, unit1: "L", unit2: "dL", result: 4417, explanation: "Pour passer de L à dL, on fait x 10" },
+	{ value: 178.62, unit1: "L", unit2: "dL", result: 1786.2, explanation: "Pour passer de L à dL, on fait x 10" },
+	{ value: 469, unit1: "daL", unit2: "dL", result: 46900, explanation: "Pour passer de daL à dL, on fait x 100" },
+	{ value: 83, unit1: "kL", unit2: "mL", result: 83000000, explanation: "Pour passer de kL à mL, on fait x 1000000" },
+	{ value: 822, unit1: "dL", unit2: "mL", result: 82200, explanation: "Pour passer de dL à mL, on fait x 100" }
+	],
+	"Surface": [
+	{ value: 682, unit1: "mm²", unit2: "cm²", result: 6.82, explanation: "Pour passer de mm² à cm², on divise par 100" },
+	{ value: 741.26, unit1: "a", unit2: "cm²", result: 741260000, explanation: "Pour passer de a à cm², on fait x 1000000" },
+	{ value: 762.46, unit1: "ha", unit2: "a", result: 76246, explanation: "Pour passer de ha à a, on fait x 100" },
+	{ value: 525, unit1: "a", unit2: "dm²", result: 5250000, explanation: "Pour passer de a à dm², on fait x 10000" },
+	{ value: 732.28, unit1: "ha", unit2: "hm²", result: 732.28, explanation: "Pour passer de ha à hm², on fait x 1" },
+	{ value: 829, unit1: "ha", unit2: "cm²", result: 82900000000, explanation: "Pour passer de ha à cm², on fait x 100000000" },
+	{ value: 914, unit1: "hm²", unit2: "mm²", result: 9140000000000, explanation: "Pour passer de hm² à mm², on fait x 10000000000" },
+	{ value: 974.9, unit1: "dam²", unit2: "dm²", result: 9749000, explanation: "Pour passer de dam² à dm², on fait x 10000" },
+	{ value: 597.4, unit1: "ca", unit2: "cm²", result: 5974000, explanation: "Pour passer de ca à cm², on fait x 10000" },
+	{ value: 355.46, unit1: "ha", unit2: "dam²", result: 35546, explanation: "Pour passer de ha à dam², on fait x 100" },
+	{ value: 736.5, unit1: "m²", unit2: "dm²", result: 73650, explanation: "Pour passer de m² à dm², on fait x 100" },
+	{ value: 844.28, unit1: "a", unit2: "cm²", result: 844280000, explanation: "Pour passer de a à cm², on fait x 1000000" },
+	{ value: 572.09, unit1: "km²", unit2: "ca", result: 572090000, explanation: "Pour passer de km² à ca, on fait x 1000000" },
+	{ value: 473.86, unit1: "hm²", unit2: "dam²", result: 47386, explanation: "Pour passer de hm² à dam², on fait x 100" },
+	{ value: 980, unit1: "ha", unit2: "dam²", result: 98000, explanation: "Pour passer de ha à dam², on fait x 100" },
+	{ value: 352.26, unit1: "ha", unit2: "hm²", result: 352.26, explanation: "Pour passer de ha à hm², on fait x 1" },
+	{ value: 27.1, unit1: "m²", unit2: "ca", result: 27.1, explanation: "Pour passer de m² à ca, on fait x 1" },
+	{ value: 679.4, unit1: "m²", unit2: "mm²", result: 679400000, explanation: "Pour passer de m² à mm², on fait x 1000000" },
+	{ value: 908, unit1: "a", unit2: "cm²", result: 908000000, explanation: "Pour passer de a à cm², on fait x 1000000" },
+	{ value: 428.4, unit1: "ca", unit2: "mm²", result: 428400000, explanation: "Pour passer de ca à mm², on fait x 1000000" },
+	{ value: 921.31, unit1: "km²", unit2: "mm²", result: 921310000000000, explanation: "Pour passer de km² à mm², on fait x 1000000000000" },
+	{ value: 159, unit1: "a", unit2: "dam²", result: 159, explanation: "Pour passer de a à dam², on fait x 1" },
+	{ value: 851, unit1: "km²", unit2: "cm²", result: 8510000000000, explanation: "Pour passer de km² à cm², on fait x 10000000000" },
+	{ value: 526, unit1: "cm²", unit2: "dm²", result: 5.26, explanation: "Pour passer de cm² à dm², on divise par 100" },
+	{ value: 672.17, unit1: "a", unit2: "cm²", result: 672170000, explanation: "Pour passer de a à cm², on fait x 1000000" },
+	{ value: 263.5, unit1: "ca", unit2: "m²", result: 263.5, explanation: "Pour passer de ca à m², on fait x 1" },
+	{ value: 63, unit1: "a", unit2: "cm²", result: 63000000, explanation: "Pour passer de a à cm², on fait x 1000000" },
+	{ value: 214.64, unit1: "km²", unit2: "m²", result: 214640000, explanation: "Pour passer de km² à m², on fait x 1000000" },
+	{ value: 429, unit1: "ca", unit2: "a", result: 4.29, explanation: "Pour passer de ca à a, on divise par 100" },
+	{ value: 291.21, unit1: "km²", unit2: "ca", result: 291210000, explanation: "Pour passer de km² à ca, on fait x 1000000" }
+	],
+	"Volume": [
+	{ value: 797, unit1: "dm³", unit2: "mm³", result: 797000000, explanation: "Pour passer de dm³ à mm³, on fait x 1000000" },
+	{ value: 6.35, unit1: "km³", unit2: "m³", result: 6350000000, explanation: "Pour passer de km³ à m³, on fait x 1000000000" },
+	{ value: 959.66, unit1: "km³", unit2: "dam³", result: 959660000, explanation: "Pour passer de km³ à dam³, on fait x 1000000" },
+	{ value: 194.9, unit1: "m³", unit2: "dm³", result: 194900, explanation: "Pour passer de m³ à dm³, on fait x 1000" },
+	{ value: 709, unit1: "km³", unit2: "dam³", result: 709000000, explanation: "Pour passer de km³ à dam³, on fait x 1000000" },
+	{ value: 983, unit1: "dam³", unit2: "dm³", result: 983000000, explanation: "Pour passer de dam³ à dm³, on fait x 1000000" },
+	{ value: 4.4, unit1: "km³", unit2: "hm³", result: 4400, explanation: "Pour passer de km³ à hm³, on fait x 1000" },
+	{ value: 420, unit1: "dm³", unit2: "cm³", result: 420000, explanation: "Pour passer de dm³ à cm³, on fait x 1000" },
+	{ value: 150, unit1: "dam³", unit2: "mm³", result: 150000000000000, explanation: "Pour passer de dam³ à mm³, on fait x 1000000000000" },
+	{ value: 559.19, unit1: "hm³", unit2: "cm³", result: 559190000000000, explanation: "Pour passer de hm³ à cm³, on fait x 1000000000000" },
+	{ value: 156.4, unit1: "hm³", unit2: "dam³", result: 156400, explanation: "Pour passer de hm³ à dam³, on fait x 1000" },
+	{ value: 540, unit1: "hm³", unit2: "km³", result: 0.54, explanation: "Pour passer de hm³ à km³, on divise par 1000" },
+	{ value: 774.8, unit1: "m³", unit2: "dm³", result: 774800, explanation: "Pour passer de m³ à dm³, on fait x 1000" },
+	{ value: 248.6, unit1: "dam³", unit2: "m³", result: 248600, explanation: "Pour passer de dam³ à m³, on fait x 1000" },
+	{ value: 609, unit1: "hm³", unit2: "cm³", result: 609000000000000, explanation: "Pour passer de hm³ à cm³, on fait x 1000000000000" },
+	{ value: 85.6, unit1: "hm³", unit2: "m³", result: 85600000, explanation: "Pour passer de hm³ à m³, on fait x 1000000" },
+	{ value: 845.5, unit1: "dam³", unit2: "cm³", result: 845500000000, explanation: "Pour passer de dam³ à cm³, on fait x 1000000000" },
+	{ value: 458, unit1: "m³", unit2: "cm³", result: 458000000, explanation: "Pour passer de m³ à cm³, on fait x 1000000" },
+	{ value: 124.5, unit1: "dam³", unit2: "dm³", result: 124500000, explanation: "Pour passer de dam³ à dm³, on fait x 1000000" },
+	{ value: 629.5, unit1: "hm³", unit2: "dam³", result: 629500, explanation: "Pour passer de hm³ à dam³, on fait x 1000" },
+	{ value: 318, unit1: "m³", unit2: "mm³", result: 318000000000, explanation: "Pour passer de m³ à mm³, on fait x 1000000000" },
+	{ value: 945, unit1: "m³", unit2: "mm³", result: 945000000000, explanation: "Pour passer de m³ à mm³, on fait x 1000000000" },
+	{ value: 168.3, unit1: "dm³", unit2: "mm³", result: 168300000, explanation: "Pour passer de dm³ à mm³, on fait x 1000000" },
+	{ value: 594, unit1: "hm³", unit2: "dam³", result: 594000, explanation: "Pour passer de hm³ à dam³, on fait x 1000" },
+	{ value: 952.87, unit1: "m³", unit2: "dm³", result: 952870, explanation: "Pour passer de m³ à dm³, on fait x 1000" },
+	{ value: 839.58, unit1: "km³", unit2: "m³", result: 839580000000, explanation: "Pour passer de km³ à m³, on fait x 1000000000" },
+	{ value: 464.4, unit1: "km³", unit2: "hm³", result: 464400, explanation: "Pour passer de km³ à hm³, on fait x 1000" },
+	{ value: 730.73, unit1: "m³", unit2: "cm³", result: 730730000, explanation: "Pour passer de m³ à cm³, on fait x 1000000" },
+	{ value: 390, unit1: "dm³", unit2: "m³", result: 0.39, explanation: "Pour passer de dm³ à m³, on divise par 1000" },
+	{ value: 210.5, unit1: "km³", unit2: "dm³", result: 210500000000000, explanation: "Pour passer de km³ à dm³, on fait x 1000000000000" }
+	],
+	"Temps": [
+	{ value: 547, unit1: "h", unit2: "min", result: 32820, explanation: "Pour passer de h à min, on fait x 60" },
+	{ value: 290, unit1: "j", unit2: "h", result: 6960, explanation: "Pour passer de j à h, on fait x 24" },
+	{ value: 596, unit1: "h", unit2: "s", result: 2145600, explanation: "Pour passer de h à s, on fait x 3600" },
+	{ value: 397, unit1: "min", unit2: "s", result: 23820, explanation: "Pour passer de min à s, on fait x 60" },
+	{ value: 963, unit1: "h", unit2: "s", result: 3466800, explanation: "Pour passer de h à s, on fait x 3600" },
+	{ value: 629, unit1: "j", unit2: "s", result: 54345600, explanation: "Pour passer de j à s, on fait x 86400" },
+	{ value: 370, unit1: "min", unit2: "s", result: 22200, explanation: "Pour passer de min à s, on fait x 60" },
+	{ value: 263, unit1: "j", unit2: "min", result: 378720, explanation: "Pour passer de j à min, on fait x 1440" },
+	{ value: 75, unit1: "s", unit2: "min", result: 1.25, explanation: "Pour passer de s à min, on divise par 60" },
+	{ value: 535, unit1: "j", unit2: "s", result: 46224000, explanation: "Pour passer de j à s, on fait x 86400" },
+	{ value: 958, unit1: "j", unit2: "s", result: 82771200, explanation: "Pour passer de j à s, on fait x 86400" },
+	{ value: 232, unit1: "j", unit2: "s", result: 20044800, explanation: "Pour passer de j à s, on fait x 86400" },
+	{ value: 795, unit1: "s", unit2: "min", result: 13.25, explanation: "Pour passer de s à min, on divise par 60" },
+	{ value: 80, unit1: "j", unit2: "h", result: 1920, explanation: "Pour passer de j à h, on fait x 24" },
+	{ value: 663, unit1: "h", unit2: "min", result: 39780, explanation: "Pour passer de h à min, on fait x 60" },
+	{ value: 531, unit1: "s", unit2: "min", result: 8.85, explanation: "Pour passer de s à min, on divise par 60" },
+	{ value: 813, unit1: "h", unit2: "min", result: 48780, explanation: "Pour passer de h à min, on fait x 60" },
+	{ value: 825, unit1: "j", unit2: "s", result: 71280000, explanation: "Pour passer de j à s, on fait x 86400" },
+	{ value: 701, unit1: "h", unit2: "min", result: 42060, explanation: "Pour passer de h à min, on fait x 60" },
+	{ value: 246, unit1: "min", unit2: "s", result: 14760, explanation: "Pour passer de min à s, on fait x 60" },
+	{ value: 34, unit1: "j", unit2: "h", result: 816, explanation: "Pour passer de j à h, on fait x 24" },
+	{ value: 824, unit1: "min", unit2: "s", result: 49440, explanation: "Pour passer de min à s, on fait x 60" },
+	{ value: 274, unit1: "h", unit2: "s", result: 986400, explanation: "Pour passer de h à s, on fait x 3600" },
+	{ value: 699, unit1: "h", unit2: "s", result: 2516400, explanation: "Pour passer de h à s, on fait x 3600" },
+	{ value: 185, unit1: "h", unit2: "min", result: 11100, explanation: "Pour passer de h à min, on fait x 60" },
+	{ value: 216, unit1: "h", unit2: "s", result: 777600, explanation: "Pour passer de h à s, on fait x 3600" },
+	{ value: 791, unit1: "j", unit2: "h", result: 18984, explanation: "Pour passer de j à h, on fait x 24" },
+	{ value: 639, unit1: "min", unit2: "h", result: 10.65, explanation: "Pour passer de min à h, on divise par 60" },
+	{ value: 516, unit1: "h", unit2: "j", result: 21.5, explanation: "Pour passer de h à j, on divise par 24" },
+	{ value: 96, unit1: "h", unit2: "s", result: 345600, explanation: "Pour passer de h à s, on fait x 3600" }
+	],
+	"Mixte": [
+	{ value: 286.8, unit1: "kL", unit2: "dL", result: 2868000, explanation: "Pour passer de kL à dL, on fait x 10000" },
+	{ value: 392, unit1: "mm", unit2: "cm", result: 39.2, explanation: "Pour passer de mm à cm, on divise par 10" },
+	{ value: 108, unit1: "daL", unit2: "L", result: 1080, explanation: "Pour passer de daL à L, on fait x 10" },
+	{ value: 397, unit1: "hm²", unit2: "mm²", result: 3970000000000, explanation: "Pour passer de hm² à mm², on fait x 10000000000" },
+	{ value: 371, unit1: "t", unit2: "dg", result: 3710000000, explanation: "Pour passer de t à dg, on fait x 10000000" },
+	{ value: 443, unit1: "ca", unit2: "a", result: 4.43, explanation: "Pour passer de ca à a, on divise par 100" },
+	{ value: 409.7, unit1: "dam", unit2: "dm", result: 40970, explanation: "Pour passer de dam à dm, on fait x 100" },
+	{ value: 206, unit1: "j", unit2: "min", result: 296640, explanation: "Pour passer de j à min, on fait x 1440" },
+	{ value: 366.85, unit1: "cm", unit2: "mm", result: 3668.5, explanation: "Pour passer de cm à mm, on fait x 10" },
+	{ value: 452.74, unit1: "km³", unit2: "dm³", result: 452740000000000, explanation: "Pour passer de km³ à dm³, on fait x 1000000000000" },
+	{ value: 178.84, unit1: "dag", unit2: "g", result: 1788.4, explanation: "Pour passer de dag à g, on fait x 10" },
+	{ value: 449.2, unit1: "hg", unit2: "dg", result: 449200, explanation: "Pour passer de hg à dg, on fait x 1000" },
+	{ value: 230.2, unit1: "km³", unit2: "dm³", result: 230200000000000, explanation: "Pour passer de km³ à dm³, on fait x 1000000000000" },
+	{ value: 143.5, unit1: "hL", unit2: "mL", result: 14350000, explanation: "Pour passer de hL à mL, on fait x 100000" },
+	{ value: 334.2, unit1: "cm", unit2: "dm", result: 33.42, explanation: "Pour passer de cm à dm, on divise par 10" },
+	{ value: 440, unit1: "j", unit2: "s", result: 38016000, explanation: "Pour passer de j à s, on fait x 86400" },
+	{ value: 411.68, unit1: "dam", unit2: "m", result: 4116.8, explanation: "Pour passer de dam à m, on fait x 10" },
+	{ value: 319.1, unit1: "t", unit2: "g", result: 319100000, explanation: "Pour passer de t à g, on fait x 1000000" },
+	{ value: 426, unit1: "m", unit2: "cm", result: 42600, explanation: "Pour passer de m à cm, on fait x 100" },
+	{ value: 350, unit1: "m", unit2: "dam", result: 35, explanation: "Pour passer de m à dam, on divise par 10" },
+	{ value: 72, unit1: "s", unit2: "min", result: 1.2, explanation: "Pour passer de s à min, on divise par 60" },
+	{ value: 64, unit1: "a", unit2: "dam²", result: 64, explanation: "Pour passer de a à dam², on fait x 1" },
+	{ value: 13, unit1: "h", unit2: "s", result: 46800, explanation: "Pour passer de h à s, on fait x 3600" },
+	{ value: 165, unit1: "hg", unit2: "dg", result: 165000, explanation: "Pour passer de hg à dg, on fait x 1000" },
+	{ value: 267.48, unit1: "km²", unit2: "cm²", result: 2674800000000, explanation: "Pour passer de km² à cm², on fait x 10000000000" },
+	{ value: 101, unit1: "dL", unit2: "mL", result: 10100, explanation: "Pour passer de dL à mL, on fait x 100" },
+	{ value: 468.58, unit1: "kL", unit2: "dL", result: 4685800, explanation: "Pour passer de kL à dL, on fait x 10000" },
+	{ value: 388, unit1: "km", unit2: "hm", result: 3880, explanation: "Pour passer de km à hm, on fait x 10" },
+	{ value: 200, unit1: "dL", unit2: "cL", result: 2000, explanation: "Pour passer de dL à cL, on fait x 10" },
+	{ value: 328.54, unit1: "dag", unit2: "mg", result: 3285400, explanation: "Pour passer de dag à mg, on fait x 10000" }
+	]
+	};
+	// --- FIN BASE DE DONNÉES ---
+	
+	// Contenu théorique (inchangé)
+	const THEORIE_CONVERSIONS = `
+	<p><center><strong>🧠 Les conversions de grandeurs</strong></center></p>
+	
+	<p><strong>🔹 1. Pourquoi convertir ?</strong></p>
+	<p>Dans la vie quotidienne et en mathématiques, on utilise différentes unités pour mesurer des longueurs, des masses, des volumes, etc. Il est donc essentiel de savoir passer d'une unité à une autre pour comparer, calculer ou résoudre un problème.</p>
+	
+	<p><strong>🔹 2. Les unités et les préfixes</strong></p>
+	
+	<p><strong>📏 Longueur</strong></p>
+	<p>L'unité de base est le mètre (m) → il sert à mesurer une distance ou une longueur.</p>
+	<p>1 mètre correspond à 10 décimètres (dm) ou 100 centimètres (cm)</p>
+	
+	<p>Abaque (1 colonne par unité) :</p>
+	<div class="abaque-container">
+	<div class="abaque abaque-longueur" id="abaque-longueur">
+	<div class="abaque-row">
+	<div class="abaque-cell">km</div>
+	<div class="abaque-cell">hm</div>
+	<div class="abaque-cell">dam</div>
+	<div class="abaque-cell highlight">m</div>
+	<div class="abaque-cell">dm</div>
+	<div class="abaque-cell">cm</div>
+	<div class="abaque-cell">mm</div>
+	</div>
+	<div class="abaque-row">
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	</div>
+	</div>
+	</div>
+	
+	<p><strong>⚖️ Masse</strong></p>
+	<p>L'unité de base est le gramme (g) → on l'utilise pour mesurer une masse légère.</p>
+	<p>1 gramme correspond à 10 décigrammes (dg) ou 100 centigrammes (cg)</p>
+	
+	<p>Abaque (1 colonne par unité) :</p>
+	<div class="abaque-container">
+	<div class="abaque abaque-masse" id="abaque-masse">
+	<div class="abaque-row">
+	<div class="abaque-cell">t</div>
+	<div class="abaque-cell">q</div>
+<div class="abaque-cell">10 kg</div>
+	<div class="abaque-cell">kg</div>
+	<div class="abaque-cell">hg</div>
+	<div class="abaque-cell">dag</div>
+	<div class="abaque-cell highlight">g</div>
+	<div class="abaque-cell">dg</div>
+	<div class="abaque-cell">cg</div>
+	<div class="abaque-cell">mg</div>
+	</div>
+	<div class="abaque-row">
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+        <div class="abaque-cell empty"></div>
+	</div>
+	</div>
+	</div>
+	
+	<p><strong>🧪 Capacité</strong></p>
+	<p>L'unité de base est le litre (L) → il permet de mesurer des quantités de liquide.</p>
+	<p>1 litre correspond à 10 décilitres (dl) ou 100 centilitres (cl)</p>
+	
+	<p>Abaque (1 colonne par unité) :</p>
+	<div class="abaque-container">
+	<div class="abaque abaque-capacite" id="abaque-capacite">
+	<div class="abaque-row">
+	<div class="abaque-cell">kL</div>
+	<div class="abaque-cell">hL</div>
+	<div class="abaque-cell">daL</div>
+	<div class="abaque-cell highlight">L</div>
+	<div class="abaque-cell">dL</div>
+	<div class="abaque-cell">cL</div>
+	<div class="abaque-cell">mL</div>
+	</div>
+	<div class="abaque-row">
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	<div class="abaque-cell empty"></div>
+	</div>
+	</div>
+	</div>
+	
+	<p><strong>🌾 Surface</strong></p>
+	<p>L'unité de base est le mètre carré (m²) → c'est la surface d'un carré de 1 m de côté.</p>
+	<p>1 mètre carré correspond à 100 décimètres carrés (dm²) ou 10 000 centimètres carrés (cm²)</p>
+	<p>On utilise aussi :</p>
+	<p>hectare (ha) = 10 000 m² = 1 hm²</p>
+	<p>are (a) = 100 m² = 1 dam²</p>
+	<p>centiare (ca) = 1 m²</p>
+	
+	<p>Abaque (2 colonnes par unité) :</p>
+	<div class="abaque-container">
+	<table class="abaque abaque-surface" id="abaque-surface" style="border-collapse: collapse; border: 2px solid black;">
+	<tr style="background-color: #ccc;">
+	<td colspan="2" style="border: 1px solid black; color: red; font-weight: bold; text-align: center;">km²</td>
+	<td colspan="2" style="border: 1px solid black; color: red; font-weight: bold; text-align: center;">hm²</td>
+	<td colspan="2" style="border: 1px solid black; color: red; font-weight: bold; text-align: center;">dam²</td>
+	<td colspan="2" style="border: 1px solid black; font-weight: bold; text-align: center;">m²</td>
+	<td colspan="2" style="border: 1px solid black; color: red; font-weight: bold; text-align: center;">dm²</td>
+	<td colspan="2" style="border: 1px solid black; color: red; font-weight: bold; text-align: center;">cm²</td>
+	<td colspan="2" style="border: 1px solid black; color: red; font-weight: bold; text-align: center;">mm²</td>
+	</tr>
+	<tr>
+	<td style="border: 1px solid black; color: green; font-weight: bold; text-align: center;">D</td>
+	<td style="border: 1px solid black; color: blue; font-weight: bold; text-align: center;">U</td>
+	<td style="border: 1px solid black; color: green; font-weight: bold; text-align: center;">D</td>
+	<td style="border: 1px solid black; color: blue; font-weight: bold; text-align: center;">U</td>
+	<td style="border: 1px solid black; color: green; font-weight: bold; text-align: center;">D</td>
+	<td style="border: 1px solid black; color: blue; font-weight: bold; text-align: center;">U</td>
+	<td style="border: 1px solid black; color: green; font-weight: bold; text-align: center;">D</td>
+	<td style="border: 1px solid black; color: blue; font-weight: bold; text-align: center;">U</td>
+	<td style="border: 1px solid black; color: green; font-weight: bold; text-align: center;">D</td>
+	<td style="border: 1px solid black; color: blue; font-weight: bold; text-align: center;">U</td>
+	<td style="border: 1px solid black; color: green; font-weight: bold; text-align: center;">D</td>
+	<td style="border: 1px solid black; color: blue; font-weight: bold; text-align: center;">U</td>
+	<td style="border: 1px solid black; color: green; font-weight: bold; text-align: center;">D</td>
+	<td style="border: 1px solid black; color: blue; font-weight: bold; text-align: center;">U</td>
+	</tr>
+	<tr>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	</tr>
+	</table>
+	</div>
+	<p class="attention-text">ATTENTION : Exposant 2 = 2 colonnes à chaque fois !</p>
+	
+	<p><strong>💧 Volume</strong></p>
+	<p>L'unité de base est le mètre cube (m³) → c'est le volume d'un cube de 1 m de côté.</p>
+	<p>1 mètre cube correspond à 1000 décimètres cubes (dm³) ou 1 000 000 centimètres cubes (cm³)</p>
+	<p>1 décimètre cube (dm³) → 1 litre (L)</p>
+	<p>1 centimètre cube (cm³) → 1 millilitre (mL)</p>
+	<p>1 m³ → 1 kilolitre (kL)</p>
+	
+	<p>Abaque (3 colonnes par unité) :</p>
+	<div class="abaque-container">
+	<table class="abaque abaque-volume" id="abaque-volume" style="border-collapse: collapse; border: 2px solid black;">
+	<tr style="background-color: #ccc;">
+	<td colspan="3" style="border: 1px solid black; color: red; font-weight: bold; text-align: center;">km³</td>
+	<td colspan="3" style="border: 1px solid black; color: red; font-weight: bold; text-align: center;">hm³</td>
+	<td colspan="3" style="border: 1px solid black; color: red; font-weight: bold; text-align: center;">dam³</td>
+	<td colspan="3" style="border: 1px solid black; font-weight: bold; text-align: center;">m³</td>
+	<td colspan="3" style="border: 1px solid black; color: red; font-weight: bold; text-align: center;">dm³</td>
+	<td colspan="3" style="border: 1px solid black; color: red; font-weight: bold; text-align: center;">cm³</td>
+	<td colspan="3" style="border: 1px solid black; color: red; font-weight: bold; text-align: center;">mm³</td>
+	</tr>
+	<tr>
+	<td style="border: 1px solid black; color: orange; font-weight: bold; text-align: center;">C</td>
+	<td style="border: 1px solid black; color: green; font-weight: bold; text-align: center;">D</td>
+	<td style="border: 1px solid black; color: blue; font-weight: bold; text-align: center;">U</td>
+	<td style="border: 1px solid black; color: orange; font-weight: bold; text-align: center;">C</td>
+	<td style="border: 1px solid black; color: green; font-weight: bold; text-align: center;">D</td>
+	<td style="border: 1px solid black; color: blue; font-weight: bold; text-align: center;">U</td>
+	<td style="border: 1px solid black; color: orange; font-weight: bold; text-align: center;">C</td>
+	<td style="border: 1px solid black; color: green; font-weight: bold; text-align: center;">D</td>
+	<td style="border: 1px solid black; color: blue; font-weight: bold; text-align: center;">U</td>
+	<td style="border: 1px solid black; color: orange; font-weight: bold; text-align: center;">C</td>
+	<td style="border: 1px solid black; color: green; font-weight: bold; text-align: center;">D</td>
+	<td style="border: 1px solid black; color: blue; font-weight: bold; text-align: center;">U</td>
+	<td style="border: 1px solid black; color: orange; font-weight: bold; text-align: center;">C</td>
+	<td style="border: 1px solid black; color: green; font-weight: bold; text-align: center;">D</td>
+	<td style="border: 1px solid black; color: blue; font-weight: bold; text-align: center;">U</td>
+	<td style="border: 1px solid black; color: orange; font-weight: bold; text-align: center;">C</td>
+	<td style="border: 1px solid black; color: green; font-weight: bold; text-align: center;">D</td>
+	<td style="border: 1px solid black; color: blue; font-weight: bold; text-align: center;">U</td>
+	<td style="border: 1px solid black; color: orange; font-weight: bold; text-align: center;">C</td>
+	<td style="border: 1px solid black; color: green; font-weight: bold; text-align: center;">D</td>
+	<td style="border: 1px solid black; color: blue; font-weight: bold; text-align: center;">U</td>
+	</tr>
+	<tr>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	<td style="border: 1px solid black; height: 50px;"></td>
+	</tr>
+	</table>
+	</div>
+	<p class="attention-text">ATTENTION : Exposant 3 = 3 colonnes à chaque fois !</p>
+	
+	<p><strong>🕰 Temps</strong></p>
+	<p>Les unités sont spécifiques (pas de préfixe ici) :</p>
+	<p>60 secondes → 1 minute</p>
+	<p>60 minutes → 1 heure</p>
+	<p>24 heures → 1 jour</p>
+	<p class="attention-text">📌 Il n'y a pas d'abaque pour le temps.</p>
+	
+	<p><strong>🔹 3. Les préfixes à connaître</strong></p>
+	<table class="prefixes-table">
+	<tr>
+	<th>Préfixe</th>
+	<th>Symbole</th>
+	<th>Valeur</th>
+	</tr>
+	<tr>
+	<td>kilo</td>
+	<td>k</td>
+	<td>→ × 1 000</td>
+	</tr>
+	<tr>
+	<td>hecto</td>
+	<td>h</td>
+	<td>→ × 100</td>
+	</tr>
+	<tr>
+	<td>déca</td>
+	<td>da</td>
+	<td>→ × 10</td>
+	</tr>
+	<tr>
+	<td>(unités)</td>
+	<td>m, g, L, etc.</td>
+	<td></td>
+	</tr>
+	<tr>
+	<td>déci</td>
+	<td>d</td>
+	<td>→ : 10</td>
+	</tr>
+	<tr>
+	<td>centi</td>
+	<td>c</td>
+	<td>→ : 100</td>
+	</tr>
+	<tr>
+	<td>milli</td>
+	<td>m</td>
+	<td>→ : 1 000</td>
+	</tr>
+	</table>
+	`;
+	
+	// Fonctions utilitaires
+	function showBox(boxToShow) {
+	homeSection.classList.add('hidden');
+	theoryBox.classList.add('hidden');
+	exerciseBox.classList.add('hidden');
+	historyBox.classList.add('hidden');
+	boxToShow.classList.remove('hidden');
+	}
+	
+	function formatNumber(num) {
+	// Remplacer le point par une virgule pour l'affichage
+	return String(num).replace('.', ',');
+	}
+	
+	function parseUserInput(input) {
+	// Remplacer la virgule par un point pour le calcul
+	// Supprimer les espaces pour gérer les séparateurs de milliers
+	const cleanedInput = String(input).replace(/\s/g, '').replace(',', '.');
+	return parseFloat(cleanedInput);
+	}
+	
+	// Fonction pour pluraliser les unités (inchangée)
+	function pluralize(value, unit) {
+	if (value === 1) {
+	return unit;
+	}
+	switch(unit) {
+	case 'jour': return 'jours';
+	case 'heure': return 'heures';
+	case 'minute': return 'minutes';
+	case 'seconde': return 'secondes';
+	default: return unit;
+	}
+	}
+	
+	// Fonction pour piocher aléatoirement un exercice dans la base de données
+	function pickRandomExercise(type, usedIndices = []) {
+	const categoryMap = {
+	'length': 'Longueur',
+	'mass': 'Masse',
+	'capacity': 'Capacité',
+	'area': 'Surface',
+	'volume': 'Volume',
+	'time': 'Temps',
+	'mixed': 'Mixte'
+	};
+	
+	const category = categoryMap[type];
+	const exercises = exercisesDatabase[category];
+	
+	if (!exercises || exercises.length === 0) {
+	console.error(`Aucun exercice trouvé pour la catégorie ${category}`);
+	return null;
+	}
+	
+	// Filtrer les indices déjà utilisés
+	const availableIndices = [];
+	for (let i = 0; i < exercises.length; i++) {
+	if (!usedIndices.includes(i)) {
+	availableIndices.push(i);
+	}
+	}
+	
+	if (availableIndices.length === 0) {
+	console.warn(`Tous les exercices de la catégorie ${category} ont déjà été utilisés dans cette série.`);
+	return null; // Ou retourner null pour indiquer qu'il n'y a plus d'exercice unique
+	}
+	
+	// Choisir un indice aléatoire parmi ceux disponibles
+	const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+	const exerciseData = exercises[randomIndex];
+	
+	// Utiliser les données directement de la base
+	const exerciseValue = exerciseData.value;
+	const exerciseUnit1 = exerciseData.unit1;
+	const exerciseUnit2 = exerciseData.unit2;
+	const exerciseResult = exerciseData.result; // Le résultat est déjà un nombre
+	const exerciseExplanation = exerciseData.explanation; // L'explication est fournie dans la base
+	
+	return {
+	index: randomIndex, // Garder l'index pour éviter les doublons
+	question: `${formatNumber(exerciseValue)} ${exerciseUnit1} → ${exerciseUnit2}`,
+	answer: exerciseResult, // Utiliser directement le résultat numérique de la base
+	unit1: exerciseUnit1,
+	unit2: exerciseUnit2,
+	value: exerciseValue,
+	explanation: `${exerciseExplanation}. Donc ${formatNumber(exerciseValue)} ${exerciseUnit1} = ${formatNumber(exerciseResult)} ${exerciseUnit2}.`
+	};
+	}
+	
+	// Générer une série d'exercices
+	function generateExerciseSeries(type) {
+	const count = type === 'mixed' ? 10 : 5;
+	const series = [];
+	const usedIndices = []; // Garde la trace des indices utilisés DANS CETTE SÉRIE
+	
+	for (let i = 0; i < count; i++) {
+	const exercise = pickRandomExercise(type, usedIndices);
+	if (exercise) {
+	series.push(exercise);
+	usedIndices.push(exercise.index); // Ajouter l'index de l'exercice choisi
+	} else {
+	console.warn(`Impossible de trouver un exercice unique pour ${type}, arrêt de la série.`);
+	break; // Arrêter de générer si on ne trouve plus d'exercice unique
+	}
+	}
+	
+	return series;
+	}
+	
+	// Mettre à jour la barre de progression (inchangée)
+	function updateProgressBar(current, total) {
+	const percentage = (current / total) * 100;
+	progressFill.style.width = `${percentage}%`;
+	progressText.textContent = `Exercice ${current}/${total}`;
+	}
+	
+	// Afficher l'exercice courant (inchangée)
+	function displayCurrentExercise() {
+	if (currentExerciseIndex < currentExerciseSeries.length) {
+	const exercise = currentExerciseSeries[currentExerciseIndex];
+	exerciseQuestion.textContent = exercise.question;
+	exerciseAnswer.value = '';
+	exerciseFeedback.innerHTML = '';
+	exerciseFeedback.className = '';
+	
+	updateProgressBar(currentExerciseIndex + 1, currentExerciseSeries.length);
+	} else {
+	// Fin de la série
+	displaySeriesFeedback();
+	}
+	}
+	
+	// Afficher le feedback de la série (inchangée)
+	function displaySeriesFeedback() {
+	seriesFeedback.innerHTML = '<h3>Résultats de la série</h3>';
+	let correctCount = 0;
+	
+	currentExerciseSeries.forEach((exercise, index) => {
+	const userAnswer = currentExerciseAnswers[index] || 'Non répondu';
+	const isCorrect = Math.abs(parseUserInput(userAnswer) - exercise.answer) < 0.00001; // Tolérance très faible
+	if (isCorrect) correctCount++;
+	
+	const itemHtml = `
+	<div class="series-item" style="background-color: ${isCorrect ? 'var(--feedback-success)' : 'var(--feedback-error)'}; color: white;">
+	<p><strong>Question ${index + 1} :</strong> ${exercise.question}</p>
+	<p><strong>Votre réponse :</strong> ${userAnswer}</p>
+	<p><strong>Réponse correcte :</strong> ${formatNumber(exercise.answer)}</p>
+	<p><strong>Explication :</strong> ${exercise.explanation}</p>
+	</div>
+	`;
+	
+	seriesFeedback.innerHTML += itemHtml;
+	});
+	
+	// Calculer et afficher le score global de la série
+	const totalCount = currentExerciseSeries.length;
+	const scorePercentage = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0;
+	seriesFeedback.innerHTML = `<h3>Résultats de la série</h3><p><strong>Score : ${correctCount}/${totalCount} (${scorePercentage}%)</strong></p>` + seriesFeedback.innerHTML;
+	
+	seriesFeedback.classList.remove('hidden');
+	validateAnswerBtn.classList.add('hidden');
+	exerciseQuestion.textContent = '';
+	exerciseAnswer.classList.add('hidden');
+	
+	// Ajouter la série à l'historique (uniquement si la série a été complétée)
+	saveSeriesToHistory(correctCount, totalCount, scorePercentage);
+	}
+	
+	// Fonction pour sauvegarder la série dans l'historique
+	function saveSeriesToHistory(correctCount, totalCount, scorePercentage) {
+	// Ne pas enregistrer si totalCount est 0 (par exemple, si on quitte avant de répondre)
+	if (totalCount === 0) return;
+	
+	const historyEntry = {
+	date: new Date().toLocaleString('fr-FR'),
+	type: currentExerciseType,
+	score: `${correctCount}/${totalCount} (${scorePercentage}%)`
+	};
+	
+	exerciseHistory.unshift(historyEntry); // Ajouter au début
+	if (exerciseHistory.length > 10) { // Limiter l'historique aux 10 dernières sessions
+	exerciseHistory.pop();
+	}
+	localStorage.setItem('convertimath_history', JSON.stringify(exerciseHistory));
+	}
+	
+	// Événements (logique de démarrage des séries inchangée)
+	conversionsBtn.addEventListener('click', function() {
+	theoryContent.innerHTML = THEORIE_CONVERSIONS;
+	showBox(theoryBox);
+	});
+	
+	function startExerciseSeries(type, title) {
+	currentExerciseType = type;
+	exerciseTitle.textContent = title;
+	currentExerciseSeries = generateExerciseSeries(type);
+	currentExerciseIndex = 0;
+	currentExerciseAnswers = [];
+	
+	seriesFeedback.classList.add('hidden');
+	exerciseAnswer.classList.remove('hidden');
+	validateAnswerBtn.classList.remove('hidden');
+	
+	if (currentExerciseSeries.length > 0) {
+	showBox(exerciseBox);
+	displayCurrentExercise();
+	} else {
+	alert("Il n'y a pas assez d'exercices uniques disponibles pour cette catégorie.");
+	showBox(homeSection);
+	}
+	}
+	
+	lengthBtn.addEventListener('click', () => startExerciseSeries('length', 'Exercice - Longueur'));
+	massBtn.addEventListener('click', () => startExerciseSeries('mass', 'Exercice - Masse'));
+	capacityBtn.addEventListener('click', () => startExerciseSeries('capacity', 'Exercice - Capacité'));
+	areaBtn.addEventListener('click', () => startExerciseSeries('area', 'Exercice - Surface'));
+	volumeBtn.addEventListener('click', () => startExerciseSeries('volume', 'Exercice - Volume'));
+	timeBtn.addEventListener('click', () => startExerciseSeries('time', 'Exercice - Temps'));
+	mixedBtn.addEventListener('click', () => startExerciseSeries('mixed', 'Exercice - Mixte'));
+	
+	historyBtn.addEventListener('click', function() {
+	historyList.innerHTML = '';
+	if (exerciseHistory.length === 0) {
+	historyList.innerHTML = '<p>Aucun historique disponible.</p>';
+	} else {
+	historyList.innerHTML = '<h2>Historique des sessions</h2>';
+	exerciseHistory.forEach(function(entry, index) {
+	const historyItem = document.createElement('div');
+	historyItem.className = 'history-entry';
+	
+	let seriesTitle = '';
+	switch(entry.type) {
+	case 'length': seriesTitle = 'Longueur'; break;
+	case 'mass': seriesTitle = 'Masse'; break;
+	case 'capacity': seriesTitle = 'Capacité'; break;
+	case 'area': seriesTitle = 'Surface'; break;
+	case 'volume': seriesTitle = 'Volume'; break;
+	case 'time': seriesTitle = 'Temps'; break;
+	case 'mixed': seriesTitle = 'Mixte'; break;
+	default: seriesTitle = entry.type; // Au cas où
+	}
+	
+	// Affichage simplifié inspiré de Variamath
+	historyItem.innerHTML = `
+	<h3>Session ${exerciseHistory.length - index} - ${entry.date}</h3>
+	<p><strong>Type :</strong> ${seriesTitle}</p>
+	<p><strong>Score :</strong> ${entry.score}</p>
+	`;
+	
+	historyList.appendChild(historyItem);
+	});
+	}
+	showBox(historyBox);
+	});
+	
+	validateAnswerBtn.addEventListener('click', function() {
+	const userAnswer = exerciseAnswer.value;
+	
+	if (!userAnswer.trim()) {
+	exerciseFeedback.innerHTML = '<div class="feedback incorrect">Veuillez entrer une réponse.</div>';
+	return;
+	}
+	
+	const parsedAnswer = parseUserInput(userAnswer);
+	
+	if (isNaN(parsedAnswer)) {
+	exerciseFeedback.innerHTML = '<div class="feedback incorrect">Veuillez entrer un nombre valide.</div>';
+	return;
+	}
+	
+	const currentExercise = currentExerciseSeries[currentExerciseIndex];
+	// Comparaison stricte avec la réponse de la base de données
+	const isCorrect = Math.abs(parsedAnswer - currentExercise.answer) < 0.00001; // Tolérance très faible
+	
+	// Enregistrer la réponse
+	currentExerciseAnswers[currentExerciseIndex] = userAnswer;
+	
+	// Désactiver le bouton et l'input pendant le feedback
+	validateAnswerBtn.disabled = true;
+	exerciseAnswer.disabled = true;
+	
+	// Afficher le feedback
+	if (isCorrect) {
+	exerciseFeedback.innerHTML = '<div class="feedback correct">Correct !</div>';
+	
+	// Passer à l'exercice suivant après 1.5 secondes si correct
+	setTimeout(function() {
+	currentExerciseIndex++;
+	exerciseFeedback.innerHTML = '';
+	validateAnswerBtn.disabled = false;
+	exerciseAnswer.disabled = false;
+	displayCurrentExercise();
+	}, 1500);
+	} else {
+	exerciseFeedback.innerHTML = `
+	<div class="feedback incorrect">
+	Incorrect. La réponse correcte est ${formatNumber(currentExercise.answer)}.
+	</div>
+	<div class="explanation">
+	${currentExercise.explanation}
+	</div>
+	`;
+	
+	// Passer à l'exercice suivant après 5 secondes si incorrect
+	setTimeout(function() {
+	currentExerciseIndex++;
+	exerciseFeedback.innerHTML = '';
+	validateAnswerBtn.disabled = false;
+	exerciseAnswer.disabled = false;
+	displayCurrentExercise();
+	}, 5000);
+	}
+	});
+	
+	exerciseHomeBtn.addEventListener('click', function() {
+	// Vérifier si au moins une réponse a été donnée avant d'enregistrer
+	const hasAnswered = currentExerciseAnswers.some(answer => answer !== undefined && answer !== null && String(answer).trim() !== '');
+	
+	if (currentExerciseIndex > 0 && currentExerciseSeries.length > 0 && hasAnswered) {
+	let correctCount = 0;
+	let answeredCount = 0; // Compter les questions répondues
+	
+	for(let i = 0; i < currentExerciseIndex; i++) {
+	const exercise = currentExerciseSeries[i];
+	const answer = currentExerciseAnswers[i];
+	
+	if (answer !== undefined && answer !== null && String(answer).trim() !== '') {
+	answeredCount++; // Incrémenter si une réponse existe
+	if (Math.abs(parseUserInput(answer) - exercise.answer) < 0.00001) {
+	correctCount++;
+	}
+	}
+	}
+	
+	// Enregistrer uniquement si au moins une question a été répondue
+	if (answeredCount > 0) {
+	const totalDisplayed = currentExerciseIndex; // Score basé sur les exercices affichés
+	const scorePercentage = totalDisplayed > 0 ? Math.round((correctCount / totalDisplayed) * 100) : 0;
+	saveSeriesToHistory(correctCount, totalDisplayed, scorePercentage);
+	}
+	}
+	
+	showBox(homeSection);
+	});
+	
+	theoryHomeBtn.addEventListener('click', function() {
+	showBox(homeSection);
+	});
+	
+	historyHomeBtn.addEventListener('click', function() {
+	showBox(homeSection);
+	});
+	
+	// Permettre de valider avec la touche Entrée
+	exerciseAnswer.addEventListener('keypress', function(e) {
+	if (e.key === 'Enter') {
+	validateAnswerBtn.click();
+	}
+	});
+	});
+	</script>
+	</body>
+	</html>
+	
+

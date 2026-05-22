@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pourcentimath</title>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600&family=Source+Sans+Pro&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --violet: #8f67ca;
+      --turquoise: #01b7c4;
+      --vert: #01b7c4;
+      --blanc: #ffffff;
+      --gris-clair: #ffffff;
+      --noir: #222;
+      --progress-bar-bg: #e0e0e0;
+      --progress-bar-fill: var(--violet);
+    }
+    body {
+      margin: 0;
+      font-family: 'Source Sans Pro', sans-serif;
+      background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+      color: var(--noir);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      padding: 1rem 0;
+    }
+    main {
+      flex-grow: 1;
+      padding: 0 1rem;
+    }
+    h1 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--violet);
+      font-size: 2.5rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--noir);
+      font-size: 1.8rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    .app-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #dcdcdc;
+      border-radius: 12px;
+      background-color: var(--blanc);
+      font-size: 1.3rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    button {
+      border: none;
+      padding: 14px 22px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      color: var(--blanc);
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+    .theory-btn { background-color: var(--turquoise); }
+    .exercise-btn { background-color: var(--violet); }
+    .action-btn { background-color: var(--vert); margin-top: 10px; }
+    .hidden { display: none !important; } /* Added !important to ensure override */
+    .content-box {
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 2px solid var(--violet);
+      border-radius: 12px;
+      background-color: var(--blanc);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: left;
+      font-size: 1.3rem;
+      line-height: 1.8;
+    }
+    input[type="text"] {
+        font-size: 1.2rem; 
+        padding: 10px;
+        width: calc(100% - 22px);
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+    #progress-bar-container {
+        width: 100%;
+        background-color: var(--progress-bar-bg);
+        border-radius: 5px;
+        margin: 15px 0;
+        height: 20px;
+        overflow: hidden; /* Ensures border radius is respected by children */
+    }
+    #progress-bar-fill {
+        height: 100%;
+        width: 0%; /* Initial width */
+        background-color: var(--progress-bar-fill);
+        border-radius: 5px;
+        transition: width 0.3s ease-in-out;
+        text-align: center;
+        color: white;
+        font-size: 0.9rem;
+        line-height: 20px;
+    }
+
+    footer a {
+      color: var(--violet);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      h4 {
+        font-size: 1.1rem;
+      }
+      button {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+      }
+      .content-box {
+        padding: 15px;
+        font-size: 1rem;
+      }
+      .timer {
+        font-size: 1.5rem;
+      }
+      .app-section {
+        padding: 10px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <header><h1>Pourcentimath</h1></header>
+  <main>
+    <section class="app-section">
+      <h2>Théorie des Pourcentages</h2>
+      <div class="buttons-container" id="theory-buttons"></div>
+      <div class="content-box hidden" id="theory-content"></div>
+    </section>
+
+    <section class="app-section">
+      <h2>Exercices de Pourcentages</h2>
+      <div class="buttons-container" id="exercise-buttons"></div>
+      <div class="buttons-container">
+        <button class="exercise-btn" onclick="startMixedExercises()">Mélange d'Astuces</button>
+      </div>
+      <div class="content-box hidden" id="exercise-box">
+        <div id="progress-bar-container" class="hidden">
+          <div id="progress-bar-fill">0 / 10</div>
+        </div>
+        <div id="exercise-question"></div>
+        <input type="text" id="exercise-answer" placeholder="Votre réponse">
+        <button class="action-btn" onclick="validateAnswer()">Valider</button>
+        <div id="exercise-feedback"></div>
+      </div>
+    </section>
+
+    <section class="app-section">
+      <h2>Historique</h2>
+      <button class="action-btn" onclick="showHistory()">Afficher l'historique</button>
+      <div class="content-box hidden" id="history-box"></div>
+    </section>
+  </main>
+  <footer style="margin-top: auto; padding: 2rem 1rem; background-color: #ffffff; border-top: 1px solid #eee;">
+    Pourcentimath par <a href="https://lesrochdur.com/" target="_blank" style="color: #8f67ca; font-weight: bold;">Les RochDur</a>
+  </footer>
+  <script>
+    const ASTUCES_POURCENTAGE = [
+      { id: "p10", text: "10 % de N = N : 10", example: "10 % de 80 = 80 : 10 = 8", calc: (n) => n / 10 },
+      { id: "p20", text: "20 % de N = (N : 10) × 2", example: "20 % de 80 = (80 : 10) × 2 = 8 × 2 = 16", calc: (n) => (n / 10) * 2 },
+      { id: "p25", text: "25 % de N = N : 4", example: "25 % de 80 = 80 : 4 = 20", calc: (n) => n / 4 },
+      { id: "p30", text: "30 % de N = (N : 10) × 3", example: "30 % de 80 = (80 : 10) × 3 = 8 × 3 = 24", calc: (n) => (n / 10) * 3 },
+      { id: "p40", text: "40 % de N = (N : 10) × 4", example: "40 % de 80 = (80 : 10) × 4 = 8 × 4 = 32", calc: (n) => (n / 10) * 4 },
+      { id: "p50", text: "50 % de N = N : 2", example: "50 % de 80 = 80 : 2 = 40", calc: (n) => n / 2 },
+      { id: "p75", text: "75 % de N = (N : 4) × 3", example: "75 % de 80 = (80 : 4) × 3 = 20 × 3 = 60", calc: (n) => (n / 4) * 3 },
+      { id: "p100", text: "100 % de N = N", example: "100 % de 80 = 80", calc: (n) => n },
+      { id: "p150", text: "150 % de N = N + (N : 2)", example: "150 % de 80 = 80 + (80 : 2) = 80 + 40 = 120", calc: (n) => n + (n / 2) },
+      { id: "p200", text: "200 % de N = N × 2", example: "200 % de 80 = 80 × 2 = 160", calc: (n) => n * 2 }
+    ];
+
+    const theoryButtons = document.getElementById("theory-buttons");
+    const theoryContent = document.getElementById("theory-content");
+    const exerciseButtons = document.getElementById("exercise-buttons");
+    const exerciseBox = document.getElementById("exercise-box");
+    const exerciseQuestion = document.getElementById("exercise-question");
+    const exerciseAnswer = document.getElementById("exercise-answer");
+    const exerciseFeedback = document.getElementById("exercise-feedback");
+    const historyBox = document.getElementById("history-box");
+    const progressBarContainer = document.getElementById("progress-bar-container");
+    const progressBarFill = document.getElementById("progress-bar-fill");
+    const validateButton = document.querySelector("#exercise-box > button.action-btn");
+
+    let currentSeries = [];
+    let currentIndex = 0;
+    let score = 0;
+    let history = JSON.parse(localStorage.getItem("pourcentimath_history") || "[]");
+    let detailedFeedback = [];
+
+    ASTUCES_POURCENTAGE.forEach(astuce => {
+      const btn = document.createElement("button");
+      btn.className = "theory-btn";
+      btn.textContent = astuce.text.split('=')[0].trim();
+      btn.onclick = () => {
+        theoryContent.innerHTML = `<strong>${astuce.text}</strong><br><em>Exemple →</em> ${astuce.example}`;
+        theoryContent.classList.remove("hidden");
+      };
+      theoryButtons.appendChild(btn);
+
+      const btnEx = document.createElement("button");
+      btnEx.className = "exercise-btn";
+      btnEx.textContent = astuce.text.split('=')[0].trim();
+      btnEx.onclick = () => startExerciseSeries(astuce);
+      exerciseButtons.appendChild(btnEx);
+    });
+
+    const recapBtn = document.createElement("button");
+    recapBtn.className = "theory-btn";
+    recapBtn.textContent = "🧠 Récapitulatif des Astuces";
+    recapBtn.onclick = () => {
+      theoryContent.innerHTML = ASTUCES_POURCENTAGE.map(ast => `<p><strong>${ast.text}</strong><br><em>Exemple →</em> ${ast.example}</p>`).join("");
+      theoryContent.classList.remove("hidden");
+    };
+    theoryButtons.appendChild(recapBtn);
+
+    function updateProgressBar() {
+        const progress = currentSeries.length > 0 ? (currentIndex / currentSeries.length) * 100 : 0;
+        progressBarFill.style.width = `${progress}%`;
+        progressBarFill.textContent = `${currentIndex} / ${currentSeries.length}`;
+    }
+
+    function startExerciseSeries(astuce) {
+      currentSeries = Array.from({ length: 10 }, () => generateQuestion(astuce));
+      currentIndex = 0;
+      score = 0;
+      detailedFeedback = [];
+      
+      exerciseBox.classList.remove("hidden");
+      progressBarContainer.classList.remove("hidden");
+      exerciseQuestion.classList.remove("hidden");
+      exerciseAnswer.classList.remove("hidden");
+      validateButton.classList.remove("hidden");
+      exerciseFeedback.innerHTML = ''; // Clear previous feedback
+      exerciseFeedback.classList.add("hidden");
+      showQuestion();
+    }
+
+    function startMixedExercises() {
+      currentSeries = Array.from({ length: 10 }, () => generateQuestion(ASTUCES_POURCENTAGE[Math.floor(Math.random() * ASTUCES_POURCENTAGE.length)]));
+      currentIndex = 0;
+      score = 0;
+      detailedFeedback = [];
+
+      exerciseBox.classList.remove("hidden");
+      progressBarContainer.classList.remove("hidden");
+      exerciseQuestion.classList.remove("hidden");
+      exerciseAnswer.classList.remove("hidden");
+      validateButton.classList.remove("hidden");
+      exerciseFeedback.innerHTML = ''; // Clear previous feedback
+      exerciseFeedback.classList.add("hidden");
+      showQuestion();
+    }
+
+    function generateQuestion(astuce) {
+      let baseN;
+      let val;
+      do {
+        if (astuce.text.includes(': 10')) {
+            baseN = (Math.floor(Math.random() * 20) + 1) * 10;
+        } else if (astuce.text.includes(': 4')) {
+            baseN = (Math.floor(Math.random() * 25) + 1) * 4;
+        } else if (astuce.text.includes(': 2')) {
+            baseN = (Math.floor(Math.random() * 50) + 1) * 2;
+        } else {
+            baseN = Math.floor(Math.random() * 190 + 10);
+        }
+        val = astuce.calc(baseN);
+        const valTimes100 = Number(val.toFixed(10)) * 100;
+        if (Math.abs(valTimes100 - Math.round(valTimes100)) < 1e-9) {
+          const finalResult = parseFloat(val.toFixed(2));
+          return { astuce, base: baseN, result: finalResult };
+        }
+      } while (true);
+    }
+
+    function showQuestion() {
+      updateProgressBar();
+      if (currentIndex >= currentSeries.length) {
+        // This case should ideally be handled by validateAnswer leading to showResult
+        // If somehow reached, ensure results are shown.
+        showResult(); 
+        return;
+      }
+      const q = currentSeries[currentIndex];
+      exerciseQuestion.textContent = `${q.astuce.text.split('=')[0].replace('N', q.base)} = ?`;
+      exerciseAnswer.value = "";
+      exerciseFeedback.innerHTML = ""; // Clear previous immediate feedback
+      exerciseFeedback.classList.add("hidden");
+      exerciseAnswer.focus();
+    }
+
+    function validateAnswer() {
+      if (currentIndex >= currentSeries.length) return; // Should not happen if logic is correct
+
+      const userAnswerText = exerciseAnswer.value.replace(",", ".");
+      const userNum = parseFloat(userAnswerText);
+      const q = currentSeries[currentIndex];
+      const expectedNum = q.result;
+      let correct = false;
+
+      if (!isNaN(userNum) && Math.abs(userNum - expectedNum) < 0.01) {
+        score++;
+        correct = true;
+        exerciseFeedback.innerHTML = "<strong style='color:green;'>✅ Bonne réponse !</strong>";
+      } else {
+        exerciseFeedback.innerHTML = `<strong style='color:red;'>❌ Mauvais.</strong> La réponse attendue était : <strong>${expectedNum.toLocaleString("fr-FR")}</strong>.`;
+      }
+      exerciseFeedback.classList.remove("hidden");
+
+      detailedFeedback.push({
+        question: `${q.astuce.text.split('=')[0].replace('N', q.base)}`,
+        user: isNaN(userNum) ? (userAnswerText || "Pas de réponse") : userNum,
+        expected: expectedNum,
+        correct,
+        reminder: q.astuce.text,
+        example: q.astuce.example,
+        astuceId: q.astuce.id, // Store astuceId for example generation
+        baseForExample: q.base // Store base for example generation
+      });
+
+      currentIndex++;
+      
+      if (currentIndex < currentSeries.length) {
+        setTimeout(showQuestion, 2000);
+      } else {
+        updateProgressBar(); // Final update to show 10/10
+        setTimeout(showResult, 2000);
+      }
+    }
+
+    function showResult() {
+      progressBarContainer.classList.remove("hidden"); // Ensure progress bar is visible
+      updateProgressBar(); // Ensure it shows 10/10 or final count
+
+      let finalMessage = "";
+      if (score === currentSeries.length) {
+        finalMessage = "🎉 Excellent ! Vous avez tout bon ! Continuez comme ça !";
+      } else if (score >= currentSeries.length * 0.7) {
+        finalMessage = "👍 Très bien ! Vous maîtrisez bien ces astuces.";
+      } else if (score >= currentSeries.length * 0.5) {
+        finalMessage = "🙂 Pas mal ! Continuez à vous entraîner pour vous améliorer.";
+      } else {
+        finalMessage = "💪 Encore un effort ! Revoyez bien les astuces et réessayez.";
+      }
+
+      let feedbackHTML = `<p><strong>${finalMessage}</strong></p><p><strong>Score final : ${score}/${currentSeries.length}</strong></p><hr><ul>`;
+      detailedFeedback.forEach(fb => {
+        feedbackHTML += `<li>${fb.correct ? '<span style="color:green;">✅</span>' : '<span style="color:red;">❌</span>'} ${fb.question} = <strong>${fb.expected.toLocaleString("fr-FR")}</strong>.`;
+        feedbackHTML += ` Votre réponse : ${(typeof fb.user === 'number' ? fb.user.toLocaleString("fr-FR") : fb.user)}.`;
+        if (!fb.correct) {
+          // Display the specific example for the question if possible
+          let exampleText = fb.example; // Default example
+          const astuceDetails = ASTUCES_POURCENTAGE.find(a => a.id === fb.astuceId);
+          if (astuceDetails && typeof fb.baseForExample !== 'undefined') {
+             // Reconstruct the example text with the specific N used in the question
+             // This part needs to be robust to different example structures
+             // For simplicity, we'll show the rule and the generic example for now
+             // Or better, show the rule and how it applies to the specific N
+             exampleText = `${fb.reminder.replace('N', fb.baseForExample)} → ${astuceDetails.calc(fb.baseForExample).toLocaleString("fr-FR")}`;
+          }
+          feedbackHTML += `<br><em>Rappel : ${fb.reminder} (Ex: ${exampleText})</em>`;
+        }
+        feedbackHTML += `</li>`;
+      });
+      feedbackHTML += '</ul>';
+
+      exerciseQuestion.classList.add("hidden");
+      exerciseAnswer.classList.add("hidden");
+      validateButton.classList.add("hidden");
+
+      exerciseFeedback.innerHTML = feedbackHTML;
+      exerciseFeedback.classList.remove("hidden");
+      // exerciseBox should already be visible
+
+      history.push({ date: new Date().toLocaleString("fr-FR"), score: `${score}/${currentSeries.length}` });
+      localStorage.setItem("pourcentimath_history", JSON.stringify(history));
+    }
+
+    function showHistory() {
+      if (history.length === 0) {
+        historyBox.innerHTML = "<p>Aucun historique pour le moment.</p>";
+      } else {
+        historyBox.innerHTML = history.map(h => `<div>${h.date} — Score : ${h.score}</div>`).reverse().join("");
+      }
+      historyBox.classList.remove("hidden");
+    }
+    
+    exerciseAnswer.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            validateAnswer();
+        }
+    });
+
+  </script>
+</body>
+</html>

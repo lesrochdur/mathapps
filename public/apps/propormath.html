@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Propor'math</title>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600&family=Source+Sans+Pro&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --violet: #8f67ca;
+      --turquoise: #01b7c4;
+      --vert: #01b7c4;
+      --blanc: #ffffff;
+      --gris-clair: #f0f0f0;
+      --noir: #222;
+      --progress-bar-bg: #e0e0e0;
+      --progress-bar-fill: var(--violet);
+      --feedback-success: #28a745;
+      --feedback-error: #dc3545;
+    }
+    body {
+      margin: 0;
+      font-family: 'Source Sans Pro', sans-serif;
+      background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+      color: var(--noir);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      padding: 1rem 0;
+    }
+    main {
+      flex-grow: 1;
+      padding: 0 1rem;
+    }
+    h1 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--violet);
+      font-size: 2.5rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--noir);
+      font-size: 1.8rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    .app-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #dcdcdc;
+      border-radius: 12px;
+      background-color: var(--blanc);
+      font-size: 1.3rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    button {
+      border: none;
+      padding: 14px 22px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      color: var(--blanc);
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+    .theory-btn { background-color: var(--turquoise); }
+    .exercise-btn { background-color: var(--violet); }
+    .action-btn { background-color: var(--vert); margin-top: 10px; }
+    .home-btn { background-color: #f0ad4e; margin-top: 15px; } /* Bouton retour orange */
+    .hidden { display: none !important; }
+    .content-box {
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 2px solid var(--violet);
+      border-radius: 12px;
+      background-color: var(--blanc);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: left;
+      font-size: 1.3rem;
+      line-height: 1.8;
+    }
+    input[type="text"] {
+        font-size: 1.2rem; 
+        padding: 10px;
+        width: calc(100% - 22px); /* Ajusté pour padding */
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+    #progress-bar-container {
+        width: 100%;
+        background-color: var(--progress-bar-bg);
+        border-radius: 5px;
+        margin: 15px 0;
+        height: 20px;
+        overflow: hidden;
+    }
+    #progress-bar-fill {
+        height: 100%;
+        width: 0%;
+        background-color: var(--progress-bar-fill);
+        border-radius: 5px;
+        transition: width 0.3s ease-in-out;
+        text-align: center;
+        color: white;
+        font-size: 0.9rem;
+        line-height: 20px;
+    }
+    .exercise-expression {
+        font-size: 1.5rem;
+        margin: 15px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        border: 1px dashed #ccc;
+    }
+    .feedback-success {
+        background-color: var(--feedback-success);
+        color: white;
+        padding: 10px;
+        border-radius: 8px;
+        margin: 10px 0;
+    }
+    .feedback-error {
+        background-color: var(--feedback-error);
+        color: white;
+        padding: 10px;
+        border-radius: 8px;
+        margin: 10px 0;
+    }
+    .recap-item {
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 8px;
+    }
+    .recap-success {
+        border: 1px solid var(--feedback-success);
+        background-color: rgba(40, 167, 69, 0.1);
+    }
+    .recap-error {
+        border: 1px solid var(--feedback-error);
+        background-color: rgba(220, 53, 69, 0.1);
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+    th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    footer {
+      margin-top: 2rem;
+      padding: 1rem;
+      font-size: 1rem;
+      background-color: #ffffff;
+      border-top: 1px solid #eee;
+    }
+    footer a {
+      color: var(--violet);
+      text-decoration: none;
+      font-weight: bold;
+    }
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      button {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+        width: 100%;
+        max-width: 250px;
+        margin: 5px auto;
+      }
+      .content-box {
+        padding: 15px;
+        font-size: 1rem;
+        margin: 10px;
+        width: calc(100% - 20px);
+      }
+      .app-section {
+        padding: 10px;
+        margin-bottom: 15px;
+      }
+      table {
+        font-size: 0.9rem;
+      }
+      th, td {
+        padding: 5px;
+      }
+      .buttons-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+      .exercise-expression {
+        font-size: 1.2rem;
+      }
+      input[type="text"] {
+        font-size: 1rem;
+      }
+      .recap-item {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header><h1>Propor'math</h1></header>
+  <main id="main-content">
+    <div id="home-view">
+        <section class="app-section" id="theory-section-main-container">
+          <h2>Théorie</h2>
+          <div class="buttons-container">
+            <button class="theory-btn" id="show-theory-btn">Proportionnalité</button>
+          </div>
+        </section>
+
+        <section class="app-section" id="exercise-section-main-container">
+          <h2>Exercices</h2>
+          <div class="buttons-container" id="exercise-type-buttons">
+            <button class="exercise-btn" data-type="tableau">Tableau à compléter</button>
+            <button class="exercise-btn" data-type="proportionnel">Proportionnel ou pas ?</button>
+          </div>
+        </section>
+
+        <section class="app-section" id="history-section-main-container">
+          <h2>Historique</h2>
+          <button class="action-btn" id="show-history-btn">Afficher l'historique</button>
+        </section>
+    </div>
+
+    <div class="content-box hidden" id="theory-content-box">
+        <div id="theory-text-content"></div>
+        <button class="home-btn" id="theory-home-btn">Retour à l'accueil</button>
+    </div>
+
+    <div class="content-box hidden" id="exercise-box">
+        <button class="home-btn" id="exercise-in-progress-home-btn">Retour à l'accueil</button>
+        <div id="progress-bar-container" class="hidden">
+          <div id="progress-bar-fill">0 / 3</div>
+        </div>
+        <div id="exercise-question" class="exercise-expression"></div>
+        <div id="exercise-input-container"></div>
+        <div id="exercise-feedback"></div>
+        <button class="home-btn hidden" id="exercise-results-home-btn">Retour à l'accueil</button>
+    </div>
+
+    <div class="content-box hidden" id="history-box">
+        <div id="history-list-content"></div>
+        <button class="home-btn" id="history-home-btn">Retour à l'accueil</button>
+    </div>
+
+  </main>
+
+  <footer>
+    Propor'math par <a href="https://lesrochdur.com/" target="_blank">Les RochDur</a>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Contenu théorique
+        const THEORIE_PROPORTIONNALITE = `
+          <p><center><strong>🧠 LA PROPORTIONNALITÉ</strong></center></p>
+          <p>________________________________________</p>
+          <p><strong>1. Que signifie « être proportionnel » ?</strong></p>
+          <p>Deux grandeurs sont proportionnelles quand elles évoluent dans le même rapport.</p>
+          <p>👉 Cela veut dire que si l'une double, l'autre aussi. Si on divise l'une par 3, l'autre aussi sera divisée par 3.</p>
+          <p>________________________________________</p>
+          <p><strong>2. Exemples concrets</strong></p>
+          <table>
+            <tr>
+              <th>🟢 Proportionnels</th>
+              <th>🔴 Non proportionnels</th>
+            </tr>
+            <tr>
+              <td>Nombre de convives → quantité de pâtes à prévoir</td>
+              <td>Âge d'un enfant → sa taille</td>
+            </tr>
+            <tr>
+              <td>Nombre de photocopies → prix à payer</td>
+              <td>Vitesse → temps de réaction</td>
+            </tr>
+            <tr>
+              <td>Heures de travail → salaire (si taux horaire fixe)</td>
+              <td>Température extérieure → consommation d'électricité</td>
+            </tr>
+          </table>
+          <p>________________________________________</p>
+          <p><strong>3. Le coefficient de proportionnalité</strong></p>
+          <p>Il s'agit du nombre constant qui permet de passer d'une colonne (ou ligne) à l'autre dans un tableau proportionnel.</p>
+          <p>Pour le trouver, on divise une des deux valeurs par l'autre, dans le bon sens →</p>
+          <p>🔹 Pour passer de la valeur de départ à la valeur d'arrivée, on utilise →</p>
+          <p><center><strong>valeur d'arrivée : valeur de départ</strong></center></p>
+          <p>👉 En maths, on note cette division avec le symbole ":"</p>
+          <p>Exemple</p>
+          <table>
+            <tr>
+              <th>kg de pommes</th>
+              <td>1</td>
+              <td>2</td>
+              <td>3</td>
+            </tr>
+            <tr>
+              <th>Prix (€)</th>
+              <td>2</td>
+              <td>4</td>
+              <td>6</td>
+            </tr>
+          </table>
+          <p>Le coefficient est → 2 : 1 = 2</p>
+          <p>(Chaque kg coûte 2 €)</p>
+          <p>On peut utiliser ce coefficient pour →</p>
+          <p>• Compléter un tableau (en multipliant ou divisant)</p>
+          <p>• Résoudre un problème de proportionnalité</p>
+          <p>________________________________________</p>
+          <p><strong>4. Comment reconnaître si une situation est proportionnelle ?</strong></p>
+          <p>Une situation est proportionnelle quand :</p>
+          <p>• Les rapports entre les deux grandeurs sont toujours les mêmes</p>
+          <p>• Le coefficient de proportionnalité est constant partout dans le tableau ou dans l'énoncé</p>
+          <p>________________________________________</p>
+          <p><strong>5. Méthodes pour résoudre des problèmes de proportionnalité</strong></p>
+          <p>▪ <strong>Méthode 1</strong> : Trouver le coefficient</p>
+          <p>1. Diviser deux valeurs connues →</p>
+          <p>valeur d'arrivée : valeur de départ</p>
+          <p>2. Multiplier ou diviser selon ce qu'on cherche.</p>
+          <p>▪ <strong>Méthode 2</strong> : Passer par l'unité</p>
+          <p>1. Ramener à une seule unité (souvent 1)</p>
+          <p>2. Multiplier par la quantité recherchée</p>
+          <p>▪ <strong>Méthode 3</strong> : Calculs en deux étapes</p>
+          <p>1. On peut parfois faire un détour facile : d'abord x 2, puis x 3…</p>
+          <p>2. Exemple → Si 5 kg → 12,5 €, alors 10 kg → 25 €, puis 15 kg → 37,5 €</p>
+        `;
+
+        // Types d'exercices
+        const exerciseTypes = {
+          tableau: {
+            label: "Tableau à compléter",
+            generate: function() {
+              // Générer des exercices de tableau à compléter
+              const types = [
+                'temps_distance',
+                'poids_prix',
+                'quantite_cout',
+                'personnes_nourriture',
+                'distance_carburant'
+              ];
+              const type = types[Math.floor(Math.random() * types.length)];
+              
+              let tableauHTML, answer, explanation;
+              
+              switch(type) {
+                case 'temps_distance':
+                  // Exemple: Tableau temps/distance
+                  const vitesse = Math.floor(Math.random() * 20) + 5; // Vitesse entre 5 et 24 km/h
+                  const position = Math.floor(Math.random() * 4); // Position de la case vide (0-3)
+                  const temps = [1, 2, 3, 4];
+                  const distances = temps.map(t => t * vitesse);
+                  
+                  // Remplacer une valeur par un point d'interrogation
+                  const tempsAffichage = [...temps];
+                  const distancesAffichage = [...distances];
+                  
+                  let missingValue, missingType;
+                  
+                  if (Math.random() > 0.5) {
+                    // Case vide dans la ligne temps
+                    missingValue = temps[position];
+                    tempsAffichage[position] = "?";
+                    missingType = "temps";
+                  } else {
+                    // Case vide dans la ligne distance
+                    missingValue = distances[position];
+                    distancesAffichage[position] = "?";
+                    missingType = "distance";
+                  }
+                  
+                  tableauHTML = `
+                    <table>
+                      <tr>
+                        <th>Temps (h)</th>
+                        <td>${tempsAffichage[0]}</td>
+                        <td>${tempsAffichage[1]}</td>
+                        <td>${tempsAffichage[2]}</td>
+                        <td>${tempsAffichage[3]}</td>
+                      </tr>
+                      <tr>
+                        <th>Distance (km)</th>
+                        <td>${distancesAffichage[0]}</td>
+                        <td>${distancesAffichage[1]}</td>
+                        <td>${distancesAffichage[2]}</td>
+                        <td>${distancesAffichage[3]}</td>
+                      </tr>
+                    </table>
+                  `;
+                  
+                  answer = missingValue;
+                  
+                  if (missingType === "temps") {
+                    explanation = `Pour trouver le temps manquant, on peut utiliser le coefficient de proportionnalité. On observe que pour 1h, on parcourt ${vitesse} km. Donc pour ${distances[position]} km, le temps nécessaire est ${distances[position]} : ${vitesse} = ${temps[position]} h.`;
+                  } else {
+                    explanation = `Pour trouver la distance manquante, on peut utiliser le coefficient de proportionnalité. On observe que pour 1h, on parcourt ${vitesse} km. Donc pour ${temps[position]} h, la distance parcourue est ${temps[position]} × ${vitesse} = ${distances[position]} km.`;
+                  }
+                  break;
+                  
+                case 'poids_prix':
+                  // Exemple: Tableau poids/prix
+                  const prixKilo = (Math.floor(Math.random() * 15) + 5) / 2; // Prix entre 2.5 et 9.5 €/kg
+                  const position2 = Math.floor(Math.random() * 4); // Position de la case vide (0-3)
+                  const poids = [1, 2, 3, 5];
+                  const prix = poids.map(p => p * prixKilo);
+                  
+                  // Remplacer une valeur par un point d'interrogation
+                  const poidsAffichage = [...poids];
+                  const prixAffichage = [...prix];
+                  
+                  let missingValue2, missingType2;
+                  
+                  if (Math.random() > 0.5) {
+                    // Case vide dans la ligne poids
+                    missingValue2 = poids[position2];
+                    poidsAffichage[position2] = "?";
+                    missingType2 = "poids";
+                  } else {
+                    // Case vide dans la ligne prix
+                    missingValue2 = prix[position2];
+                    prixAffichage[position2] = "?";
+                    missingType2 = "prix";
+                  }
+                  
+                  tableauHTML = `
+                    <table>
+                      <tr>
+                        <th>Poids (kg)</th>
+                        <td>${poidsAffichage[0]}</td>
+                        <td>${poidsAffichage[1]}</td>
+                        <td>${poidsAffichage[2]}</td>
+                        <td>${poidsAffichage[3]}</td>
+                      </tr>
+                      <tr>
+                        <th>Prix (€)</th>
+                        <td>${prixAffichage[0].toFixed(2).replace('.', ',')}</td>
+                        <td>${prixAffichage[1].toFixed(2).replace('.', ',')}</td>
+                        <td>${prixAffichage[2].toFixed(2).replace('.', ',')}</td>
+                        <td>${prixAffichage[3].toFixed(2).replace('.', ',')}</td>
+                      </tr>
+                    </table>
+                  `;
+                  
+                  answer = missingValue2;
+                  
+                  if (missingType2 === "poids") {
+                    explanation = `Pour trouver le poids manquant, on peut utiliser le coefficient de proportionnalité. On observe que pour 1 kg, le prix est de ${prixKilo.toFixed(2).replace('.', ',')} €. Donc pour ${prix[position2].toFixed(2).replace('.', ',')} €, le poids est ${prix[position2].toFixed(2).replace('.', ',')} : ${prixKilo.toFixed(2).replace('.', ',')} = ${poids[position2]} kg.`;
+                  } else {
+                    explanation = `Pour trouver le prix manquant, on peut utiliser le coefficient de proportionnalité. On observe que pour 1 kg, le prix est de ${prixKilo.toFixed(2).replace('.', ',')} €. Donc pour ${poids[position2]} kg, le prix est ${poids[position2]} × ${prixKilo.toFixed(2).replace('.', ',')} = ${prix[position2].toFixed(2).replace('.', ',')} €.`;
+                  }
+                  break;
+                  
+                case 'quantite_cout':
+                  // Exemple: Tableau quantité/coût
+                  const prixUnite = Math.floor(Math.random() * 10) + 1; // Prix entre 1 et 10 € par unité
+                  const position3 = Math.floor(Math.random() * 4); // Position de la case vide (0-3)
+                  const quantites = [3, 6, 9, 12];
+                  const couts = quantites.map(q => q * prixUnite);
+                  
+                  // Remplacer une valeur par un point d'interrogation
+                  const quantitesAffichage = [...quantites];
+                  const coutsAffichage = [...couts];
+                  
+                  let missingValue3, missingType3;
+                  
+                  if (Math.random() > 0.5) {
+                    // Case vide dans la ligne quantités
+                    missingValue3 = quantites[position3];
+                    quantitesAffichage[position3] = "?";
+                    missingType3 = "quantité";
+                  } else {
+                    // Case vide dans la ligne coûts
+                    missingValue3 = couts[position3];
+                    coutsAffichage[position3] = "?";
+                    missingType3 = "coût";
+                  }
+                  
+                  tableauHTML = `
+                    <table>
+                      <tr>
+                        <th>Quantité (unités)</th>
+                        <td>${quantitesAffichage[0]}</td>
+                        <td>${quantitesAffichage[1]}</td>
+                        <td>${quantitesAffichage[2]}</td>
+                        <td>${quantitesAffichage[3]}</td>
+                      </tr>
+                      <tr>
+                        <th>Coût (€)</th>
+                        <td>${coutsAffichage[0]}</td>
+                        <td>${coutsAffichage[1]}</td>
+                        <td>${coutsAffichage[2]}</td>
+                        <td>${coutsAffichage[3]}</td>
+                      </tr>
+                    </table>
+                  `;
+                  
+                  answer = missingValue3;
+                  
+                  if (missingType3 === "quantité") {
+                    explanation = `Pour trouver la quantité manquante, on peut utiliser le coefficient de proportionnalité. On observe que pour 3 unités, le coût est de ${3 * prixUnite} €, donc 1 unité coûte ${prixUnite} €. Ainsi, pour ${couts[position3]} €, la quantité est ${couts[position3]} : ${prixUnite} = ${quantites[position3]} unités.`;
+                  } else {
+                    explanation = `Pour trouver le coût manquant, on peut utiliser le coefficient de proportionnalité. On observe que pour 3 unités, le coût est de ${3 * prixUnite} €, donc 1 unité coûte ${prixUnite} €. Ainsi, pour ${quantites[position3]} unités, le coût est ${quantites[position3]} × ${prixUnite} = ${couts[position3]} €.`;
+                  }
+                  break;
+                  
+                case 'personnes_nourriture':
+                  // Exemple: Tableau personnes/nourriture
+                  const quantiteParPersonne = Math.floor(Math.random() * 5) + 1; // Quantité entre 1 et 5 unités par personne
+                  const position4 = Math.floor(Math.random() * 4); // Position de la case vide (0-3)
+                  const personnes = [2, 4, 6, 8];
+                  const nourriture = personnes.map(p => p * quantiteParPersonne);
+                  
+                  // Remplacer une valeur par un point d'interrogation
+                  const personnesAffichage = [...personnes];
+                  const nourritureAffichage = [...nourriture];
+                  
+                  let missingValue4, missingType4;
+                  
+                  if (Math.random() > 0.5) {
+                    // Case vide dans la ligne personnes
+                    missingValue4 = personnes[position4];
+                    personnesAffichage[position4] = "?";
+                    missingType4 = "personnes";
+                  } else {
+                    // Case vide dans la ligne nourriture
+                    missingValue4 = nourriture[position4];
+                    nourritureAffichage[position4] = "?";
+                    missingType4 = "nourriture";
+                  }
+                  
+                  const uniteNourriture = ["grammes", "portions", "tranches", "cuillères", "tasses"][Math.floor(Math.random() * 5)];
+                  
+                  tableauHTML = `
+                    <table>
+                      <tr>
+                        <th>Nombre de personnes</th>
+                        <td>${personnesAffichage[0]}</td>
+                        <td>${personnesAffichage[1]}</td>
+                        <td>${personnesAffichage[2]}</td>
+                        <td>${personnesAffichage[3]}</td>
+                      </tr>
+                      <tr>
+                        <th>Quantité (${uniteNourriture})</th>
+                        <td>${nourritureAffichage[0]}</td>
+                        <td>${nourritureAffichage[1]}</td>
+                        <td>${nourritureAffichage[2]}</td>
+                        <td>${nourritureAffichage[3]}</td>
+                      </tr>
+                    </table>
+                  `;
+                  
+                  answer = missingValue4;
+                  
+                  if (missingType4 === "personnes") {
+                    explanation = `Pour trouver le nombre de personnes manquant, on peut utiliser le coefficient de proportionnalité. On observe que pour 2 personnes, il faut ${2 * quantiteParPersonne} ${uniteNourriture}, donc 1 personne a besoin de ${quantiteParPersonne} ${uniteNourriture}. Ainsi, pour ${nourriture[position4]} ${uniteNourriture}, le nombre de personnes est ${nourriture[position4]} : ${quantiteParPersonne} = ${personnes[position4]}.`;
+                  } else {
+                    explanation = `Pour trouver la quantité de nourriture manquante, on peut utiliser le coefficient de proportionnalité. On observe que pour 2 personnes, il faut ${2 * quantiteParPersonne} ${uniteNourriture}, donc 1 personne a besoin de ${quantiteParPersonne} ${uniteNourriture}. Ainsi, pour ${personnes[position4]} personnes, la quantité nécessaire est ${personnes[position4]} × ${quantiteParPersonne} = ${nourriture[position4]} ${uniteNourriture}.`;
+                  }
+                  break;
+                  
+                case 'distance_carburant':
+                  // Exemple: Tableau distance/carburant
+                  const consommation = (Math.floor(Math.random() * 10) + 5) / 10; // Consommation entre 0.5 et 1.4 L/10km
+                  const position5 = Math.floor(Math.random() * 4); // Position de la case vide (0-3)
+                  const distances5 = [100, 200, 300, 500];
+                  const carburant = distances5.map(d => (d / 10) * consommation);
+                  
+                  // Remplacer une valeur par un point d'interrogation
+                  const distancesAffichage5 = [...distances5];
+                  const carburantAffichage = [...carburant];
+                  
+                  let missingValue5, missingType5;
+                  
+                  if (Math.random() > 0.5) {
+                    // Case vide dans la ligne distances
+                    missingValue5 = distances5[position5];
+                    distancesAffichage5[position5] = "?";
+                    missingType5 = "distance";
+                  } else {
+                    // Case vide dans la ligne carburant
+                    missingValue5 = carburant[position5];
+                    carburantAffichage[position5] = "?";
+                    missingType5 = "carburant";
+                  }
+                  
+                  tableauHTML = `
+                    <table>
+                      <tr>
+                        <th>Distance (km)</th>
+                        <td>${distancesAffichage5[0]}</td>
+                        <td>${distancesAffichage5[1]}</td>
+                        <td>${distancesAffichage5[2]}</td>
+                        <td>${distancesAffichage5[3]}</td>
+                      </tr>
+                      <tr>
+                        <th>Carburant (L)</th>
+                        <td>${carburantAffichage[0].toFixed(1).replace('.', ',')}</td>
+                        <td>${carburantAffichage[1].toFixed(1).replace('.', ',')}</td>
+                        <td>${carburantAffichage[2].toFixed(1).replace('.', ',')}</td>
+                        <td>${carburantAffichage[3].toFixed(1).replace('.', ',')}</td>
+                      </tr>
+                    </table>
+                  `;
+                  
+                  answer = missingValue5;
+                  
+                  if (missingType5 === "distance") {
+                    explanation = `Pour trouver la distance manquante, on peut utiliser le coefficient de proportionnalité. On observe que pour 100 km, on consomme ${(100/10 * consommation).toFixed(1).replace('.', ',')} L, donc la consommation est de ${consommation.toFixed(1).replace('.', ',')} L pour 10 km. Ainsi, pour ${carburant[position5].toFixed(1).replace('.', ',')} L, la distance est ${carburant[position5].toFixed(1).replace('.', ',')} : ${consommation.toFixed(1).replace('.', ',')} × 10 = ${distances5[position5]} km.`;
+                  } else {
+                    explanation = `Pour trouver la quantité de carburant manquante, on peut utiliser le coefficient de proportionnalité. On observe que pour 100 km, on consomme ${(100/10 * consommation).toFixed(1).replace('.', ',')} L, donc la consommation est de ${consommation.toFixed(1).replace('.', ',')} L pour 10 km. Ainsi, pour ${distances5[position5]} km, la consommation est ${distances5[position5]} : 10 × ${consommation.toFixed(1).replace('.', ',')} = ${carburant[position5].toFixed(1).replace('.', ',')} L.`;
+                  }
+                  break;
+              }
+              
+              return { 
+                type: 'tableau', 
+                questionHTML: tableauHTML, 
+                answer: answer, 
+                explanation: explanation 
+              };
+            },
+            maxExercises: 3
+          },
+          proportionnel: {
+            label: "Proportionnel ou pas ?",
+            generate: function() {
+              // Générer des exercices "proportionnel ou pas"
+              const types = [
+                'tableau_proportionnel',
+                'tableau_non_proportionnel',
+                'situation_proportionnelle',
+                'situation_non_proportionnelle'
+              ];
+              const type = types[Math.floor(Math.random() * types.length)];
+              
+              let questionHTML, answer, explanation;
+              
+              switch(type) {
+                case 'tableau_proportionnel':
+                  // Tableau proportionnel
+                  const coefficient = Math.floor(Math.random() * 5) + 2; // Coefficient entre 2 et 6
+                  const valeurs1 = [1, 2, 3, 4];
+                  const valeurs2 = valeurs1.map(v => v * coefficient);
+                  
+                  questionHTML = `
+                    <p>Ce tableau est-il proportionnel ?</p>
+                    <table>
+                      <tr>
+                        <td>${valeurs1[0]}</td>
+                        <td>${valeurs1[1]}</td>
+                        <td>${valeurs1[2]}</td>
+                        <td>${valeurs1[3]}</td>
+                      </tr>
+                      <tr>
+                        <td>${valeurs2[0]}</td>
+                        <td>${valeurs2[1]}</td>
+                        <td>${valeurs2[2]}</td>
+                        <td>${valeurs2[3]}</td>
+                      </tr>
+                    </table>
+                  `;
+                  
+                  answer = "proportionnel";
+                  explanation = `Ce tableau est proportionnel car le rapport entre les valeurs de la deuxième ligne et celles de la première ligne est constant : ${valeurs2[0]} : ${valeurs1[0]} = ${valeurs2[1]} : ${valeurs1[1]} = ${valeurs2[2]} : ${valeurs1[2]} = ${valeurs2[3]} : ${valeurs1[3]} = ${coefficient}. Le coefficient de proportionnalité est ${coefficient}.`;
+                  break;
+                  
+                case 'tableau_non_proportionnel':
+                  // Tableau non proportionnel
+                  const baseCoefficient = Math.floor(Math.random() * 5) + 2; // Coefficient de base entre 2 et 6
+                  const valeurs1NonProp = [1, 2, 3, 4];
+                  const valeurs2NonProp = [
+                    valeurs1NonProp[0] * baseCoefficient,
+                    valeurs1NonProp[1] * baseCoefficient,
+                    valeurs1NonProp[2] * baseCoefficient,
+                    valeurs1NonProp[3] * (baseCoefficient + 1) // Anomalie subtile
+                  ];
+                  
+                  questionHTML = `
+                    <p>Ce tableau est-il proportionnel ?</p>
+                    <table>
+                      <tr>
+                        <td>${valeurs1NonProp[0]}</td>
+                        <td>${valeurs1NonProp[1]}</td>
+                        <td>${valeurs1NonProp[2]}</td>
+                        <td>${valeurs1NonProp[3]}</td>
+                      </tr>
+                      <tr>
+                        <td>${valeurs2NonProp[0]}</td>
+                        <td>${valeurs2NonProp[1]}</td>
+                        <td>${valeurs2NonProp[2]}</td>
+                        <td>${valeurs2NonProp[3]}</td>
+                      </tr>
+                    </table>
+                  `;
+                  
+                  answer = "non proportionnel";
+                  explanation = `Ce tableau n'est pas proportionnel car le rapport entre les valeurs n'est pas constant. Pour les trois premières colonnes, le rapport est ${baseCoefficient} (${valeurs2NonProp[0]} : ${valeurs1NonProp[0]} = ${valeurs2NonProp[1]} : ${valeurs1NonProp[1]} = ${valeurs2NonProp[2]} : ${valeurs1NonProp[2]} = ${baseCoefficient}), mais pour la dernière colonne, le rapport est ${baseCoefficient + 1} (${valeurs2NonProp[3]} : ${valeurs1NonProp[3]} = ${baseCoefficient + 1}).`;
+                  break;
+                  
+                case 'situation_proportionnelle':
+                  // Situation proportionnelle
+                  const situations_prop = [
+                    {
+                      texte: `3 stylos coûtent 4,50 €, 6 stylos coûtent 9 €.`,
+                      explication: `Cette situation est proportionnelle car le rapport entre le prix et le nombre de stylos est constant : 4,50 € : 3 = 9 € : 6 = 1,50 €. Chaque stylo coûte 1,50 €.`
+                    },
+                    {
+                      texte: `Pour faire une tarte aux pommes pour 4 personnes, il faut 500g de pommes. Pour 8 personnes, il faut 1kg de pommes.`,
+                      explication: `Cette situation est proportionnelle car le rapport entre la quantité de pommes et le nombre de personnes est constant : 500g : 4 = 1000g : 8 = 125g. Il faut 125g de pommes par personne.`
+                    },
+                    {
+                      texte: `Une voiture consomme 5 litres d'essence pour parcourir 100 km. Elle consommera 25 litres pour parcourir 500 km.`,
+                      explication: `Cette situation est proportionnelle car le rapport entre la consommation d'essence et la distance parcourue est constant : 5L : 100km = 25L : 500km = 0,05L/km. La voiture consomme 0,05L par kilomètre.`
+                    },
+                    {
+                      texte: `Un robinet remplit un seau de 10 litres en 5 minutes. Il remplira un seau de 20 litres en 10 minutes.`,
+                      explication: `Cette situation est proportionnelle car le rapport entre le volume d'eau et le temps de remplissage est constant : 10L : 5min = 20L : 10min = 2L/min. Le débit du robinet est de 2 litres par minute.`
+                    }
+                  ];
+                  
+                  const situationProp = situations_prop[Math.floor(Math.random() * situations_prop.length)];
+                  
+                  questionHTML = `
+                    <p>Cette situation est-elle proportionnelle ?</p>
+                    <p>${situationProp.texte}</p>
+                  `;
+                  
+                  answer = "proportionnel";
+                  explanation = situationProp.explication;
+                  break;
+                  
+                case 'situation_non_proportionnelle':
+                  // Situation non proportionnelle
+                  const situations_non_prop = [
+                    {
+                      texte: `3 stylos coûtent 4,50 €, 6 stylos coûtent 8,40 €.`,
+                      explication: `Cette situation n'est pas proportionnelle car le rapport entre le prix et le nombre de stylos n'est pas constant : 4,50 € : 3 = 1,50 € par stylo, mais 8,40 € : 6 = 1,40 € par stylo. Le prix unitaire diminue quand la quantité augmente.`
+                    },
+                    {
+                      texte: `Un enfant mesure 80 cm à 1 an et 120 cm à 6 ans.`,
+                      explication: `Cette situation n'est pas proportionnelle car le rapport entre la taille et l'âge n'est pas constant : 80 cm : 1 an = 80 cm par an, mais 120 cm : 6 ans = 20 cm par an. La croissance n'est pas proportionnelle à l'âge.`
+                    },
+                    {
+                      texte: `Une voiture parcourt 60 km en 1 heure à 60 km/h, et 100 km en 1 heure à 100 km/h.`,
+                      explication: `Cette situation n'est pas proportionnelle car bien que la distance parcourue augmente avec la vitesse, le temps reste constant (1 heure). Dans une situation proportionnelle, si la vitesse double, le temps pour parcourir la même distance devrait être divisé par 2.`
+                    },
+                    {
+                      texte: `Un abonnement téléphonique coûte 20 € par mois avec 2 Go de données, et 25 € par mois avec 20 Go de données.`,
+                      explication: `Cette situation n'est pas proportionnelle car le rapport entre le prix et la quantité de données n'est pas constant : 20 € : 2 Go = 10 € par Go, mais 25 € : 20 Go = 1,25 € par Go. Le prix par Go diminue quand la quantité augmente.`
+                    }
+                  ];
+                  
+                  const situationNonProp = situations_non_prop[Math.floor(Math.random() * situations_non_prop.length)];
+                  
+                  questionHTML = `
+                    <p>Cette situation est-elle proportionnelle ?</p>
+                    <p>${situationNonProp.texte}</p>
+                  `;
+                  
+                  answer = "non proportionnel";
+                  explanation = situationNonProp.explication;
+                  break;
+              }
+              
+              return { 
+                type: 'proportionnel', 
+                questionHTML: questionHTML, 
+                answer: answer, 
+                explanation: explanation 
+              };
+            },
+            maxExercises: 3
+          }
+        };
+
+        // Variables globales
+        let currentExerciseType = null;
+        let currentExercises = [];
+        let currentExerciseIndex = 0;
+        let exerciseResults = [];
+        let exerciseHistory = JSON.parse(localStorage.getItem('propormath_history') || '[]');
+
+        // Fonctions utilitaires
+        function showView(viewId) {
+          // Cacher toutes les vues
+          document.getElementById('home-view').classList.add('hidden');
+          document.getElementById('theory-content-box').classList.add('hidden');
+          document.getElementById('exercise-box').classList.add('hidden');
+          document.getElementById('history-box').classList.add('hidden');
+          
+          // Afficher la vue demandée
+          document.getElementById(viewId).classList.remove('hidden');
+        }
+
+        function resetExerciseView() {
+          document.getElementById('progress-bar-container').classList.add('hidden');
+          document.getElementById('exercise-feedback').innerHTML = '';
+          document.getElementById('exercise-results-home-btn').classList.add('hidden');
+          document.getElementById('exercise-in-progress-home-btn').classList.remove('hidden');
+        }
+
+        // Gestionnaires d'événements
+        document.getElementById('show-theory-btn').addEventListener('click', function() {
+          document.getElementById('theory-text-content').innerHTML = THEORIE_PROPORTIONNALITE;
+          showView('theory-content-box');
+        });
+
+        document.getElementById('theory-home-btn').addEventListener('click', function() {
+          showView('home-view');
+        });
+
+        document.getElementById('show-history-btn').addEventListener('click', function() {
+          updateHistoryView();
+          showView('history-box');
+        });
+
+        document.getElementById('history-home-btn').addEventListener('click', function() {
+          showView('home-view');
+        });
+
+        document.getElementById('exercise-in-progress-home-btn').addEventListener('click', function() {
+          showView('home-view');
+        });
+
+        document.getElementById('exercise-results-home-btn').addEventListener('click', function() {
+          showView('home-view');
+        });
+
+        // Gestionnaire pour les boutons d'exercices
+        document.querySelectorAll('#exercise-type-buttons .exercise-btn').forEach(button => {
+          button.addEventListener('click', function() {
+            const type = this.getAttribute('data-type');
+            startExerciseSession(type);
+          });
+        });
+
+        // Démarrer une session d'exercices
+        function startExerciseSession(type) {
+          currentExerciseType = type;
+          currentExercises = [];
+          currentExerciseIndex = 0;
+          exerciseResults = [];
+          
+          // Générer les exercices
+          const maxExercises = exerciseTypes[type].maxExercises;
+          for (let i = 0; i < maxExercises; i++) {
+            currentExercises.push(exerciseTypes[type].generate());
+          }
+          
+          resetExerciseView();
+          showView('exercise-box');
+          
+          // Afficher la barre de progression
+          document.getElementById('progress-bar-container').classList.remove('hidden');
+          updateProgressBar();
+          
+          // Afficher le premier exercice
+          displayCurrentExercise();
+        }
+
+        // Afficher l'exercice courant
+        function displayCurrentExercise() {
+          const exercise = currentExercises[currentExerciseIndex];
+          document.getElementById('exercise-question').innerHTML = exercise.questionHTML;
+          document.getElementById('exercise-feedback').innerHTML = '';
+          
+          // Configurer l'interface selon le type d'exercice
+          const inputContainer = document.getElementById('exercise-input-container');
+          inputContainer.innerHTML = '';
+          
+          if (exercise.type === 'tableau') {
+            // Pour les tableaux à compléter, on affiche un champ de texte
+            inputContainer.innerHTML = `
+              <input type="text" id="exercise-answer" placeholder="Votre réponse">
+              <button class="action-btn" id="validate-answer-btn">Valider</button>
+            `;
+            
+            document.getElementById('validate-answer-btn').addEventListener('click', validateTableauAnswer);
+          } else if (exercise.type === 'proportionnel') {
+            // Pour les exercices "proportionnel ou pas", on affiche deux boutons
+            inputContainer.innerHTML = `
+              <div class="buttons-container">
+                <button class="exercise-btn" id="proportionnel-btn">Proportionnel</button>
+                <button class="exercise-btn" id="non-proportionnel-btn">Non proportionnel</button>
+              </div>
+            `;
+            
+            document.getElementById('proportionnel-btn').addEventListener('click', function() {
+              validateProportionnelAnswer('proportionnel');
+            });
+            
+            document.getElementById('non-proportionnel-btn').addEventListener('click', function() {
+              validateProportionnelAnswer('non proportionnel');
+            });
+          }
+        }
+
+        // Valider la réponse pour un exercice de tableau
+        function validateTableauAnswer() {
+          const exercise = currentExercises[currentExerciseIndex];
+          const userAnswer = document.getElementById('exercise-answer').value.trim();
+          
+          // Vérifier si la réponse est correcte
+          const isCorrect = parseFloat(userAnswer) === exercise.answer;
+          
+          // Enregistrer le résultat
+          exerciseResults.push({
+            exercise: exercise,
+            userAnswer: userAnswer,
+            isCorrect: isCorrect
+          });
+          
+          // Afficher le feedback
+          showFeedback(isCorrect, exercise.explanation);
+          
+          // Passer à l'exercice suivant ou terminer la session
+          setTimeout(function() {
+            nextExercise();
+          }, isCorrect ? 3000 : 8000);
+        }
+
+        // Valider la réponse pour un exercice "proportionnel ou pas"
+        function validateProportionnelAnswer(answer) {
+          const exercise = currentExercises[currentExerciseIndex];
+          
+          // Vérifier si la réponse est correcte
+          const isCorrect = answer === exercise.answer;
+          
+          // Enregistrer le résultat
+          exerciseResults.push({
+            exercise: exercise,
+            userAnswer: answer,
+            isCorrect: isCorrect
+          });
+          
+          // Afficher le feedback
+          showFeedback(isCorrect, exercise.explanation);
+          
+          // Passer à l'exercice suivant ou terminer la session
+          setTimeout(function() {
+            nextExercise();
+          }, isCorrect ? 3000 : 8000);
+        }
+
+        // Afficher le feedback après une réponse
+        function showFeedback(isCorrect, explanation) {
+          const feedbackElement = document.getElementById('exercise-feedback');
+          
+          if (isCorrect) {
+            feedbackElement.innerHTML = `
+              <div class="feedback-success">
+                <p>✅ Bravo ! Votre réponse est correcte.</p>
+                <p>${explanation}</p>
+              </div>
+            `;
+          } else {
+            feedbackElement.innerHTML = `
+              <div class="feedback-error">
+                <p>❌ Votre réponse est incorrecte.</p>
+                <p>${explanation}</p>
+              </div>
+            `;
+          }
+        }
+
+        // Passer à l'exercice suivant
+        function nextExercise() {
+          currentExerciseIndex++;
+          
+          // Mettre à jour la barre de progression
+          updateProgressBar();
+          
+          if (currentExerciseIndex < currentExercises.length) {
+            // Afficher l'exercice suivant
+            displayCurrentExercise();
+          } else {
+            // Terminer la session
+            finishExerciseSession();
+          }
+        }
+
+        // Mettre à jour la barre de progression
+        function updateProgressBar() {
+          const progressBar = document.getElementById('progress-bar-fill');
+          const percentage = (currentExerciseIndex / currentExercises.length) * 100;
+          
+          progressBar.style.width = percentage + '%';
+          progressBar.textContent = currentExerciseIndex + ' / ' + currentExercises.length;
+        }
+
+        // Terminer la session d'exercices
+        function finishExerciseSession() {
+          // Cacher les éléments d'exercice en cours
+          document.getElementById('exercise-question').innerHTML = '';
+          document.getElementById('exercise-input-container').innerHTML = '';
+          document.getElementById('progress-bar-container').classList.add('hidden');
+          document.getElementById('exercise-in-progress-home-btn').classList.add('hidden');
+          document.getElementById('exercise-results-home-btn').classList.remove('hidden');
+          
+          // Afficher le récapitulatif
+          const feedbackElement = document.getElementById('exercise-feedback');
+          let recapHTML = `<h2>Récapitulatif</h2>`;
+          
+          let correctCount = 0;
+          exerciseResults.forEach((result, index) => {
+            if (result.isCorrect) correctCount++;
+            
+            recapHTML += `
+              <div class="recap-item ${result.isCorrect ? 'recap-success' : 'recap-error'}">
+                <p><strong>Exercice ${index + 1}:</strong> ${result.isCorrect ? '✅ Correct' : '❌ Incorrect'}</p>
+                <p>${result.exercise.questionHTML}</p>
+                <p>Votre réponse: ${result.userAnswer}</p>
+                <p>${result.exercise.explanation}</p>
+              </div>
+            `;
+          });
+          
+          recapHTML += `<p><strong>Score final:</strong> ${correctCount} / ${exerciseResults.length}</p>`;
+          
+          feedbackElement.innerHTML = recapHTML;
+          
+          // Ajouter à l'historique
+          const historyEntry = {
+            date: new Date().toLocaleString(),
+            type: exerciseTypes[currentExerciseType].label,
+            score: correctCount,
+            total: exerciseResults.length
+          };
+          
+          exerciseHistory.unshift(historyEntry);
+          if (exerciseHistory.length > 10) exerciseHistory.pop(); // Limiter à 10 entrées
+          
+          localStorage.setItem('propormath_history', JSON.stringify(exerciseHistory));
+        }
+
+        // Mettre à jour la vue de l'historique
+        function updateHistoryView() {
+          const historyElement = document.getElementById('history-list-content');
+          
+          if (exerciseHistory.length === 0) {
+            historyElement.innerHTML = '<p>Aucun exercice n\'a encore été réalisé.</p>';
+            return;
+          }
+          
+          let historyHTML = `<h2>Historique des exercices</h2>`;
+          
+          exerciseHistory.forEach((entry, index) => {
+            historyHTML += `
+              <div class="recap-item">
+                <p><strong>${entry.date}</strong></p>
+                <p>Type: ${entry.type}</p>
+                <p>Score: ${entry.score} / ${entry.total}</p>
+              </div>
+            `;
+          });
+          
+          historyElement.innerHTML = historyHTML;
+        }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JustePoint</title>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600&family=Source+Sans+Pro&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --violet: #8f67ca;
+      --turquoise: #01b7c4;
+      --vert: #01b7c4; 
+      --rouge-erreur: #d9534f; 
+      --blanc: #ffffff;
+      --gris-clair: #f0f0f0;
+      --noir: #222;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Source Sans Pro', sans-serif;
+      background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+      color: var(--noir);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 1rem 0;
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 0 1rem;
+    }
+
+    h1 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--violet);
+      font-size: 2.5rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-family: 'Epilogue', sans-serif;
+      color: var(--noir);
+      font-size: 1.8rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .app-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #dcdcdc;
+      border-radius: 12px;
+      background-color: var(--blanc);
+      font-size: 1.3rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .exercise-controls-container {
+        display: flex;
+        justify-content: center; 
+        gap: 10px; 
+        margin-top: 20px;
+    }
+
+    button {
+      border: none;
+      padding: 14px 22px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      color: var(--blanc);
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    .theory-btn { background-color: var(--turquoise); }
+    .exercise-btn { background-color: var(--violet); }
+    .action-btn { background-color: var(--vert); margin-top: 10px; }
+    .home-btn { background-color: #f0ad4e; margin-top: 15px; }
+    .new-exercise-btn { background-color: var(--turquoise); margin-top: 15px;}
+
+    .hidden {
+      display: none !important;
+    }
+
+    .content-box {
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 2px solid var(--violet);
+      border-radius: 12px;
+      background-color: var(--blanc);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: left;
+      font-size: 1.3rem;
+      line-height: 1.8;
+    }
+
+    .graduated-line-container {
+      margin: 40px 0; 
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
+
+    .line-instruction {
+      font-weight: bold;
+      margin-bottom: 25px; 
+      font-size: 1.2em;
+    }
+
+    .line-graphic {
+      position: relative;
+      height: 40px; 
+      display: flex;
+      align-items: center;
+      margin-top: 30px; 
+      margin-bottom: 10px;
+    }
+
+    .line {
+      width: 100%;
+      height: 2px; 
+      background-color: var(--noir);
+      position: relative;
+    }
+
+    .line::before { 
+        content: "...";
+        position: absolute;
+        left: -15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--noir);
+    }
+
+    .line::after { 
+     content: '';
+     position: absolute;
+     right: -6px; 
+     top: 50%;
+     transform: translateY(-50%);
+     width: 0;
+     height: 0;
+     border-top: 6px solid transparent;
+     border-bottom: 6px solid transparent;
+     border-left: 10px solid var(--noir);
+    }
+
+    .tick {
+      position: absolute;
+      bottom: calc(50% + 4px); 
+      transform: translateX(-50%);
+      font-size: 0.9em;
+      color: var(--noir);
+      text-align: center;
+      width: auto; 
+      min-width: 20px; 
+      padding: 0 2px;
+      line-height: 1; 
+    }
+
+    .tick::before { 
+      content: '';
+      position: absolute;
+      width: 1.5px; 
+      height: 8px;  
+      background-color: var(--noir);
+      left: 50%; 
+      bottom: -8px; 
+      transform: translateX(-50%); 
+    }
+    
+    .draggable-marker {
+      width: 18px; 
+      height: 18px;
+      background-color: var(--vert);
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      cursor: grab;
+      border: 2px solid var(--blanc);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+    .draggable-marker.dragging {
+      cursor: grabbing;
+    }
+
+    .feedback-message {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 1.1em;
+    }
+
+    .feedback-correct {
+      background-color: #dff0d8;
+      color: #3c763d;
+      border: 1px solid #d6e9c6;
+    }
+
+    .feedback-incorrect {
+      background-color: #f2dede;
+      color: #a94442;
+      border: 1px solid #ebccd1;
+    }
+
+    .correct-answer-line {
+        position: absolute;
+        height: 100%; 
+        width: 3px;
+        background-color: var(--vert);
+        top: 0;
+        z-index: 5; 
+    }
+
+    #history-list-content ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    #history-list-content li {
+        background-color: var(--gris-clair);
+        margin-bottom: 8px;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 2rem; }
+      h2 { font-size: 1.5rem; }
+      .app-section, .content-box {
+        padding: 15px;
+        font-size: 1.1rem;
+      }
+      button { 
+        padding: 12px 18px;
+        font-size: 1rem;
+      }
+      .line-graphic {
+        height: 30px; 
+        margin-top: 35px; 
+      }
+      .tick {
+        font-size: 0.8em;
+        bottom: calc(50% + 3px); 
+      }
+      .tick::before {
+          bottom: -7px; 
+      }
+      .draggable-marker {
+        width: 16px;
+        height: 16px;
+      }
+
+    footer a {
+      color: var(--violet);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      h4 {
+        font-size: 1.1rem;
+      }
+      button {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+      }
+      .content-box {
+        padding: 15px;
+        font-size: 1rem;
+      }
+      .timer {
+        font-size: 1.5rem;
+      }
+      .app-section {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header><h1>JustePoint</h1></header>
+  <main id="main-content">
+    <div id="home-view">
+        <section class="app-section">
+          <h2>Droite graduée ?</h2>
+          <div class="buttons-container">
+            <button class="theory-btn" id="show-theory-btn">Comprendre la droite graduée</button>
+          </div>
+        </section>
+        <section class="app-section">
+          <h2>À toi de jouer !</h2>
+          <div class="buttons-container">
+            <button class="exercise-btn" id="start-exercise-btn">Commencer les exercices</button>
+          </div>
+        </section>
+        <section class="app-section">
+          <h2>Mon parcours</h2>
+          <div class="buttons-container">
+            <button class="action-btn" id="show-history-btn">Afficher l'historique</button>
+          </div>
+        </section>
+    </div>
+
+    <div class="content-box hidden" id="theory-content-box">
+        <h2>🔎 Droite graduée : comment s’y retrouver ?</h2>
+        <div id="theory-text-content"></div>
+        <button class="home-btn" id="theory-home-btn">Retour à l'accueil</button>
+    </div>
+
+    <div class="content-box hidden" id="exercise-box">
+        <div class="exercise-controls-container">
+            <button class="home-btn" id="exercise-in-progress-home-btn">Retour à l'accueil</button>
+            <button class="new-exercise-btn hidden" id="new-exercise-series-btn">Nouveaux exercices</button>
+        </div>
+        <h2>Place le nombre sur la droite (fais glisser le point)</h2>
+        <div id="exercise-series-container"></div>
+        <button class="action-btn hidden" id="verify-series-btn">Vérifier mes réponses</button>
+        <div id="exercise-feedback-container"></div>
+         <div class="exercise-controls-container">
+            <button class="home-btn hidden" id="exercise-results-home-btn">Retour à l'accueil</button>
+            <button class="new-exercise-btn hidden" id="new-exercise-series-results-btn">Nouveaux exercices</button>
+        </div>
+    </div>
+
+    <div class="content-box hidden" id="history-box">
+        <h2>Historique des exercices</h2>
+        <div id="history-list-content"></div>
+        <button class="home-btn" id="history-home-btn">Retour à l'accueil</button>
+    </div>
+  </main>
+<footer style="margin-top: auto; padding: 2rem 1rem; background-color: #ffffff; border-top: 1px solid #eee;">
+    JustePoint par <a href="https://lesrochdur.com/" target="_blank" style="color: #8f67ca; font-weight: bold; text-decoration: none;">Les RochDur</a>
+  </footer>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+    const homeView = document.getElementById("home-view");
+    const theoryContentBox = document.getElementById("theory-content-box");
+    const exerciseBox = document.getElementById("exercise-box");
+    const historyBox = document.getElementById("history-box");
+
+    const showTheoryBtn = document.getElementById("show-theory-btn");
+    const startExerciseBtn = document.getElementById("start-exercise-btn");
+    const showHistoryBtn = document.getElementById("show-history-btn");
+    const theoryHomeBtn = document.getElementById("theory-home-btn");
+    const exerciseInProgressHomeBtn = document.getElementById("exercise-in-progress-home-btn");
+    const exerciseResultsHomeBtn = document.getElementById("exercise-results-home-btn");
+    const historyHomeBtn = document.getElementById("history-home-btn");
+    const verifySeriesBtn = document.getElementById("verify-series-btn");
+    const newExerciseSeriesBtn = document.getElementById("new-exercise-series-btn");
+    const newExerciseSeriesResultsBtn = document.getElementById("new-exercise-series-results-btn");
+
+    const theoryTextContent = document.getElementById("theory-text-content");
+    const exerciseSeriesContainer = document.getElementById("exercise-series-container");
+    const exerciseFeedbackContainer = document.getElementById("exercise-feedback-container");
+    const historyListContent = document.getElementById("history-list-content");
+
+    const views = [homeView, theoryContentBox, exerciseBox, historyBox];
+
+    function showView(viewToShow) {
+        views.forEach(view => view.classList.add("hidden"));
+        viewToShow.classList.remove("hidden");
+    }
+
+    showTheoryBtn.addEventListener("click", () => { loadTheory(); showView(theoryContentBox); });
+    startExerciseBtn.addEventListener("click", () => { 
+        startNewSeries(); 
+        showView(exerciseBox); 
+        exerciseInProgressHomeBtn.classList.remove("hidden");
+        newExerciseSeriesBtn.classList.remove("hidden");
+        exerciseResultsHomeBtn.classList.add("hidden");
+        newExerciseSeriesResultsBtn.classList.add("hidden");
+        verifySeriesBtn.classList.remove("hidden");
+        exerciseFeedbackContainer.innerHTML = ""; 
+    });
+    showHistoryBtn.addEventListener("click", () => { loadHistory(); showView(historyBox); });
+    theoryHomeBtn.addEventListener("click", () => showView(homeView));
+    exerciseInProgressHomeBtn.addEventListener("click", () => showView(homeView));
+    exerciseResultsHomeBtn.addEventListener("click", () => showView(homeView));
+    historyHomeBtn.addEventListener("click", () => showView(homeView));
+    
+    function handleNewSeriesRequest() {
+        startNewSeries();
+        verifySeriesBtn.classList.remove("hidden");
+        exerciseInProgressHomeBtn.classList.remove("hidden");
+        newExerciseSeriesBtn.classList.remove("hidden");
+        exerciseResultsHomeBtn.classList.add("hidden");
+        newExerciseSeriesResultsBtn.classList.add("hidden");
+        exerciseFeedbackContainer.innerHTML = "";
+    }
+
+    newExerciseSeriesBtn.addEventListener("click", handleNewSeriesRequest);
+    newExerciseSeriesResultsBtn.addEventListener("click", handleNewSeriesRequest);
+
+    const THEORY_TEXT = `
+        <p><strong>🧠 À quoi ça sert ?</strong><br>
+        Une droite graduée te montre des <strong>nombres placés dans l’ordre</strong>, comme une règle numérique.</p>
+        <p>Elle sert à :</p>
+        <ul>
+            <li>Visualiser des <strong>écarts</strong> (combien on ajoute ou on enlève à chaque fois),</li>
+            <li>Compléter des <strong>cases vides</strong>,</li>
+            <li>Vérifier si les <strong>nombres sont bien placés</strong>,</li>
+            <li><strong>Placer ou annoter</strong> des nombres manquants.</li>
+        </ul>
+        <p><strong>⚙️ Le principe de base</strong><br>
+        Sur une droite graduée, les espaces entre les traits sont <strong>réguliers</strong>, donc il y a toujours le même écart entre deux marques.</p>
+        <p><strong>🛠️ Comment faire ?</strong></p>
+        <ol>
+            <li><strong>Regarde les nombres déjà présents</strong><br>Choisis deux nombres déjà placés sur des traits réguliers.</li>
+            <li><strong>Calcule l’écart</strong><br>Soustrais-les pour savoir combien on ajoute ou enlève à chaque fois.<br>
+            <em>Par exemple</em><br>Si 150 et 200 sont deux nombres consécutifs → l’écart est de +50.</li>
+        </ol>
+        <p>💡 Attention : l’écart n’est pas toujours 1, 10 ou 100 ! Parfois, c’est 5, 25, ou même 1000.</p>
+        <p><strong>Utilise cet écart pour compléter ou vérifier</strong></p>
+        <ul>
+            <li><strong>Si tu complètes</strong> : tu continues la suite en ajoutant (ou en soustrayant) l’écart.</li>
+            <li><strong>Si tu vérifies</strong> : tu contrôles que l’écart est toujours le même.</li>
+            <li><strong>Si tu annotes</strong> : tu écris les bons nombres à la bonne place.</li>
+        </ul>
+        <p><strong>👀 Astuce visuelle</strong><br>
+        Utilise tes doigts, une flèche ou un trait pour voir les sauts entre les nombres.</p>
+        <p>Tu peux aussi te dire :<br>
+        “Je suis à ce nombre-là… si je fais un saut de 50, où j’arrive ?”</p>
+        <p><strong>📌 À retenir</strong></p>
+        <ul>
+            <li>Une droite graduée avance toujours avec le même pas.</li>
+            <li>Tu peux retrouver ce pas en observant.</li>
+            <li>Tu peux ensuite compléter, vérifier ou placer les bons nombres facilement.</li>
+        </ul>
+    `;
+    function loadTheory() { theoryTextContent.innerHTML = THEORY_TEXT; }
+
+    let currentSeries = [];
+    let userAnswers = [];
+
+    function generateNumberForComplexity() {
+        const type = Math.random();
+        if (type < 0.4) { 
+            return Math.floor(Math.random() * 101);
+        } else if (type < 0.8) { 
+            return parseFloat((Math.random() * 20).toFixed(1));
+        } else { 
+            const denominators = [2, 3, 4, 5, 6, 8, 10, 12];
+            const den = denominators[Math.floor(Math.random() * denominators.length)];
+            const num = Math.floor(Math.random() * (den -1)) + 1;
+            return { num: num, den: den, display: `${num}/${den}` };
+        }
+    }
+
+    function getNumericValue(number) {
+        if (typeof number === 'object' && number.num !== undefined) return number.num / number.den;
+        return number;
+    }
+
+    function formatNumberForDisplay(value, isFractionalContext, originalDenom) {
+        if (isFractionalContext) {
+            if (value === 0) return "0";
+            if (Math.abs(value - 1) < 0.0001 && originalDenom) return "1"; 
+            
+            if (originalDenom && Math.abs(value * originalDenom - Math.round(value * originalDenom)) < 0.0001){
+                let num = Math.round(value * originalDenom);
+                function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+                let common = gcd(num, originalDenom);
+                if (originalDenom/common > 0) return `${num/common}/${originalDenom/common}`;
+            }
+            for (let d = 12; d >= 2; d--) { 
+                 if (Math.abs(value * d - Math.round(value * d)) < 0.0001) {
+                    let num = Math.round(value * d);
+                    if (num === 0 && value !==0) continue; 
+                    if (num === d && value !==1) continue; 
+                    function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+                    let common = gcd(num, d);
+                    if (d/common > 0) return `${num/common}/${d/common}`;
+                }
+            }
+             return parseFloat(value.toFixed(2)); 
+        }
+        return parseFloat(value.toFixed(1)); 
+    }
+
+    function generateGraduatedLine(exerciseIndex) {
+        const numberToPlace = generateNumberForComplexity();
+        const numericValueToPlace = getNumericValue(numberToPlace);
+        let min, max, step, numTicks, targetTickIndex;
+        const isFraction = typeof numberToPlace === 'object';
+
+        numTicks = Math.floor(Math.random() * 7) + 8; 
+
+        if (isFraction) {
+            let baseDenom = numberToPlace.den;
+            if (baseDenom <= 4 && Math.random() < 0.6) baseDenom *= (Math.random() < 0.5 ? 2:3) ;
+            if (baseDenom > 12) baseDenom = 12; 
+            step = 1 / baseDenom;
+            
+            targetTickIndex = Math.round(numericValueToPlace / step);
+            let minTickIndex = Math.max(0, targetTickIndex - Math.floor(Math.random() * (numTicks - 2)));
+            min = (targetTickIndex - minTickIndex) * step;
+            min = numericValueToPlace - (targetTickIndex - minTickIndex) * step;
+            min = Math.max(0,min); 
+            targetTickIndex = Math.round((numericValueToPlace - min) / step);
+            max = min + (numTicks - 1) * step;
+            if (numericValueToPlace <=1 && max < 1) max = Math.max(1, min + (numTicks-1)*step);
+            numTicks = Math.round((max - min) / step) + 1;
+            targetTickIndex = Math.round((numericValueToPlace - min) / step); 
+
+        } else if (Number.isInteger(numericValueToPlace)) {
+            step = 1;
+            if (numericValueToPlace > 15 || Math.random() < 0.4) step = Math.random() < 0.5 ? 2 : (Math.random() < 0.7 ? 5 : 10);
+            targetTickIndex = Math.floor(Math.random() * (numTicks - 4)) + 2; 
+            min = numericValueToPlace - targetTickIndex * step;
+            min = Math.max(0, Math.floor(min/step)*step); 
+            targetTickIndex = Math.round((numericValueToPlace - min) / step);
+            max = min + (numTicks - 1) * step;
+        } else { 
+            step = 0.1;
+            if (numericValueToPlace > 3 || Math.random() < 0.4) step = Math.random() < 0.5 ? 0.2 : (Math.random() < 0.7 ? 0.5 : 0.1);
+            step = parseFloat(step.toFixed(1)); 
+            targetTickIndex = Math.floor(Math.random() * (numTicks - 4)) + 2; 
+            min = numericValueToPlace - targetTickIndex * step;
+            min = Math.max(0, parseFloat(min.toFixed(2)));
+            min = parseFloat((Math.floor(min / step) * step).toFixed(2)); 
+            targetTickIndex = Math.round((numericValueToPlace - min) / step);
+            max = parseFloat((min + (numTicks - 1) * step).toFixed(2));
+        }
+        
+        let actualTargetValue = min + targetTickIndex * step;
+        if (Math.abs(actualTargetValue - numericValueToPlace) > step * 0.01) { 
+            console.warn("Target value not on tick, attempting regeneration for:", numberToPlace, "Calculated:", actualTargetValue);
+            return generateGraduatedLine(exerciseIndex); 
+        }
+
+        let allTickValues = [];
+        for(let i=0; i < numTicks; i++) allTickValues.push(parseFloat((min + i * step).toFixed(isFraction ? 4 : 2)));
+
+        let tickIndex1, tickIndex2;
+        let attempts = 0;
+        do {
+            tickIndex1 = Math.floor(Math.random() * numTicks);
+            tickIndex2 = Math.floor(Math.random() * numTicks);
+            attempts++;
+            if (attempts > 100) { 
+                tickIndex1 = 0; 
+                tickIndex2 = numTicks -1; 
+                if (tickIndex1 === targetTickIndex) tickIndex1 = (targetTickIndex + 1) % numTicks;
+                if (tickIndex2 === targetTickIndex || tickIndex2 === tickIndex1) tickIndex2 = (targetTickIndex + 2) % numTicks;
+                if (tickIndex1 === tickIndex2) tickIndex2 = (tickIndex1 +1) % numTicks; 
+                break; 
+            }
+        } while (tickIndex1 === tickIndex2 || 
+                   Math.abs(tickIndex1 - tickIndex2) < 2 || 
+                   tickIndex1 === targetTickIndex || 
+                   tickIndex2 === targetTickIndex ); 
+        
+        if (tickIndex1 > tickIndex2) [tickIndex1, tickIndex2] = [tickIndex2, tickIndex1];
+
+        currentSeries.push({ 
+            numberToPlace: numberToPlace, numericValue: numericValueToPlace,
+            min: min, max: max, step: step, numTicks: numTicks, targetTickIndex: targetTickIndex,
+            displayedTicksInfo: [{index: tickIndex1, value: allTickValues[tickIndex1]}, {index: tickIndex2, value: allTickValues[tickIndex2]}]
+        });
+
+        const lineContainer = document.createElement("div");
+        lineContainer.classList.add("graduated-line-container");
+        const instruction = document.createElement("p");
+        instruction.classList.add("line-instruction");
+        instruction.textContent = `Place ${isFraction ? numberToPlace.display : formatNumberForDisplay(numericValueToPlace, false)} sur la droite.`;
+        lineContainer.appendChild(instruction);
+
+        const lineGraphic = document.createElement("div");
+        lineGraphic.classList.add("line-graphic");
+        const line = document.createElement("div");
+        line.classList.add("line");
+        lineGraphic.appendChild(line);
+
+        for (let i = 0; i < numTicks; i++) {
+            const tick = document.createElement("div");
+            tick.classList.add("tick");
+            const percentage = numTicks > 1 ? (i / (numTicks - 1)) * 100 : 50; 
+            tick.style.left = `${percentage}%`;
+            
+            if (i === tickIndex1 || i === tickIndex2) {
+                tick.textContent = formatNumberForDisplay(allTickValues[i], isFraction, isFraction ? numberToPlace.den : undefined);
+            }
+            lineGraphic.appendChild(tick);
+        }
+
+        const marker = document.createElement("div");
+        marker.classList.add("draggable-marker");
+        marker.style.left = "0%";
+        lineGraphic.appendChild(marker);
+        makeDraggable(marker, lineGraphic, exerciseIndex);
+
+        lineContainer.appendChild(lineGraphic);
+        const feedback = document.createElement("div");
+        feedback.classList.add("feedback-message");
+        feedback.id = `feedback-${exerciseIndex}`;
+        lineContainer.appendChild(feedback);
+
+        const correctAnswerLine = document.createElement("div");
+        correctAnswerLine.classList.add("correct-answer-line", "hidden");
+        correctAnswerLine.id = `correct-line-${exerciseIndex}`;
+        lineGraphic.appendChild(correctAnswerLine); 
+
+        exerciseSeriesContainer.appendChild(lineContainer);
+        userAnswers[exerciseIndex] = { markerPositionPercent: 0 }; 
+    }
+
+    function makeDraggable(marker, lineGraphic, index) {
+        let isDragging = false;
+        marker.addEventListener("mousedown", (e) => {
+            isDragging = true; marker.classList.add("dragging"); document.body.style.cursor = "grabbing";
+        });
+        document.addEventListener("mousemove", (e) => {
+            if (!isDragging) return;
+            const rect = lineGraphic.getBoundingClientRect();
+            let x = e.clientX - rect.left;
+            let percent = (x / rect.width) * 100;
+            percent = Math.max(0, Math.min(100, percent)); 
+            marker.style.left = `${percent}%`;
+            userAnswers[index].markerPositionPercent = percent;
+        });
+        document.addEventListener("mouseup", () => {
+            if (isDragging) { isDragging = false; marker.classList.remove("dragging"); document.body.style.cursor = "default"; }
+        });
+        marker.addEventListener("touchstart", (e) => {
+            isDragging = true; marker.classList.add("dragging");
+        }, { passive: false });
+        document.addEventListener("touchmove", (e) => {
+            if (!isDragging) return;
+            e.preventDefault(); 
+            const rect = lineGraphic.getBoundingClientRect();
+            let x = e.touches[0].clientX - rect.left;
+            let percent = (x / rect.width) * 100;
+            percent = Math.max(0, Math.min(100, percent));
+            marker.style.left = `${percent}%`;
+            userAnswers[index].markerPositionPercent = percent;
+        }, { passive: false });
+        document.addEventListener("touchend", () => {
+            if (isDragging) { isDragging = false; marker.classList.remove("dragging"); }
+        });
+    }
+
+    function startNewSeries() {
+        currentSeries = []; userAnswers = [];
+        exerciseSeriesContainer.innerHTML = "";
+        exerciseFeedbackContainer.innerHTML = "";
+        for (let i = 0; i < 3; i++) { generateGraduatedLine(i); }
+    }
+
+    verifySeriesBtn.addEventListener("click", () => {
+        let seriesStats = { date: new Date().toLocaleString('fr-FR'), correct: 0, total: currentSeries.length, exercises: [] };
+        currentSeries.forEach((exercise, index) => {
+            const userAnswerPercent = userAnswers[index].markerPositionPercent;
+            const correctAnswerNumeric = exercise.numericValue;
+            const lineMin = exercise.min; const lineMax = exercise.max;
+            let correctAnswerPercent = 0;
+            if (lineMax - lineMin !== 0) correctAnswerPercent = ((correctAnswerNumeric - lineMin) / (lineMax - lineMin)) * 100;
+            correctAnswerPercent = Math.max(0, Math.min(100, correctAnswerPercent));
+
+            const feedbackEl = document.getElementById(`feedback-${index}`);
+            const correctLineEl = document.getElementById(`correct-line-${index}`);
+            correctLineEl.style.left = `${correctAnswerPercent}%`;
+            correctLineEl.classList.remove("hidden");
+
+            const tickSpacingPercent = (exercise.numTicks > 1) ? (100 / (exercise.numTicks - 1)) : 50; 
+            const tolerance = tickSpacingPercent / 2.5; 
+
+            if (Math.abs(userAnswerPercent - correctAnswerPercent) <= tolerance) {
+                feedbackEl.textContent = "Correct !";
+                feedbackEl.className = "feedback-message feedback-correct";
+                seriesStats.correct++;
+            } else {
+                feedbackEl.textContent = "Incorrect."; // Modifié ici
+                feedbackEl.className = "feedback-message feedback-incorrect";
+            }
+            seriesStats.exercises.push({ question: exercise.numberToPlace, answer: userAnswerPercent, correct: correctAnswerPercent, status: feedbackEl.textContent });
+        });
+        saveHistory(seriesStats);
+        verifySeriesBtn.classList.add("hidden");
+        exerciseInProgressHomeBtn.classList.add("hidden");
+        newExerciseSeriesBtn.classList.add("hidden");
+        exerciseResultsHomeBtn.classList.remove("hidden");
+        newExerciseSeriesResultsBtn.classList.remove("hidden");
+    });
+
+    function saveHistory(stats) {
+        let history = JSON.parse(localStorage.getItem("justePointHistory")) || [];
+        history.unshift(stats); 
+        if (history.length > 10) history.pop(); 
+        localStorage.setItem("justePointHistory", JSON.stringify(history));
+    }
+
+    function loadHistory() {
+        historyListContent.innerHTML = "";
+        let history = JSON.parse(localStorage.getItem("justePointHistory")) || [];
+        if (history.length === 0) {
+            historyListContent.innerHTML = "<p>Aucun exercice n'a été fait pour le moment.</p>"; return;
+        }
+        const ul = document.createElement("ul");
+        history.forEach(item => {
+            const li = document.createElement("li");
+            li.innerHTML = `<strong>${item.date}</strong> - Score: ${item.correct}/${item.total}`;
+            ul.appendChild(li);
+        });
+        historyListContent.appendChild(ul);
+    }
+    showView(homeView);
+});
+  </script>
+</body>
+</html>
