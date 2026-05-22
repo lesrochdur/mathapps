@@ -6,7 +6,8 @@
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
       "Bash(vercel --prod --yes --name mathapps)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(vercel --prod --yes)"
     ]
   }
 }

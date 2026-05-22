@@ -97,7 +97,7 @@ export default function Home() {
               style={{ fontFamily: 'var(--font-rubik)' }}
             >
               Des applications de théorie et d'exercices pour aider à la préparation au
-              CEB… mais pas que !{' '}
+              CEB… Mais pas que !{' '}
               <span className="text-gray-400">— par </span>
               <a
                 href="https://lesrochdur.com"
@@ -119,7 +119,7 @@ export default function Home() {
           <div className="rounded-2xl p-10 text-center w-full max-w-lg shadow-2xl" style={{ backgroundColor: '#0b1c26', border: '2px solid #00e0ff' }}>
             <div className="flex justify-center mb-6">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/MathAPPS-Theorie.png" alt="PDF général Math'APPS" style={{ width: '200px', height: '200px', objectFit: 'cover', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,224,255,0.3)' }} />
+              <img src="/images/MathAPPS-Theorie.gif" alt="PDF général Math'APPS" style={{ width: '200px', height: '200px', objectFit: 'cover', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,224,255,0.3)' }} />
             </div>
             <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'var(--font-orbitron)', color: '#00e0ff' }}>
               Télécharger le PDF général
