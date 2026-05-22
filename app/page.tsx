@@ -97,7 +97,7 @@ export default function Home() {
               style={{ fontFamily: 'var(--font-rubik)' }}
             >
               Des applications de théorie et d'exercices pour aider à la préparation au
-              CEB… Mais pas que !{' '}
+              CEB*… Mais pas que !{' '}
               <span className="text-gray-400">— par </span>
               <a
                 href="https://lesrochdur.com"
@@ -132,6 +132,10 @@ export default function Home() {
             </a>
           </div>
         </div>
+
+        <p className="text-center text-xs text-gray-500 italic mb-12" style={{ fontFamily: 'var(--font-rubik)' }}>
+          *Certificat d'Études de Base en Fédération Wallonie-Bruxelles (Belgique)
+        </p>
 
         {/* Apps grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
